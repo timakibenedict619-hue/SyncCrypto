@@ -157,39 +157,47 @@ registerBtnText.style.display="block";
 
 // Continue to phone verification
 
-continueBtn.addEventListener("click",async()=>{
+continueBtn.addEventListener("click", async () => {
 
-let phone=phoneNumber.value.trim();
+    let phone = phoneNumber.value.trim();
 
-try{
+    if (!phone.startsWith("+")) {
+        alert("Use country code. Example: +2348012345678");
+        return;
+    }
 
-window.recaptchaVerifier = new RecaptchaVerifier(
-    "recaptcha-container",
-    {
-        size: "normal"
-    },
-    auth
-);
+    try {
 
-const appVerifier = window.recaptchaVerifier;
+        if (!window.recaptchaVerifier) {
 
-confirmationResult = await signInWithPhoneNumber(
-    auth,
-    phone,
-    appVerifier
-);
+            window.recaptchaVerifier = new RecaptchaVerifier(
+                auth,
+                "recaptcha-container",
+                {
+                    size: "normal"
+                }
+            );
 
-userPhone.textContent=phone;
+            await window.recaptchaVerifier.render();
+        }
 
-formStep2.classList.add("hidden");
-formStep3.classList.remove("hidden");
+        confirmationResult = await signInWithPhoneNumber(
+            auth,
+            phone,
+            window.recaptchaVerifier
+        );
 
-}
-catch(error){
+        userPhone.textContent = phone;
 
-alert(error.message);
+        formStep2.classList.add("hidden");
+        formStep3.classList.remove("hidden");
 
-}
+    } catch(error) {
+
+        console.log(error);
+        alert(error.message);
+
+    }
 
 });
 
