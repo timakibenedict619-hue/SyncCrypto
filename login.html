@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In | SyncCrypto</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  
+  :root {
+    --primary: #FFD700;
+    --primary-dark: #E6C200;
+    --primary-light: #FFED4E;
+    --dark: #0F172A;
+    --dark-800: #1E293B;
+  }
+  
+  * {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  body {
+    background: var(--dark);
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.08) 0%, transparent 50%);
+    min-height: 100vh;
+  }
+  
+  .glass {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 215, 0, 0.1);
+  }
+  
+  .input-focus:focus {
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+    border-color: var(--primary);
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  }
+  
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+  }
+  
+  .btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .spinner {
+    border: 2px solid rgba(15, 23, 42, 0.3);
+    border-top: 2px solid var(--dark);
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .toast-enter {
+    animation: slideIn 0.3s ease-out forwards;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .password-toggle:hover {
+    color: var(--primary);
+  }
+</style>
+</head>
+<body class="text-slate-200 flex items-center justify-center p-4">
+  
+  <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden max-w-md w-[calc(100%-2rem)]">
+    <div id="toastContent" class="glass rounded-lg px-4 py-3 shadow-xl flex items-start gap-3">
+      <i id="toastIcon" class="mt-0.5"></i>
+      <p id="toastMessage" class="text-sm flex-1"></p>
+      <button id="toastClose" class="text-slate-400 hover:text-white">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="w-full max-w-md">
+    <!-- Logo -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#FFD700] to-[#E6C200] mb-4 shadow-lg shadow-[#FFD700]/20">
+        <i class="fa-solid fa-coins text-3xl text-slate-900"></i>
+      </div>
+      <h1 class="text-3xl font-bold text-white mb-2">
+        Welcome to <span class="text-[#FFD700]">SyncCrypto</span>
+      </h1>
+      <p class="text-slate-400 text-sm">Sign in to access your crypto dashboard</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="glass rounded-2xl p-6 sm:p-8 shadow-2xl">
+      <form id="loginForm" novalidate>
+        <!-- Email Field -->
+        <div class="mb-5">
+          <label for="email" class="block text-sm font-medium text-slate-300 mb-2">
+            Email Address
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fa-regular fa-envelope text-slate-500"></i>
+            </div>
+            <input 
+              type="email" 
+              id="email" 
+              name="email"
+              required
+              autocomplete="email"
+              class="input-focus w-full bg-slate-800/50 border border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white placeholder-slate-500 focus:outline-none transition-all"
+              placeholder="you@example.com"
+            >
+          </div>
+          <p id="emailError" class="mt-1 text-xs text-red-400 hidden"></p>
+        </div>
+
+        <!-- Password Field -->
+        <div class="mb-5">
+          <label for="password" class="block text-sm font-medium text-slate-300 mb-2">
+            Password
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fa-solid fa-lock text-slate-500"></i>
+            </div>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              required
+              autocomplete="current-password"
+              class="input-focus w-full bg-slate-800/50 border border-slate-700 rounded-lg pl-10 pr-12 py-3 text-white placeholder-slate-500 focus:outline-none transition-all"
+              placeholder="Enter your password"
+            >
+            <button 
+              type="button" 
+              id="togglePassword"
+              class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 password-toggle transition-colors"
+              aria-label="Toggle password visibility"
+            >
+              <i id="toggleIcon" class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+          <p id="passwordError" class="mt-1 text-xs text-red-400 hidden"></p>
+        </div>
+
+        <!-- Remember Me & Forgot Password -->
+        <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+          <label class="flex items-center cursor-pointer group">
+            <input 
+              type="checkbox" 
+              id="rememberMe" 
+              class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-[#FFD700] focus:ring-[#FFD700] focus:ring-offset-0 focus:ring-2 cursor-pointer"
+            >
+            <span class="ml-2 text-sm text-slate-300 group-hover:text-white transition-colors">Remember me</span>
+          </label>
+          <button 
+            type="button" 
+            id="forgotPasswordBtn"
+            class="text-sm text-[#FFD700] hover:text-[#FFED4E] font-medium transition-colors"
+          >
+            Forgot Password?
+          </button>
+        </div>
+
+        <!-- Sign In Button -->
+        <button 
+          type="submit" 
+          id="signInBtn"
+          class="btn-primary w-full text-slate-900 font-semibold py-3 rounded-lg flex items-center justify-center gap-2"
+        >
+          <span id="btnText">Sign In</span>
+          <div id="btnSpinner" class="spinner hidden"></div>
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="relative my-6">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-slate-700"></div>
+        </div>
+        <div class="relative flex justify-center text-xs">
+          <span class="px-3 bg-slate-800/50 text-slate-400">New to SyncCrypto?</span>
+        </div>
+      </div>
+
+      <!-- Register Link -->
+      <a 
+        href="register.html" 
+        class="block w-full text-center py-3 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800/50 hover:border-[#FFD700]/30 hover:text-white font-medium transition-all"
+      >
+        Create an Account
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <p class="text-center text-xs text-slate-500 mt-6">
+      By signing in, you agree to our Terms of Service and Privacy Policy
+    </p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { 
+      getAuth, 
+      signInWithEmailAndPassword, 
+      sendPasswordResetEmail,
+      setPersistence,
+      browserLocalPersistence,
+      browserSessionPersistence 
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+    // Firebase config for synccrypto-fa0ac
+    const firebaseConfig = {
+      apiKey: "AIzaSyDPSEIlYfxLTkEnKwlvGdb2odD4f2HwEtU",
+      authDomain: "synccrypto-fa0ac.firebaseapp.com",
+      projectId: "synccrypto-fa0ac",
+      storageBucket: "synccrypto-fa0ac.firebasestorage.app",
+      messagingSenderId: "268886566692",
+      appId: "1:268886566692:web:c206b9dbc4297712c0e028"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // DOM Elements
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const rememberMeCheckbox = document.getElementById('rememberMe');
+    const signInBtn = document.getElementById('signInBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const togglePassword = document.getElementById('togglePassword');
+    const toggleIcon = document.getElementById('toggleIcon');
+    const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const toast = document.getElementById('toast');
+    const toastContent = document.getElementById('toastContent');
+    const toastIcon = document.getElementById('toastIcon');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastClose = document.getElementById('toastClose');
+
+    let toastTimeout;
+
+    // Toast notification
+    function showToast(message, type = 'info') {
+      clearTimeout(toastTimeout);
+      
+      const types = {
+        success: { icon: 'fa-circle-check', color: 'text-green-400', border: 'border-green-500/30' },
+        error: { icon: 'fa-circle-exclamation', color: 'text-red-400', border: 'border-red-500/30' },
+        warning: { icon: 'fa-triangle-exclamation', color: 'text-[#FFD700]', border: 'border-[#FFD700]/30' },
+        info: { icon: 'fa-circle-info', color: 'text-blue-400', border: 'border-blue-500/30' }
+      };
+      
+      const config = types[type] || types.info;
+      toastIcon.className = `fa-solid ${config.icon} ${config.color}`;
+      toastMessage.textContent = message;
+      toastContent.className = `glass rounded-lg px-4 py-3 shadow-xl flex items-start gap-3 border ${config.border}`;
+      
+      toast.classList.remove('hidden');
+      toast.classList.add('toast-enter');
+      
+      toastTimeout = setTimeout(() => {
+        hideToast();
+      }, 5000);
+    }
+
+    function hideToast() {
+      toast.classList.add('hidden');
+      toast.classList.remove('toast-enter');
+    }
+
+    toastClose.addEventListener('click', hideToast);
+
+    // Toggle password visibility
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      toggleIcon.className = type === 'password' 
+        ? 'fa-regular fa-eye' 
+        : 'fa-regular fa-eye-slash';
+    });
+
+    // Form validation
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+    function showError(element, message) {
+      element.textContent = message;
+      element.classList.remove('hidden');
+    }
+
+    function hideError(element) {
+      element.classList.add('hidden');
+    }
+
+    function validateForm() {
+      let isValid = true;
+      
+      hideError(emailError);
+      hideError(passwordError);
+      
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      
+      if (!email) {
+        showError(emailError, 'Email is required');
+        isValid = false;
+      } else if (!validateEmail(email)) {
+        showError(emailError, 'Please enter a valid email address');
+        isValid = false;
+      }
+      
+      if (!password) {
+        showError(passwordError, 'Password is required');
+        isValid = false;
+      } else if (password.length < 6) {
+        showError(passwordError, 'Password must be at least 6 characters');
+        isValid = false;
+      }
+      
+      return isValid;
+    }
+
+    // Clear errors on input
+    emailInput.addEventListener('input', () => hideError(emailError));
+    passwordInput.addEventListener('input', () => hideError(passwordError));
+
+    // Handle login
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (!validateForm()) return;
+      
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      const rememberMe = rememberMeCheckbox.checked;
+      
+      // Set loading state
+      signInBtn.disabled = true;
+      btnText.textContent = 'Signing in...';
+      btnSpinner.classList.remove('hidden');
+      
+      try {
+        // Set persistence based on remember me
+        const persistence = rememberMe ? browserLocalPersistence : browserSessionPersistence;
+        await setPersistence(auth, persistence);
+        
+        // Sign in
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        
+        // Check if email is verified
+        if (!user.emailVerified) {
+          showToast('Please verify your email before signing in. Check your inbox for the verification link.', 'warning');
+          await auth.signOut();
+        } else {
+          showToast('Sign in successful! Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1000);
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        
+        let errorMessage = 'An error occurred during sign in. Please try again.';
+        
+        switch (error.code) {
+          case 'auth/invalid-email':
+            errorMessage = 'Invalid email address format.';
+            showError(emailError, errorMessage);
+            break;
+          case 'auth/user-disabled':
+            errorMessage = 'This account has been disabled. Please contact support.';
+            break;
+          case 'auth/user-not-found':
+            errorMessage = 'No account found with this email. Please sign up first.';
+            break;
+          case 'auth/wrong-password':
+            errorMessage = 'Incorrect password. Please try again.';
+            showError(passwordError, 'Incorrect password');
+            break;
+          case 'auth/invalid-credential':
+            errorMessage = 'Invalid email or password. Please check your credentials.';
+            break;
+          case 'auth/too-many-requests':
+            errorMessage = 'Too many failed attempts. Please try again later.';
+            break;
+          case 'auth/network-request-failed':
+            errorMessage = 'Network error. Please check your internet connection.';
+            break;
+          default:
+            errorMessage = error.message;
+        }
+        
+        showToast(errorMessage, 'error');
+      } finally {
+        // Reset button state
+        signInBtn.disabled = false;
+        btnText.textContent = 'Sign In';
+        btnSpinner.classList.add('hidden');
+      }
+    });
+
+    // Handle forgot password
+    forgotPasswordBtn.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      
+      if (!email) {
+        showError(emailError, 'Please enter your email address first');
+        emailInput.focus();
+        return;
+      }
+      
+      if (!validateEmail(email)) {
+        showError(emailError, 'Please enter a valid email address');
+        emailInput.focus();
+        return;
+      }
+      
+      hideError(emailError);
+      forgotPasswordBtn.disabled = true;
+      forgotPasswordBtn.textContent = 'Sending...';
+      
+      try {
+        await sendPasswordResetEmail(auth, email);
+        showToast('Password reset email sent! Check your inbox and spam folder.', 'success');
+      } catch (error) {
+        console.error('Password reset error:', error);
+        
+        let errorMessage = 'Failed to send reset email. Please try again.';
+        
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorMessage = 'No account found with this email address.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Invalid email address format.';
+            break;
+          case 'auth/too-many-requests':
+            errorMessage = 'Too many requests. Please try again later.';
+            break;
+        }
+        
+        showToast(errorMessage, 'error');
+      } finally {
+        forgotPasswordBtn.disabled = false;
+        forgotPasswordBtn.textContent = 'Forgot Password?';
+      }
+    });
+
+  </script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;var a=target.closest?target.closest("a[href]"):null;if(!a||!a.href||!/^https?:\/\//.test(a.href))return;if(a.href.replace(/#.*$/,"")===loc)return;var productId=extractProductId(target)||extractProductId(a);if(!productId)return;e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*")},true)})();</script></body>
+</html>
