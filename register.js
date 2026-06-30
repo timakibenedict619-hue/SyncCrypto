@@ -163,20 +163,20 @@ let phone=phoneNumber.value.trim();
 
 try{
 
-window.recaptchaVerifier =
-new RecaptchaVerifier(
-auth,
-"recaptcha-container",
-{
-size:"normal"
-}
+window.recaptchaVerifier = new RecaptchaVerifier(
+    "recaptcha-container",
+    {
+        size: "normal"
+    },
+    auth
 );
 
-confirmationResult=
-await signInWithPhoneNumber(
-auth,
-phone,
-window.recaptchaVerifier
+const appVerifier = window.recaptchaVerifier;
+
+confirmationResult = await signInWithPhoneNumber(
+    auth,
+    phone,
+    appVerifier
 );
 
 userPhone.textContent=phone;
