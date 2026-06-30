@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SyncCrypto Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    authDomain: "synccrypto-fa0ac.firebaseapp.com",
+    projectId: "synccrypto-fa0ac",
+    storageBucket: "synccrypto-fa0ac.appspot.com",
+    messagingSenderId: "1234567890",
+    appId: "1:1234567890:web:abcdefghijklmnop"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      document.getElementById('userEmail').textContent = user.email || 'user@synccrypto.com';
+      let displayName = user.displayName || 'User';
+      let initials = 'U';
+      
+      try {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          displayName = data.name || data.displayName || user.displayName || 'User';
+          initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        }
+      } catch (e) {
+        console.error('Error fetching user data:', e);
+        initials = (user.displayName || user.email || 'U').slice(0, 2).toUpperCase();
+      }
+
+      document.getElementById('welcomeName').textContent = `Welcome, ${displayName}`;
+      document.getElementById('avatarInitials').textContent = initials;
+      document.getElementById('avatarInitialsLarge').textContent = initials;
+    } else {
+      window.location.href = 'login.html';
+    }
+  });
+
+  window.toggleTheme = () => {
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+  }
+
+  if (localStorage.getItem('theme') === 'dark') {
+    document.documentElement.classList.add('dark');
+  }
+</script>
+<style>
+  :root {
+    --primary: #FFD700;
+    --primary-dark: #E6C200;
+    --blue-card: #E8F4FD;
+    --blue-card-dark: #1E3A5F;
+  }
+  .dark {
+    --blue-card: #1E3A5F;
+  }
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  .scroll-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scroll-hide::-webkit-scrollbar {
+    display: none;
+  }
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  @keyframes slideOut {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+  .ticker-enter {
+    animation: slideIn 0.5s ease-out forwards;
+  }
+  .ticker-exit {
+    animation: slideOut 0.5s ease-in forwards;
+  }
+  .chart-line {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawLine 2s ease-out forwards;
+  }
+  @keyframes drawLine {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+  <div id="app" class="max-w-md mx-auto min-h-screen pb-24">
+    
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <svg class="w-8 h-8" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="8" fill="#FFD700"/>
+            <path d="M16 8L20 12L16 16L20 20L16 24L12 20L16 16L12 12L16 8Z" fill="white"/>
+          </svg>
+          <span class="text-xl font-bold">SyncCrypto</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <button onclick="alert('Support')" class="p-1">
+            <svg class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </button>
+          <button onclick="toggleTheme()" class="p-1">
+            <svg class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+          </button>
+          <button onclick="alert('Notifications')" class="p-1 relative">
+            <svg class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            <span class="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-semibold">2</span>
+          </button>
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold" id="avatarInitials">KA</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400" id="breadcrumb">
+      <span class="text-[#FFD700] font-medium">Dashboard</span>
+      <span class="mx-1">></span>
+      <span>dashboard</span>
+    </div>
+
+    <!-- Main Dashboard View -->
+    <div id="dashboardView" class="px-4 space-y-4">
+      
+      <!-- Upgrade Card -->
+      <div class="bg-[#E8F4FD] dark:bg-[var(--blue-card-dark)] rounded-2xl p-5 shadow-sm">
+        <h3 class="text-lg font-bold mb-2 text-gray-900 dark:text-white">Upgrade to Level 2</h3>
+        <p class="text-sm text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
+          Increase your transaction limits to 2,500,000.00 USD daily. Get more access to AI trading bots and master traders, for a more enhanced, profitable, and seamless trading experience.
+        </p>
+        <button onclick="alert('Upgrade to Level 2')" class="bg-[#FFD700] hover:bg-[#E6C200] text-gray-900 font-semibold px-6 py-2.5 rounded-lg transition-colors">
+          Upgrade
+        </button>
+      </div>
+
+      <!-- Link Wallet Card -->
+      <div class="bg-[#E8F4FD] dark:bg-[var(--blue-card-dark)] rounded-2xl p-5 shadow-sm">
+        <h3 class="text-lg font-bold mb-2 text-gray-900 dark:text-white">Link a Wallet</h3>
+        <p class="text-sm text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
+          Link a Wallet to your SyncCrypto account, and stand a chance to earn at least 3,000 USD daily from your very own AI Bot. This is a secure process and financial risks do not apply.
+        </p>
+        <button onclick="alert('Link Wallet')" class="bg-[#FFD700] hover:bg-[#E6C200] text-gray-900 font-semibold px-6 py-2.5 rounded-lg transition-colors">
+          Link Wallet
+        </button>
+      </div>
+
+      <!-- Live Ticker -->
+      <div class="bg-blue-500 rounded-2xl p-3 text-white shadow-sm overflow-hidden">
+        <div id="ticker" class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-white/30 flex-shrink-0"></div>
+          <span class="text-sm font-medium ticker-enter" id="tickerText">Abdul Aldo just withdrew USD 2,200</span>
+        </div>
+      </div>
+
+      <!-- Welcome Section -->
+      <div class="text-center py-6">
+        <div class="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-3xl font-bold mx-auto mb-3 shadow-lg" id="avatarInitialsLarge">KA</div>
+        <h2 class="text-xl font-bold mb-1" id="welcomeName">Welcome, User</h2>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-5" id="userEmail">user@synccrypto.com</p>
+        
+        <div class="flex justify-center gap-4 mb-6">
+          <button onclick="alert('AI Trading')" class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+          </button>
+          <button onclick="alert('Analytics')" class="w-14 h-14 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </button>
+          <button onclick="alert('Fund')" class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+          </button>
+          <button onclick="alert('Send')" class="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="text-4xl font-bold text-gray-900 dark:text-white">50.00 USD</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Total Assets</div>
+      </div>
+
+      <!-- BTC Price Section -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M23.638 14.904c-1.602 6.43-8.113 10.34-14.542 8.738C2.67 22.05-1.244 15.539.362 9.11 1.962 2.67 8.475-1.243 14.9.358c6.43 1.605 10.342 8.115 8.738 14.546zM12.5 8.14c0-.89 0-2.03 1.5-2.03s1.5 1.14 1.5 2.03c0 .89 0 2.03-1.5 2.03s-1.5-1.14-1.5-2.03zm-1.33 6.44c0-2.13 1.73-3.86 3.86-3.86 2.13 0 3.86 1.73 3.86 3.86s-1.73 3.86-3.86 3.86c-2.13 0-3.86-1.73-3.86-3.86z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="font-bold text-gray-900 dark:text-white">BTCUSD</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-xl font-bold text-gray-900 dark:text-white">60,788</div>
+            <div class="text-sm text-red-500 font-semibold">-0.33%</div>
+          </div>
+        </div>
+        <svg class="w-full h-16" viewBox="0 0 300 60" preserveAspectRatio="none">
+          <polyline class="chart-line" fill="none" stroke="#ef4444" stroke-width="2" points="0,40 30,42 60,38 90,45 120,35 150,40 180,32 210,38 240,30 270,35 300,33"/>
+        </svg>
+      </div>
+
+      <!-- Balance Cards Grid -->
+      <div class="grid grid-cols-2 gap-3 pb-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+          <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">CRYPTO BALANCE</div>
+          <div class="text-lg font-bold text-gray-900 dark:text-white">0.00 USD</div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+          <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">BONUS BALANCE</div>
+          <div class="text-lg font-bold text-gray-900 dark:text-white">50.00 USD</div>
+        </div>
+        <div class="bg-blue-500 rounded-xl p-4 shadow-sm text-white">
+          <div class="text-xs text-blue-100 mb-1">FUNDING</div>
+          <div class="text-lg font-bold">0.00 USD</div>
+        </div>
+        <div class="bg-blue-500 rounded-xl p-4 shadow-sm text-white">
+          <div class="text-xs text-blue-100 mb-1">TRADING</div>
+          <div class="text-lg font-bold">0.00 USD</div>
+        </div>
+        <div class="bg-green-500 rounded-xl p-4 shadow-sm text-white">
+          <div class="text-xs text-green-100 mb-1">INVESTMENT PROFIT</div>
+          <div class="text-lg font-bold">0.00 USD</div>
+        </div>
+        <div class="bg-[#FFD700] rounded-xl p-4 shadow-sm text-gray-900">
+          <div class="text-xs text-gray-700 mb-1">INVESTMENT BONUS</div>
+          <div class="text-lg font-bold">0.00 USD</div>
+        </div>
+        <div class="bg-green-500 rounded-xl p-4 shadow-sm text-white">
+          <div class="text-xs text-green-100 mb-1">TRADING PROFIT</div>
+          <div class="text-lg font-bold">0.00 USD</div>
+        </div>
+        <div class="bg-[#FFD700] rounded-xl p-4 shadow-sm text-gray-900">
+          <div class="text-xs text-gray-700 mb-1">TRADING BONUS</div>
+          <div class="text-lg font-bold">0.00 USD</div>
+        </div>
+        <div class="bg-[#FFD700] rounded-xl p-4 shadow-sm text-gray-900">
+          <div class="text-xs text-gray-700 mb-1">REWARDS</div>
+          <div class="text-lg font-bold">50.00 USD</div>
+        </div>
+        <div class="bg-[#FFD700] rounded-xl p-4 shadow-sm text-gray-900">
+          <div class="text-xs text-gray-700 mb-1">REFERRAL BONUS</div>
+          <div class="text-lg font-bold">0.00 USD</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Investment Plans View -->
+    <div id="investView" class="px-4 space-y-4 hidden">
+      
+      <!-- Green Investment Plan Cards -->
+      <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-5 shadow-lg text-white">
+        <div class="flex items-center gap-2 mb-4">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/>
+          </svg>
+          <h3 class="text-lg font-bold">Basic Plan </h3>
+          <span class="ml-auto bg-white/20 px-3 py-1 rounded-full text-xs font-semibold">1 Week 10%</span>
+        </div>
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <div class="text-xs opacity-90 mb-1">MINIMUM BALANCE</div>
+            <div class="font-bold">50 USD</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs opacity-90 mb-1">MAXIMUM BALANCE</div>
+            <div class="font-bold">499 USD</div>
+          </div>
+        </div>
+        <button onclick="alert('Invest in Basic Plan')" class="w-full bg-[#FFD700] hover:bg-[#E6C200] text-gray-900 font-bold py-3 rounded-xl transition-colors">
+          Invest
+        </button>
+      </div>
+
+      <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-5 shadow-lg text-white">
+        <div class="flex items-center gap-2 mb-4">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/>
+          </svg>
+          <h3 class="text-lg font-bold">Silver Plan</h3>
+          <span class="ml-auto bg-white/20 px-3 py-1 rounded-full text-xs font-semibold">1 Week 10%</span>
+        </div>
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <div class="text-xs opacity-90 mb-1">MINIMUM BALANCE</div>
+            <div class="font-bold">500 USD</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs opacity-90 mb-1">MAXIMUM BALANCE</div>
+            <div class="font-bold">1,999 USD</div>
+          </div>
+        </div>
+        <button onclick="alert('Invest in Silver Plan')" class="w-full bg-[#FFD700] hover:bg-[#E6C200] text-gray-900 font-bold py-3 rounded-xl transition-colors">
+          Invest
+        </button>
+      </div>
+
+      <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-5 shadow-lg text-white">
+        <div class="flex items-center gap-2 mb-4">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/>
+          </svg>
+          <h3 class="text-lg font-bold">Gold Plan</h3>
+          <span class="ml-auto bg-white/20 px-3 py-1 rounded-full text-xs font-semibold">2 Weeks 20%</span>
+        </div>
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <div class="text-xs opacity-90 mb-1">MINIMUM BALANCE</div>
+            <div class="font-bold">2,000 USD</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs opacity-90 mb-1">MAXIMUM BALANCE</div>
+            <div class="font-bold">5,999 USD</div>
+          </div>
+        </div>
+        <button onclick="alert('Invest in Gold Plan')" class="w-full bg-[#FFD700] hover:bg-[#E6C200] text-gray-900 font-bold py-3 rounded-xl transition-colors">
+          Invest
+        </button>
+      </div>
+
+      <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-5 shadow-lg text-white">
+        <div class="flex items-center gap-2 mb-4">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/>
+          </svg>
+          <h3 class="text-lg font-bold">Premium Plan</h3>
+          <span class="ml-auto bg-white/20 px-3 py-1 rounded-full text-xs font-semibold">2 Weeks 20%</span>
+        </div>
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <div class="text-xs opacity-90 mb-1">MINIMUM BALANCE</div>
+            <div class="font-bold">6,000 USD</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs opacity-90 mb-1">MAXIMUM BALANCE</div>
+            <div class="font-bold">19,999 USD</div>
+          </div>
+        <button onclick="alert('Invest in Premium Plan')" class="w-full bg-[#FFD700] hover:bg-[#E6C200] text-gray-900 font-bold py-3 rounded-xl transition-colors">
+          Invest
+        </button>
+      </div>
+
+      <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-5 shadow-lg text-white">
+        <div class="flex items-center gap-2 mb-4">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/>
+          </svg>
+          <h3 class="text-lg font-bold">Platinum Plan</h3>
+          <span class="ml-auto bg-white/20 px-3 py-1 rounded-full text-xs font-semibold">3 Weeks 50%</span>
+        </div>
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <div class="text-xs opacity-90 mb-1">MINIMUM BALANCE</div>
+            <div class="font-bold">20,000 USD</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs opacity-90 mb-1">MAXIMUM BALANCE</div>
+            <div class="font-bold">99,999 USD</div>
+          </div>
+        </div>
+        <button onclick="alert('Invest in Platinum Plan')" class="w-full bg-[#FFD700] hover:bg-[#E6C200] text-gray-900 font-bold py-3 rounded-xl transition-colors">
+          Invest
+        </button>
+      </div>
+
+      <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-5 shadow-lg text-white">
+        <div class="flex items-center gap-2 mb-4">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/>
+          </svg>
+          <h3 class="text-lg font-bold">Elite Plan</h3>
+          <span class="ml-auto bg-white/20 px-3 py-1 rounded-full text-xs font-semibold">4 Weeks 100%</span>
+        </div>
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <div class="text-xs opacity-90 mb-1">MINIMUM BALANCE</div>
+            <div class="font-bold">100,000 USD</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs opacity-90 mb-1">MAXIMUM BALANCE</div>
+            <div class="font-bold">999,999 USD</div>
+          </div>
+        </div>
+        <button onclick="alert('Invest in Elite Plan')" class="w-full bg-[#FFD700] hover:bg-[#E6C200] text-gray-900 font-bold py-3 rounded-xl transition-colors">
+          Invest
+        </button>
+      </div>
+
+      <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-5 shadow-lg text-white">
+        <div class="flex items-center gap-2 mb-4">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/>
+          </svg>
+          <h3 class="text-lg font-bold">Billionaire Plan</h3>
+          <span class="ml-auto bg-white/20 px-3 py-1 rounded-full text-xs font-semibold">5 Weeks 175%</span>
+        </div>
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <div class="text-xs opacity-90 mb-1">MINIMUM BALANCE</div>
+            <div class="font-bold">1,000,000 USD</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs opacity-90 mb-1">MAXIMUM BALANCE</div>
+            <div class="font-bold">10,000,000 USD</div>
+          </div>
+        </div>
+        <button onclick="alert('Invest in Billionaire Plan')" class="w-full bg-[#FFD700] hover:bg-[#E6C200] text-gray-900 font-bold py-3 rounded-xl transition-colors">
+          Invest
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-4 py-2 max-w-md mx-auto">
+    <div class="flex items-center justify-around">
+      <button onclick="showDashboard()" id="navHome" class="flex flex-col items-center gap-1 p-2 text-[#FFD700]">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+        </svg>
+        <span class="text-xs font-medium">Home</span>
+      </button>
+      <button onclick="showInvest()" id="navInvest" class="flex flex-col items-center gap-1 p-2 text-gray-400 dark:text-gray-500">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+        </svg>
+        <span class="text-xs font-medium">Invest</span>
+      </button>
+      <button onclick="alert('Create New')" class="relative -mt-8">
+        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#FFD700] to-yellow-500 flex items-center justify-center shadow-lg">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/>
+          </svg>
+        </div>
+      </button>
+      <button onclick="alert('AI Trade')" class="flex flex-col items-center gap-1 p-2 text-gray-400 dark:text-gray-500">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+        </svg>
+        <span class="text-xs font-medium">AI Trade</span>
+      </button>
+      <button onclick="alert('Assets')" class="flex flex-col items-center gap-1 p-2 text-gray-400 dark:text-gray-500">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+        </svg>
+        <span class="text-xs font-medium">Assets</span>
+      </button>
+    </div>
+  </nav>
+
+<script>
+  // Navigation
+  function showDashboard() {
+    document.getElementById('dashboardView').classList.remove('hidden');
+    document.getElementById('investView').classList.add('hidden');
+    document.getElementById('breadcrumb').innerHTML = '<span class="text-[#FFD700] font-medium">Dashboard</span><span class="mx-1">></span><span>dashboard</span>';
+    document.getElementById('navHome').classList.add('text-[#FFD700]');
+    document.getElementById('navHome').classList.remove('text-gray-400', 'dark:text-gray-500');
+    document.getElementById('navInvest').classList.remove('text-[#FFD700]');
+    document.getElementById('navInvest').classList.add('text-gray-400', 'dark:text-gray-500');
+  }
+
+  function showInvest() {
+    document.getElementById('dashboardView').classList.add('hidden');
+    document.getElementById('investView').classList.remove('hidden');
+    document.getElementById('breadcrumb').innerHTML = '<span class="text-[#FFD700] font-medium">Dashboard</span><span class="mx-1">></span><span>Investment Plans</span>';
+    document.getElementById('navInvest').classList.add('text-[#FFD700]');
+    document.getElementById('navInvest').classList.remove('text-gray-400', 'dark:text-gray-500');
+    document.getElementById('navHome').classList.remove('text-[#FFD700]');
+    document.getElementById('navHome').classList.add('text-gray-400', 'dark:text-gray-500');
+  }
+
+  // Live Ticker Animation
+  const tickerData = [
+    'Abdul Aldo just withdrew USD 2,200',
+    'Sarah Chen just invested USD 5,000',
+    'John Davis just traded USD 12,500',
+    'Maria Garcia just withdrew USD 850',
+    'David Lee just invested USD 15,000',
+    'Emma Wilson just traded USD 3,200',
+    'James Brown just withdrew USD 4,500',
+    'Lisa Wang just invested USD 8,900'
+  ];
+
+  let tickerIndex = 0;
+  function updateTicker() {
+    const tickerEl = document.getElementById('tickerText');
+    tickerEl.classList.remove('ticker-enter');
+    tickerEl.classList.add('ticker-exit');
+    
+    setTimeout(() => {
+      tickerIndex = (tickerIndex + 1) % tickerData.length;
+      tickerEl.textContent = tickerData[tickerIndex];
+      tickerEl.classList.remove('ticker-exit');
+      tickerEl.classList.add('ticker-enter');
+    }, 500);
+  }
+
+  setInterval(updateTicker, 4000);
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;var a=target.closest?target.closest("a[href]"):null;if(!a||!a.href||!/^https?:\/\//.test(a.href))return;if(a.href.replace(/#.*$/,"")===loc)return;var productId=extractProductId(target)||extractProductId(a);if(!productId)return;e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*")},true)})();</script></body>
+</html>
