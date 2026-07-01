@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SyncCrypto - My Assets</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          'sync-yellow': '#FFD700',
+          'dark-bg': '#0A0A0B',
+          'card-bg': '#141417',
+          'border': '#27272A'
+        },
+        fontFamily: {
+          'sans': ['Inter', 'system-ui', 'sans-serif']
+        }
+      }
+    }
+  }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background: #0A0A0B;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  .glass-card {
+    background: linear-gradient(135deg, rgba(20,20,23,0.9) 0%, rgba(20,20,23,0.6) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 215, 0, 0.1);
+  }
+  .gradient-yellow {
+    background: linear-gradient(135deg, #FFD700 0%, #FFC400 100%);
+  }
+  .gradient-text {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .shimmer {
+    animation: shimmer 2s infinite;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    background-size: 200% 100%;
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .sparkline {
+    width: 60px;
+    height: 32px;
+  }
+  .ascend {
+    animation: slideIn 0.4s ease-out forwards;
+  }
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .ripple {
+    position: relative;
+    overflow: hidden;
+  }
+  .ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 215, 0, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+  }
+  .ripple:active::after {
+    width: 300px;
+    height: 300px;
+  }
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+</style>
+</head>
+<body class="text-gray-100 antialiased">
+
+<div id="app" class="min-h-screen pb-24 max-w-screen-2xl mx-auto">
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-dark-bg/80 backdrop-blur-xl border-b border-border">
+    <div class="px-4 py-3.5 flex items-center justify-between max-w-7xl mx-auto">
+      <div class="flex items-center gap-3">
+        <a href="dashboard.html" class="p-2 -ml-2 rounded-full hover:bg-card-bg transition active:scale-95">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </a>
+        <div class="flex items-center gap-2">
+          <svg class="w-7 h-7" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="8" fill="url(#logo-gradient)"/>
+            <path d="M16 8L10 12V20L16 24L22 20V12L16 8Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+            <circle cx="16" cy="16" r="2" fill="white"/>
+            <defs>
+              <linearGradient id="logo-gradient" x1="0" y1="0" x2="32" y2="32">
+                <stop stop-color="#FFD700"/>
+                <stop offset="1" stop-color="#FFC400"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <h1 class="text-lg font-bold tracking-tight">Sync<span class="gradient-text">Crypto</span></h1>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="settingsBtn" class="p-2 rounded-full hover:bg-card-bg transition active:scale-95">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+        </button>
+        <button id="notifBtn" class="p-2 rounded-full hover:bg-card-bg transition active:scale-95 relative">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+          </svg>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-sync-yellow rounded-full"></span>
+        </button>
+        <div id="userAvatar" class="w-8 h-8 rounded-full gradient-yellow flex items-center justify-center font-bold text-dark-bg text-sm cursor-pointer">
+          KA
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="px-4 pt-5 pb-6 max-w-7xl mx-auto">
+    <!-- Page Title -->
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-2xl font-bold tracking-tight">My Assets</h2>
+      <button id="refreshBtn" class="p-2 rounded-full bg-card-bg hover:bg-border transition active:scale-95">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Total Balance Card -->
+    <div class="glass-card rounded-2xl p-5 mb-6 ascend" style="box-shadow: 0 8px 32px rgba(255, 215, 0, 0.08)">
+      <div class="flex items-center justify-between mb-3">
+        <p class="text-sm text-gray-400 font-medium">Total Balance</p>
+        <button id="toggleVisibility" class="p-1.5 rounded-lg hover:bg-white/5 transition">
+          <svg id="eyeOpen" class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+          </svg>
+          <svg id="eyeClosed" class="w-4 h-4 text-gray-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="mb-4">
+        <h3 id="totalBalance" class="text-4xl font-extrabold mb-2 shimmer">$0.00</h3>
+        <div class="flex items-center gap-2">
+          <span id="balanceChange" class="text-sm font-semibold px-2 py-1 rounded-lg bg-green-500/10 text-green-400">+0.00%</span>
+          <span class="text-xs text-gray-500">24h</span>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-3 pt-4 border-t border-border">
+        <div>
+          <p class="text-xs text-gray-500 mb-1">Invested</p>
+          <p id="totalInvested" class="text-sm font-semibold">$0.00</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500 mb-1">Profit/Loss</p>
+          <p id="totalPnl" class="text-sm font-semibold text-green-400">+$0.00</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500 mb-1">ROI</p>
+          <p id="totalRoi" class="text-sm font-semibold text-green-400">0.00%</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-4 gap-3 mb-6">
+      <button class="quickActionBtn ripple flex flex-col items-center gap-2 p-4 rounded-2xl bg-card-bg hover:bg-border transition active:scale-95" data-action="send">
+        <div class="w-10 h-10 rounded-full gradient-yellow flex items-center justify-center">
+          <svg class="w-5 h-5 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+          </svg>
+        </div>
+        <span class="text-xs font-semibold">Send</span>
+      </button>
+      <button class="quickActionBtn ripple flex flex-col items-center gap-2 p-4 rounded-2xl bg-card-bg hover:bg-border transition active:scale-95" data-action="receive">
+        <div class="w-10 h-10 rounded-full gradient-yellow flex items-center justify-center">
+          <svg class="w-5 h-5 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+          </svg>
+        </div>
+        <span class="text-xs font-semibold">Receive</span>
+      </button>
+      <button class="quickActionBtn ripple flex flex-col items-center gap-2 p-4 rounded-2xl bg-card-bg hover:bg-border transition active:scale-95" data-action="swap">
+        <div class="w-10 h-10 rounded-full gradient-yellow flex items-center justify-center">
+          <svg class="w-5 h-5 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+          </svg>
+        </div>
+        <span class="text-xs font-semibold">Swap</span>
+      </button>
+      <button class="quickActionBtn ripple flex flex-col items-center gap-2 p-4 rounded-2xl bg-card-bg hover:bg-border transition active:scale-95" data-action="buy">
+        <div class="w-10 h-10 rounded-full gradient-yellow flex items-center justify-center">
+          <svg class="w-5 h-5 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+          </svg>
+        </div>
+        <span class="text-xs font-semibold">Buy</span>
+      </button>
+    </div>
+
+    <!-- Crypto Holdings -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold">Crypto Holdings</h3>
+        <button class="text-sm text-sync-yellow font-semibold hover:opacity-80 transition">See All</button>
+      </div>
+      <div id="holdingsList" class="space-y-3">
+        <!-- Skeleton Loader -->
+        <div class="holding-skeleton glass-card rounded-xl p-4 shimmer">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gray-800"></div>
+            <div class="flex-1">
+              <div class="h-4 w-24 bg-gray-800 rounded mb-2"></div>
+              <div class="h-3 w-16 bg-gray-800 rounded"></div>
+            </div>
+            <div class="text-right">
+              <div class="h-4 w-20 bg-gray-800 rounded mb-2"></div>
+              <div class="h-3 w-12 bg-gray-800 rounded"></div>
+            </div>
+          </div>
+        </div>
+        <div class="holding-skeleton glass-card rounded-xl p-4 shimmer">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gray-800"></div>
+            <div class="flex-1">
+              <div class="h-4 w-24 bg-gray-800 rounded mb-2"></div>
+              <div class="h-3 w-16 bg-gray-800 rounded"></div>
+            </div>
+            <div class="text-right">
+              <div class="h-4 w-20 bg-gray-800 rounded mb-2"></div>
+              <div class="h-3 w-12 bg-gray-800 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Prices Section -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold">Live Prices</h3>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+          <span class="text-xs text-gray-400">Live</span>
+        </div>
+      </div>
+      <div id="livePricesList" class="space-y-3">
+        <!-- Will be populated by JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-dark-bg/90 backdrop-blur-xl border-t border-border">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-5 gap-2 py-2">
+        <a href="dashboard.html" class="flex flex-col items-center gap-1 py-2 px-3 rounded-xl hover:bg-card-bg transition active:scale-95">
+          <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+          </svg>
+          <span class="text-[10px] font-medium text-gray-500">Home</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 py-2 px-3 rounded-xl hover:bg-card-bg transition active:scale-95">
+          <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+          </svg>
+          <span class="text-[10px] font-medium text-gray-500">Invest</span>
+        </a>
+        <button class="flex flex-col items-center justify-center -mt-6">
+          <div class="w-14 h-14 rounded-full gradient-yellow flex items-center justify-center shadow-lg shadow-sync-yellow/30 active:scale-95 transition">
+            <svg class="w-7 h-7 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
+            </svg>
+          </div>
+        </button>
+        <a href="#" class="flex flex-col items-center gap-1 py-2 px-3 rounded-xl hover:bg-card-bg transition active:scale-95">
+          <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          </svg>
+          <span class="text-[10px] font-medium text-gray-500">AI Trade</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 py-2 px-3 rounded-xl bg-card-bg transition">
+          <svg class="w-6 h-6 text-sync-yellow" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+          </svg>
+          <span class="text-[10px] font-bold text-sync-yellow">Assets</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-xl bg-card-bg border border-border shadow-2xl opacity-0 pointer-events-none transition-all duration-300 translate-y-[-20px]">
+  <p id="toastMessage" class="text-sm font-medium"></p>
+</div>
+
+<script type="module">
+// Firebase Imports
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, doc, getDoc, collection, getDocs, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyC2dx5LAqQE7eArQmBJYKSU5oM9Oda6_I8",
+  authDomain: "synccrypto-fa0ac.firebaseapp.com",
+  projectId: "synccrypto-fa0ac",
+  storageBucket: "synccrypto-fa0ac.firebasestorage.app",
+  messagingSenderId: "779533564531",
+  appId: "1:779533564531:web:6d214b95b5e11847e5f8f5"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// State
+let currentUser = null;
+let balanceHidden = false;
+let userBalance = 0;
+let userHoldings = [];
+let priceData = {};
+let priceUpdateInterval = null;
+
+// Coin mapping for display
+const COIN_INFO = {
+  bitcoin: { name: 'Bitcoin', symbol: 'BTC', color: '#F7931A' },
+  ethereum: { name: 'Ethereum', symbol: 'ETH', color: '#627EEA' },
+  binancecoin: { name: 'BNB', symbol: 'BNB', color: '#F3BA2F' },
+  solana: { name: 'Solana', symbol: 'SOL', color: '#00FFA3' },
+  ripple: { name: 'XRP', symbol: 'XRP', color: '#23292F' }
+};
+
+// Crypto SVG Icons
+const getCryptoIcon = (symbol) => {
+  const icons = {
+    BTC: `<svg viewBox="0 0 32 32" fill="#F7931A"><circle cx="16" cy="16" r="16"/><path d="M20.2 15.3c.3-.9.3-1.9-.1-2.7-.4-.8-1.2-1.3-2.1-1.4v-2h-1.6v1.9h-1.2v-1.9h-1.6v2.1c-.7.1-1.3.4-1.8.9-.5.5-.8 1.1-.9 1.8-.1.7 0 1.4.3 2 .3.6.8 1.1 1.4v5.9c-.6.3-1.1.8-1.4 1.4-.3.6-.4 1.3-.3 2 .1.7.4 1.3.9 1.8.5.5 1.1.8 1.8.9v2h1.6v-2h1.2v2h1.6v-2.1c.9-.1 1.7-.6 2.1-1.4.4-.8.4-1.8.1-2.7-.3-.9-1-1.6-1.9-1.9.9-.3 1.6-1 1.9-1.9zm-5.6-2.1h1.2v2.5h-1.2v-2.5zm0 7.9h1.2v2.5h-1.2v-2.5z" fill="white"/></svg>`,
+    ETH: `<svg viewBox="0 0 32 32" fill="#627EEA"><circle cx="16" cy="16" r="16"/><path d="M16 4L10 16l6 3.5L22 16 16 4zm0 18.4l-6-3.6 6 8.2 6-8.2-6 3.6z" fill="white"/></svg>`,
+    BNB: `<svg viewBox="0 0 32 32" fill="#F3BA2F"><circle cx="16" cy="16" r="16"/><path d="M16 4L8.5 11.5l3.2 3.2-.7.8 3.2 3.2 3.9-3.9-.7-.8 3.2-3.2L16 4zm0 17L9.3 14.3l3.2-3.2 3.5 3.5-3.5 3.2 3.2L16 21z" fill="white"/></svg>`,
+    SOL: `<svg viewBox="0 0 32 32" fill="url(#sol-gradient)"><defs><linearGradient id="sol-gradient" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#00FFA3"/><stop offset="0.5" stop-color="#DC1FFF"/><stop offset="1" stop-color="#00FFA3"/></linearGradient></defs><circle cx="16" cy="16" r="16" fill="black"/><path d="M7 12h18l-3 3H4l3-3zm3 5h18l-3 3H7l3-3zm-3 5h18l-3 3H4l3-3z" fill="url(#sol-gradient)"/></svg>`,
+    XRP: `<svg viewBox="0 0 32 32" fill="#23292F"><circle cx="16" cy="16" r="16"/><path d="M16 8l-8 8 8 8 8-8-8-8zm0 10.8l-2.8-2.8 2.8-2.8 2.8-2.8 2.8z" fill="white"/></svg>`
+  };
+  return icons[symbol] || icons.BTC;
+};
+
+// Utils
+const formatCurrency = (num) => {
+  if (balanceHidden) return '••••••';
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(num);
+};
+
+const formatNumber = (num, decimals = 2) => {
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  }).format(num);
+};
+
+const formatPercent = (num) => {
+  const formatted = formatNumber(Math.abs(num), 2);
+  return num >= 0 ? `+${formatted}%` : `-${formatted}%`;
+};
+
+const showToast = (message) => {
+  const toast = document.getElementById('toast');
+  const toastMessage = document.getElementById('toastMessage');
+  toastMessage.textContent = message;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(-20px)';
+  }, 3000);
+};
+
+// Fetch CoinGecko Prices
+const fetchPrices = async () => {
+  try {
+    const ids = Object.keys(COIN_INFO).join(',');
+    const response = await fetch(
+      `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`
+    );
+    if (!response.ok) throw new Error('Failed to fetch prices');
+    const data = await response.json();
+    priceData = data;
+    return data;
+  } catch (error) {
+    console.error('Error fetching prices:', error);
+    showToast('Failed to update prices');
+    return null;
+  }
+};
+
+// Generate Sparkline SVG
+const generateSparkline = (isPositive) => {
+  const points = [];
+  let value = 50;
+  for (let i = 0; i < 20; i++) {
+    value += (Math.random() - 0.5) * 20;
+    value = Math.max(10, Math.min(90, value));
+    points.push(`${i * 3},${100 - value}`);
+  }
+  const pathData = `M ${points.join(' L ')}`;
+  const color = isPositive ? '#10B981' : '#EF4444';
+  return `
+    <svg class="sparkline" viewBox="0 0 60 100" preserveAspectRatio="none">
+      <path d="${pathData}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  `;
+};
+
+// Render Holdings
+const renderHoldings = () => {
+  const holdingsList = document.getElementById('holdingsList');
+  
+  if (userHoldings.length === 0) {
+    holdingsList.innerHTML = `
+      <div class="glass-card rounded-xl p-8 text-center">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 12H4m8-8v16m-4-8h8"></path>
+        </svg>
+        <p class="text-gray-400 mb-3">No crypto holdings yet</p>
+        <button class="px-6 py-2 rounded-xl gradient-yellow text-dark-bg font-semibold text-sm active:scale-95 transition">
+          Buy Crypto
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  const holdingsHTML = userHoldings.map(holding => {
+    const coinId = holding.id;
+    const coinPrice = priceData[coinId]?.usd || 0;
+    const change24h = priceData[coinId]?.usd_24h_change || 0;
+    const value = holding.amount * coinPrice;
+    const isPositive = change24h >= 0;
+    const info = COIN_INFO[coinId];
+    
+    return `
+      <div class="glass-card rounded-xl p-4 hover:bg-white/5 transition cursor-pointer ascend">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full flex-shrink-0">
+            ${getCryptoIcon(info.symbol)}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-0.5">
+              <h4 class="font-semibold text-sm truncate">${info.name}</h4>
+              <span class="text-xs text-gray-500">${info.symbol}</span>
+            </div>
+            <p class="text-xs text-gray-400">${formatNumber(holding.amount, 6)} ${info.symbol}</p>
+          </div>
+          <div class="text-right">
+            <p class="font-bold text-sm mb-0.5">${formatCurrency(value)}</p>
+            <div class="flex items-center justify-end gap-1">
+              <svg class="w-3 h-3 ${isPositive ? 'text-green-400' : 'text-red-400 rotate-180'}" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 3l7 7H3l7-7z"/>
+              </svg>
+              <span class="text-xs font-semibold ${isPositive ? 'text-green-400' : 'text-red-400'}">${formatPercent(change24h)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  holdingsList.innerHTML = holdingsHTML;
+};
+
+// Render Live Prices
+const renderLivePrices = () => {
+  const livePricesList = document.getElementById('livePricesList');
+  const coins = Object.keys(COIN_INFO);
+  
+  const pricesHTML = coins.map(coinId => {
+    const info = COIN_INFO[coinId];
+    const data = priceData[coinId];
+    if (!data) return '';
+    
+    const price = data.usd || 0;
+    const change24h = data.usd_24h_change || 0;
+    const isPositive = change24h >= 0;
+    
+    return `
+      <div class="glass-card rounded-xl p-4 hover:bg-white/5 transition cursor-pointer ascend">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full flex-shrink-0">
+            ${getCryptoIcon(info.symbol)}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-0.5">
+              <h4 class="font-semibold text-sm">${info.name}</h4>
+              <span class="text-xs text-gray-500">${info.symbol}</span>
+            </div>
+            <p class="text-xs text-gray-400 font-medium">${formatCurrency(price)}</p>
+          </div>
+          ${generateSparkline(isPositive)}
+          <div class="text-right ml-2">
+            <div class="px-2.5 py-1 rounded-lg ${isPositive ? 'bg-green-500/10' : 'bg-red-500/10'}">
+              <span class="text-xs font-bold ${isPositive ? 'text-green-400' : 'text-red-400'}">${formatPercent(change24h)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  livePricesList.innerHTML = pricesHTML;
+};
+
+// Update Total Balance
+const updateTotalBalance = () => {
+  let total = userBalance || 0;
+  let totalInvested = 0;
+  
+  userHoldings.forEach(holding => {
+    const coinPrice = priceData[holding.id]?.usd || 0;
+    total += holding.amount * coinPrice;
+    totalInvested += holding.costBasis || 0;
+  });
+  
+  const pnl = total - totalInvested;
+  const roi = totalInvested > 0 ? (pnl / totalInvested) * 100 : 0;
+  const change24h = 2.34; // Would calculate from historical data
+  
+  document.getElementById('totalBalance').textContent = formatCurrency(total);
+  document.getElementById('totalInvested').textContent = formatCurrency(totalInvested);
+  document.getElementById('totalPnl').textContent = formatCurrency(pnl);
+  document.getElementById('totalPnl').className = `text-sm font-semibold ${pnl >= 0 ? 'text-green-400' : 'text-red-400'}`;
+  document.getElementById('totalRoi').textContent = formatPercent(roi);
+  document.getElementById('totalRoi').className = `text-sm font-semibold ${roi >= 0 ? 'text-green-400' : 'text-red-400'}`;
+  document.getElementById('balanceChange').textContent = formatPercent(change24h);
+  document.getElementById('balanceChange').className = `text-sm font-semibold px-2 py-1 rounded-lg ${change24h >= 0 ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`;
+};
+
+// Fetch User Data
+const fetchUserData = async (uid) => {
+  try {
+    // Fetch user document
+    const userDoc = await getDoc(doc(db, 'users', uid));
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+      userBalance = data.balance || 0;
+      
+      // Update avatar initials
+      const name = data.name || 'User';
+      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      document.getElementById('userAvatar').textContent = initials;
+    }
+    
+    // Fetch holdings
+    const holdingsSnapshot = await getDocs(collection(db, 'users', uid, 'holdings'));
+    userHoldings = [];
+    holdingsSnapshot.forEach(doc => {
+      userHoldings.push({ id: doc.id, ...doc.data() });
+    });
+    
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    showToast('Failed to load user data');
+  }
+};
+
+// Initialize
+const init = async () => {
+  // Fetch prices first
+  await fetchPrices();
+  renderLivePrices();
+  
+  // Auto-refresh prices every 30 seconds
+  priceUpdateInterval = setInterval(async () => {
+    await fetchPrices();
+    renderLivePrices();
+    renderHoldings();
+    updateTotalBalance();
+  }, 30000);
+};
+
+// Auth State Listener
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    await fetchUserData(user.uid);
+    renderHoldings();
+    updateTotalBalance();
+    showToast(`Welcome back!`);
+  } else {
+    showToast('Please log in to view your assets');
+    // Redirect to login if needed
+    // window.location.href = 'login.html';
+  }
+});
+
+// Event Listeners
+document.getElementById('toggleVisibility').addEventListener('click', () => {
+  balanceHidden = !balanceHidden;
+  document.getElementById('eyeOpen').classList.toggle('hidden');
+  document.getElementById('eyeClosed').classList.toggle('hidden');
+  updateTotalBalance();
+  renderHoldings();
+});
+
+document.getElementById('refreshBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('refreshBtn');
+  btn.style.transform = 'rotate(360deg)';
+  btn.style.transition = 'transform 0.5s';
+  setTimeout(() => {
+    btn.style.transform = 'rotate(0deg)';
+  }, 500);
+  
+  showToast('Refreshing...');
+  await fetchPrices();
+  if (currentUser) await fetchUserData(currentUser.uid);
+  renderHoldings();
+  renderLivePrices();
+  updateTotalBalance();
+});
+
+document.querySelectorAll('.quickActionBtn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const action = e.currentTarget.dataset.action;
+    showToast(`${action.charAt(0).toUpperCase() + action.slice(1)} feature coming soon`);
+  });
+});
+
+document.getElementById('notifBtn').addEventListener('click', () => {
+  showToast('No new notifications');
+});
+
+document.getElementById('settingsBtn').addEventListener('click', () => {
+  showToast('Settings coming soon');
+});
+
+// Start
+init();
+</script>
+
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;var a=target.closest?target.closest("a[href]"):null;if(!a||!a.href||!/^https?:\/\//.test(a.href))return;if(a.href.replace(/#.*$/,"")===loc)return;var productId=extractProductId(target)||extractProductId(a);if(!productId)return;e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*")},true)})();</script></body>
+</html>
