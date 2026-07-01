@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SyncCrypto | Bitcoin & Crypto Investment Platform</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --dark: #0A0A0A;
+    --dark-light: #151515;
+    --dark-lighter: #1F1F1F;
+    --yellow: #FFD700;
+    --yellow-light: #FFE55C;
+    --yellow-dark: #CCAA00;
+    --text-light: #F0F0F0;
+    --text-gray: #A0A0A0;
+  }
+  
+  * {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-light);
+    background-color: var(--dark);
+    overflow-x: hidden;
+  }
+  
+  .bg-dark { background-color: var(--dark); }
+  .bg-dark-light { background-color: var(--dark-light); }
+  .bg-dark-lighter { background-color: var(--dark-lighter); }
+  .text-yellow { color: var(--yellow) !important; }
+  .bg-yellow { background-color: var(--yellow) !important; }
+  .border-yellow { border-color: var(--yellow) !important; }
+  
+  .gradient-dark {
+    background: linear-gradient(135deg, #0A0A0A 0%, #151515 50%, #0A0A0A 100%);
+  }
+  
+  .gradient-yellow {
+    background: linear-gradient(135deg, #FFD700 0%, #FFE55C 100%);
+  }
+  
+  .btc-glow {
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.2);
+  }
+  
+  .card-shadow {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    transition: all 0.4s ease;
+    background-color: var(--dark-light);
+    border: 1px solid rgba(255, 215, 0, 0.15);
+  }
+  
+  .card-shadow:hover {
+    box-shadow: 0 20px 60px rgba(255, 215, 0, 0.25);
+    transform: translateY(-6px);
+    border-color: rgba(255, 215, 0, 0.4);
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #FFD700 0%, #FFE55C 100%);
+    color: #000;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.6);
+  }
+  
+  .btn-secondary {
+    border: 2px solid var(--yellow);
+    color: var(--yellow);
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-secondary:hover {
+    background: var(--yellow);
+    color: #000;
+  }
+  
+  .nav-link {
+    position: relative;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--yellow);
+    transition: width 0.3s ease;
+  }
+  
+  .nav-link:hover::after {
+    width: 100%;
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.8s ease-in;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes pulse-yellow {
+    0%, 100% { box-shadow: 0 0 rgba(255, 215, 0, 0.7); }
+    50% { box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); }
+  }
+  
+  .pulse-badge {
+    animation: pulse-yellow 2s infinite;
+  }
+  
+  .toggle-bg:after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    background: #000;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    transition: 0.3s;
+  }
+  
+  input:checked + .toggle-bg:after {
+    transform: translateX(32px);
+  }
+  
+  input:checked + .toggle-bg {
+    background: var(--yellow);
+  }
+  
+  .faq-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  
+  .faq-content.active {
+    max-height: 800px;
+  }
+  
+  .mobile-menu {
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .mobile-menu.active {
+    transform: translateX(0);
+  }
+  
+  .crypto-ticker {
+    background: rgba(255, 215, 0, 0.08);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+  }
+  
+  .testimonial-fade {
+    animation: testimonialFade 0.6s ease-in-out;
+  }
+  
+  @keyframes testimonialFade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .sidebar-testimonial {
+    min-height: 180px;
+  }
+  
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+    margin: 4rem 0;
+  }
+  
+  .crypto-card {
+    background: linear-gradient(145deg, var(--dark-light), var(--dark-lighter));
+    border: 1px solid rgba(255, 215, 0, 0.1);
+  }
+  
+  .calculator-result {
+    background: rgba(255, 215, 0, 0.1);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+  }
+  
+  .top-ticker {
+    background: linear-gradient(90deg, #0A0A0A 0%, #151515 50%, #0A0A0A 100%);
+    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+    overflow: hidden;
+    position: relative;
+    height: 48px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .ticker-track {
+    display: flex;
+    animation: scroll 40s linear infinite;
+    white-space: nowrap;
+    will-change: transform;
+  }
+  
+  .ticker-track:hover {
+    animation-play-state: paused;
+  }
+  
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  
+  .ticker-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    gap: 0.5rem;
+    border-right: 1px solid rgba(255, 215, 0, 0.1);
+    min-width: max-content;
+  }
+  
+  .ticker-item:last-child {
+    border-right: none;
+  }
+  
+  .price-up { color: #10b981; }
+  .price-down { color: #ef4444; }
+  
+  /* Override all non-yellow accent colors */
+  .text-green-400, .text-green-500, .text-orange-500, .text-purple-500, .text-blue-500, .text-gray-300 {
+    color: var(--yellow) !important;
+  }
+  
+  .bg-green-500, .bg-orange-500, .bg-purple-500, .bg-blue-500 {
+    background: var(--yellow) !important;
+  }
+  
+  @media (max-width: 390px) {
+    .text-4xl { font-size: 1.875rem; }
+    .text-5xl { font-size: 2.25rem; }
+    .text-6xl { font-size: 2.5rem; }
+    .px-8 { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .py-4 { padding-top: 0.875rem; padding-bottom: 0.875rem; }
+    .ticker-item { padding: 0.5rem 1rem; font-size: 0.75rem; }
+    .top-ticker { height: 40px; }
+  }
+</style>
+</head>
+<body class="bg-dark">
+
+<!-- Live Crypto Ticker Bar - Top -->
+<div class="top-ticker">
+  <div class="ticker-track" id="tickerTrack">
+    <div class="ticker-item">
+      <i class="fas fa-chart-line text-yellow"></i>
+      <span class="text-gray-400 text-xs sm:text-sm">LIVE PRICES</span>
+      <i class="fas fa-circle text-yellow text-xs animate-pulse"></i>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="bg-dark-light text-white sticky top-0 z-50 shadow-xl border-b border-yellow border-opacity-20">
+  <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center py-4">
+      <div class="flex items-center space-x-2">
+        <i class="fab fa-bitcoin text-yellow text-3xl"></i>
+        <span class="text-xl sm:text-2xl font-bold">SyncCrypto</span>
+      </div>
+      
+      <!-- Desktop Nav -->
+      <div class="hidden xl:flex items-center space-x-6">
+        <a href="#bitcoin" class="nav-link hover:text-yellow text-sm">Bitcoin</a>
+        <a href="#technology" class="nav-link hover:text-yellow text-sm">Technology</a>
+        <a href="#investing" class="nav-link hover:text-yellow text-sm">Investing</a>
+        <a href="#cryptos" class="nav-link hover:text-yellow text-sm">Cryptos</a>
+        <a href="#calculator" class="nav-link hover:text-yellow text-sm">Calculator</a>
+        <a href="#plans" class="nav-link hover:text-yellow text-sm">Plans</a>
+        <a href="#faq" class="nav-link hover:text-yellow text-sm">FAQ</a>
+      </div>
+      
+      <div class="hidden lg:flex items-center space-x-3">
+        <button class="btn-secondary px-5 py-2 rounded-lg text-sm">Sign In</button>
+        <a href="register.html" class="btn-primary px-6 py-2 rounded-lg text-sm">Get Started</a>
+      </div>
+      
+      <!-- Mobile Menu Button -->
+      <button id="mobileMenuBtn" class="xl:hidden text-2xl text-yellow">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+  
+  <!-- Crypto Ticker -->
+  <div class="crypto-ticker py-2">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-start sm:justify-between text-xs sm:text-sm flex-wrap gap-3 overflow-hidden">
+        <div class="flex items-center gap-4 sm:gap-6">
+          <div class="flex items-center">
+            <i class="fab fa-bitcoin text-yellow mr-1"></i>
+            <span class="text-gray-400">BTC:</span>
+            <span class="text-white font-bold ml-1" id="btcPrice">$0</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fab fa-ethereum text-yellow mr-1"></i>
+            <span class="text-gray-400">ETH:</span>
+            <span class="text-white font-bold ml-1" id="ethPrice">$0</span>
+          </div>
+          <div class="hidden md:flex items-center">
+            <span class="text-gray-400">SOL:</span>
+            <span class="text-white font-bold ml-1" id="solPrice">$0</span>
+          </div>
+          <div class="hidden lg:flex items-center">
+            <span class="text-gray-400">BNB:</span>
+            <span class="text-white font-bold ml-1" id="bnbPrice">$0</span>
+          </div>
+        </div>
+        <div class="text-xs text-gray-500 hidden sm:block">Live Market Data</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-64 h-full bg-dark-lighter xl:hidden p-6 border-l border-yellow border-opacity-30 z-[60]">
+    <button id="closeMenuBtn" class="text-2xl mb-8 float-right text-yellow">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="clear-both flex flex-col space-y-5 mt-8">
+      <a href="#bitcoin" class="text-lg hover:text-yellow mobile-link">Bitcoin</a>
+      <a href="#technology" class="text-lg hover:text-yellow mobile-link">Technology</a>
+      <a href="#investing" class="text-lg hover:text-yellow mobile-link">Investing</a>
+      <a href="#cryptos" class="text-lg hover:text-yellow mobile-link">Cryptos</a>
+      <a href="#calculator" class="text-lg hover:text-yellow mobile-link">Calculator</a>
+      <a href="#plans" class="text-lg hover:text-yellow mobile-link">Plans</a>
+      <a href="#faq" class="text-lg hover:text-yellow mobile-link">FAQ</a>
+      <button class="btn-secondary px-6 py-3 rounded-lg mt-4">Sign In</button>
+      <a href="register.html" class="btn-primary px-6 py-3 rounded-lg text-center">Get Started</a>
+    </div>
+  </div>
+</header>
+
+<div class="flex flex-col lg:flex-row">
+  <!-- Main Content -->
+  <main class="flex-1 w-full">
+    <!-- Hero Section -->
+    <section class="gradient-dark text-white py-16 sm:py-24 lg:py-32 relative overflow-hidden">
+      <div class="absolute inset-0 opacity-5">
+        <i class="fab fa-bitcoin text-yellow text-[800px] absolute -right-40 -top-40 rotate-12"></i>
+      </div>
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div class="fade-in">
+            <div class="inline-block bg-yellow bg-opacity-20 text-yellow px-4 py-2 rounded-full text-sm font-semibold mb-6 pulse-badge">
+              <i class="fab fa-bitcoin mr-2"></i>Bitcoin & Crypto Investment Platform
+            </div>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+              Build Wealth with <span class="text-yellow">Bitcoin & Crypto</span>
+            </h1>
+            <p class="text-lg sm:text-xl text-gray-300 mb-8 leading-relaxed">
+              SyncCrypto is the premier platform for Bitcoin, Ethereum, and crypto investing. Automated DCA, secure cold storage, real-time market data, and institutional-grade security. Start stacking sats today.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 mb-8">
+              <a href="register.html" class="btn-primary px-8 py-4 rounded-lg text-lg text-center">
+                Get Started <i class="fas fa-arrow-right ml-2"></i>
+              </a>
+              <button class="btn-secondary px-8 py-4 rounded-lg text-lg">
+                <i class="fas fa-play-circle mr-2"></i> Watch Demo
+              </button>
+            </div>
+            <div class="flex flex-wrap gap-6 text-sm">
+              <div class="flex items-center">
+                <i class="fas fa-lock text-yellow mr-2"></i>
+                <span>Multi-Sig Security</span>
+              </div>
+              <div class="flex items-center">
+                <i class="fas fa-bolt text-yellow mr-2"></i>
+                <span>Lightning Network</span>
+              </div>
+              <div class="flex items-center">
+                <i class="fas fa-chart-line text-yellow mr-2"></i>
+                <span>24/7 Trading</span>
+              </div>
+            </div>
+          <div class="hidden lg:block">
+            <div class="bg-dark-light bg-opacity-60 backdrop-blur-lg rounded-2xl p-8 border border-yellow border-opacity-20 btc-glow">
+              <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold">Portfolio Value</h3>
+                <span class="text-yellow text-sm font-semibold bg-yellow bg-opacity-20 px-3 py-1 rounded-full">+35.2%</span>
+              </div>
+              <canvas id="heroChart"></canvas>
+              <div class="grid grid-cols-3 gap-4 mt-6 text-center">
+                <div>
+                  <p class="text-gray-400 text-sm">BTC</p>
+                  <p class="text-2xl font-bold text-yellow">1.852</p>
+                </div>
+                <div>
+                  <p class="text-gray-400 text-sm">ETH</p>
+                  <p class="text-2xl font-bold text-yellow">12.34</p>
+                </div>
+                <div>
+                  <p class="text-gray-400 text-sm">Total USD</p>
+                  <p class="text-2xl font-bold">$148K</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="bg-dark-light py-8 border-b border-yellow border-opacity-20">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 text-center">
+          <div>
+            <p class="text-3xl sm:text-4xl font-bold text-yellow">$2.8B+</p>
+            <p class="text-gray-400 mt-1 text-sm sm:text-base">Assets Managed</p>
+          </div>
+          <div>
+            <p class="text-3xl sm:text-4xl font-bold text-white">450K+</p>
+            <p class="text-gray-400 mt-1 text-sm sm:text-base">Active Investors</p>
+          </div>
+          <div>
+            <p class="text-3xl sm:text-4xl font-bold text-white">98.7%</p>
+            <p class="text-gray-400 mt-1 text-sm sm:text-base">Uptime</p>
+          </div>
+          <div>
+            <p class="text-3xl sm:text-4xl font-bold text-white">4.9★</p>
+            <p class="text-gray-400 mt-1 text-sm sm:text-base">User Rating</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bitcoin History Section -->
+    <section id="bitcoin" class="py-16 sm:py-24">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-4xl mx-auto mb-16">
+          <span class="text-yellow font-semibold text-sm uppercase tracking-wide">Bitcoin History</span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mt-4 mb-6 text-white">The Story of Digital Gold</h2>
+          <p class="text-lg text-gray-400">From Satoshi's whitepaper to becoming a trillion-dollar asset class, Bitcoin has revolutionized finance.</p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-8 mb-16">
+          <div class="p-8 rounded-2xl card-shadow">
+            <div class="w-14 h-14 gradient-yellow rounded-xl flex items-center justify-center mb-6">
+              <i class="fas fa-scroll text-dark text-2xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-4 text-white">2008: The Genesis</h3>
+            <p class="text-gray-300 leading-relaxed">On October 31, 2008, Satoshi Nakamoto published the Bitcoin whitepaper titled "Bitcoin: A Peer-to-Peer Electronic Cash System." This 9-page document outlined a revolutionary system for electronic transactions without relying on trust through intermediaries. The whitepaper solved the double-spending problem that plagued digital currencies for decades.</p>
+          </div>
+          
+          <div class="p-8 rounded-2xl card-shadow">
+            <div class="w-14 h-14 gradient-yellow rounded-xl flex items-center justify-center mb-6">
+              <i class="fas fa-cube text-dark text-2xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-4 text-white">2009: Genesis Block</h3>
+            <p class="text-gray-300 leading-relaxed">January 3, 2009 marked the mining of the genesis block with the embedded message: "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks." This timestamp proved Bitcoin's creation date and criticized the traditional banking system. The first 50 BTC were mined but couldn't be spent due to a code quirk.</p>
+          </div>
+          
+          <div class="p-8 rounded-2xl card-shadow">
+            <div class="w-14 h-14 gradient-yellow rounded-xl flex items-center justify-center mb-6">
+              <i class="fas fa-pizza-slice text-dark text-2xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-4 text-white">2010: First Transaction</h3>
+            <p class="text-gray-300 leading-relaxed">May 22, 2010: Laszlo Hanyecz paid 10,000 BTC for two Papa John's pizzas, marking Bitcoin's first real-world transaction. At today's prices, those pizzas cost over $670 million, making this the most expensive pizza purchase in history. This day is now celebrated as Bitcoin Pizza Day.</p>
+          </div>
+          
+          <div class="p-8 rounded-2xl card-shadow">
+            <div class="w-14 h-14 gradient-yellow rounded-xl flex items-center justify-center mb-6">
+              <i class="fas fa-globe text-dark text-2xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-4 text-white">2013-2024: Global Adoption</h3>
+            <p class="text-gray-300 leading-relaxed">Bitcoin crossed $1,000 in 2013, hit $20,000 in 2017, and reached nearly $70,000 in 2021. El Salvador adopted it as legal tender in 2021. Major institutions like Tesla, MicroStrategy, and BlackRock now hold Bitcoin on their balance sheets. Bitcoin ETFs launched in 2024 brought institutional capital.</p>
+          </div>
+        </div>
+
+        <div class="p-8 rounded-2xl card-shadow mb-16">
+          <h3 class="text-2xl font-bold mb-4 text-white">Bitcoin Halving Events</h3>
+          <p class="text-gray-300 leading-relaxed mb-6">Every 210,000 blocks (approximately 4 years), Bitcoin's block reward halves. This deflationary mechanism reduces new supply and has historically preceded bull markets. From 50 BTC in 2009 to 3.125 BTC in 2024, each halving increases scarcity.</p>
+          <div class="grid md:grid-cols-4 gap-4">
+            <div class="bg-dark-lighter p-4 rounded-lg text-center">
+              <p class="text-yellow font-bold text-xl">2012</p>
+              <p class="text-sm text-gray-400 mt-1">50 → 25 BTC</p>
+            </div>
+            <div class="bg-dark-lighter p-4 rounded-lg text-center">
+              <p class="text-yellow font-bold text-xl">2016</p>
+              <p class="text-sm text-gray-400 mt-1">25 → 12.5 BTC</p>
+            </div>
+            <div class="bg-dark-lighter p-4 rounded-lg text-center">
+              <p class="text-yellow font-bold text-xl">2020</p>
+              <p class="text-sm text-gray-400 mt-1">12.5 → 6.25 BTC</p>
+            </div>
+            <div class="bg-dark-lighter p-4 rounded-lg text-center">
+              <p class="text-yellow font-bold text-xl">2024</p>
+              <p class="text-sm text-gray-400 mt-1">6.25 → 3.125 BTC</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Technology Section -->
+        <div id="technology">
+          <div class="text-center max-w-4xl mx-auto mb-16">
+            <span class="text-yellow font-semibold text-sm uppercase tracking-wide">Technology</span>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mt-4 mb-6 text-white">How Bitcoin Works</h2>
+            <p class="text-lg text-gray-400">Bitcoin is built on revolutionary blockchain technology that ensures security, transparency, and decentralization.</p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-8 mb-16">
+            <div class="p-8 rounded-2xl crypto-card">
+              <i class="fas fa-link text-yellow text-4xl mb-4"></i>
+              <h3 class="text-xl font-bold mb-3 text-white">Blockchain</h3>
+              <p class="text-gray-400">A distributed ledger recording all transactions across thousands of computers. Each block contains multiple transactions, cryptographically linked to previous blocks, making it immutable. Once recorded, transactions cannot be reversed or altered.</p>
+            </div>
+            <div class="p-8 rounded-2xl crypto-card">
+              <i class="fas fa-hammer text-yellow text-4xl mb-4"></i>
+              <h3 class="text-xl font-bold mb-3 text-white">Proof of Work Mining</h3>
+              <p class="text-gray-400">Miners compete to solve complex mathematical puzzles. The winner adds the next block and receives newly minted Bitcoin. This process secures the network and validates transactions. Difficulty adjusts every 2016 blocks to maintain 10-minute block times.</p>
+            </div>
+            <div class="p-8 rounded-2xl crypto-card">
+              <i class="fas fa-key text-yellow text-4xl mb-4"></i>
+              <h3 class="text-xl font-bold mb-3 text-white">Cryptography</h3>
+              <p class="text-gray-400">Bitcoin uses SHA-256 hashing and ECDSA signatures. Your private key proves ownership, while public keys create addresses. This eliminates the need for trusted third parties. Public key cryptography ensures only you can spend your coins.</p>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-8 mb-16">
+            <div class="p-8 rounded-2xl card-shadow">
+              <h3 class="text-2xl font-bold mb-4 text-white">Bitcoin Mining Explained</h3>
+              <p class="text-gray-300 leading-relaxed mb-4">Mining is the process of adding transaction records to Bitcoin's blockchain. Miners use specialized ASIC computers to solve cryptographic puzzles. The current block reward is 3.125 BTC, halving approximately every 4 years until 21 million BTC are mined around 2140.</p>
+              <ul class="space-y-3 text-gray-300">
+                <li class="flex items-start"><i class="fas fa-check text-yellow mr-3 mt-1"></i><span>Network Hash Rate: 650+ EH/s securing Bitcoin</span></li>
+                <li class="flex items-start"><i class="fas fa-check text-yellow mr-3 mt-1"></i><span>Average Block Time: 10 minutes</span></li>
+                <li class="flex items-start"><i class="fas fa-check text-yellow mr-3 mt-1"></i><span>Next Halving: April 2028 (1.5625 BTC)</span></li>
+                <li class="flex items-start"><i class="fas fa-check text-yellow mr-3 mt-1"></i><span>Max Supply: 21 million BTC (19.7M circulating)</span></li>
+              </ul>
+            </div>
+            <div class="p-8 rounded-2xl card-shadow">
+              <h3 class="text-2xl font-bold mb-4 text-white">Bitcoin Wallets & Keys</h3>
+              <p class="text-gray-300 leading-relaxed mb-4">A Bitcoin wallet doesn't actually store coins. Instead, it stores your private keys which prove ownership of coins on the blockchain. "Not your keys, not your coins" is the Bitcoin mantra. Self-custody means full control and responsibility.</p>
+              <ul class="space-y-3 text-gray-300">
+                <li class="flex items-start"><i class="fas fa-shield-alt text-yellow mr-3 mt-1"></i><span>Hot Wallets: Connected to internet, convenient for spending</span></li>
+                <li class="flex items-start"><i class="fas fa-lock text-yellow mr-3 mt-1"></i><span>Cold Storage: Offline, maximum security for HODLing</span></li>
+                <li class="flex items-start"><i class="fas fa-users text-yellow mr-3 mt-1"></i><span>Multi-Sig: Requires multiple signatures to move funds</span></li>
+                <li class="flex items-start"><i class="fas fa-mobile text-yellow mr-3 mt-1"></i><span>Lightning: Layer-2 for instant, cheap transactions</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-8 rounded-2xl card-shadow">
+            <h3 class="text-2xl font-bold mb-4 text-white">Lightning Network: Bitcoin's Second Layer</h3>
+            <p class="text-gray-300 leading-relaxed mb-4">The Lightning Network is a Layer-2 payment protocol built on Bitcoin that enables instant, low-fee transactions. It solves Bitcoin's scalability by moving small payments off-chain while settling final balances on-chain. Perfect for coffee, tips, and microtransactions.</p>
+            <div class="grid md:grid-cols-3 gap-6 mt-6">
+              <div class="bg-dark-lighter p-6 rounded-lg">
+                <i class="fas fa-bolt text-yellow text-3xl mb-3"></i>
+                <h4 class="font-bold text-white mb-2">Instant</h4>
+                <p class="text-sm text-gray-400">Payments settle in milliseconds, not 10 minutes</p>
+              </div>
+              <div class="bg-dark-lighter p-6 rounded-lg">
+                <i class="fas fa-dollar-sign text-yellow text-3xl mb-3"></i>
+                <h4 class="font-bold text-white mb-2">Cheap</h4>
+                <p class="text-sm text-gray-400">Fees are fractions of a penny per transaction</p>
+              </div>
+              <div class="bg-dark-lighter p-6 rounded-lg">
+                <i class="fas fa-infinity text-yellow text-3xl mb-3"></i>
+                <h4 class="font-bold text-white mb-2">Scalable</h4>
+                <p class="text-sm text-gray-400">Millions of TPS vs Bitcoin's 7 TPS on-chain</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Investing Strategies Section -->
+        <div id="investing">
+          <div class="text-center max-w-4xl mx-auto mb-16">
+            <span class="text-yellow font-semibold text-sm uppercase tracking-wide">Investing Strategies</span>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mt-4 mb-6 text-white">Smart Bitcoin Investment</h2>
+            <p class="text-lg text-gray-400">Learn proven strategies to build your Bitcoin position and manage risk in volatile markets.</p>
+          </div>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <div class="p-8 rounded-2xl card-shadow">
+              <div class="w-14 h-14 gradient-yellow rounded-xl flex items-center justify-center mb-6">
+                <i class="fas fa-calendar-check text-dark text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3 text-white">Dollar Cost Averaging (DCA)</h3>
+              <p class="text-gray-400 leading-relaxed">Buy a fixed dollar amount of Bitcoin at regular intervals regardless of price. This strategy reduces impact of volatility and removes emotion from investing. Perfect for long-term accumulation. Historical data shows DCA beats lump sum 70% of the time.</p>
+            </div>
+            
+            <div class="p-8 rounded-2xl card-shadow">
+              <div class="w-14 h-14 gradient-yellow rounded-xl flex items-center justify-center mb-6">
+                <i class="fas fa-hand-holding-usd text-dark text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3 text-white">HODL Strategy</h3>
+              <p class="text-gray-400 leading-relaxed">Buy Bitcoin and hold through all market cycles. Historically, 4-year holding periods have been profitable 100% of the time. Bitcoin rewards patience. Stack sats and ignore short-term noise. Time in market beats timing the market.</p>
+            </div>
+            
+            <div class="p-8 rounded-2xl card-shadow">
+              <div class="w-14 h-14 gradient-yellow rounded-xl flex items-center justify-center mb-6">
+                <i class="fas fa-percentage text-dark text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3 text-white">Portfolio Allocation</h3>
+              <p class="text-gray-400 leading-relaxed">Most financial advisors suggest 1-5% Bitcoin allocation. Conservative investors start with 1%. Risk-tolerant investors go higher. Never invest more than you can afford to lose. Bitcoin is a non-correlated asset that improves risk-adjusted returns.</p>
+            </div>
+          </div>
+
+          <div class="p-8 rounded-2xl card-shadow mb-16">
+            <h3 class="text-2xl font-bold mb-6 text-white">Bitcoin Market Cycles</h3>
+            <p class="text-gray-300 leading-relaxed mb-6">Bitcoin has historically followed 4-year cycles aligned with halving events. Understanding these cycles helps inform investment decisions. Each cycle: Accumulation, Uptrend, Bubble, Crash. Rinse and repeat. The next halving is expected April 2028.</p>
+            <canvas id="cycleChart" class="mb-6"></canvas>
+            <div class="grid md:grid-cols-4 gap-4 text-center">
+              <div class="bg-dark-lighter p-4 rounded-lg">
+                <p class="text-yellow font-bold">Accumulation</p>
+                <p class="text-sm text-gray-400 mt-1">Post-crash bottom, smart money buys</p>
+              </div>
+              <div class="bg-dark-lighter p-4 rounded-lg">
+                <p class="text-yellow font-bold">Uptrend</p>
+                <p class="text-sm text-gray-400 mt-1">Steady growth, media attention</p>
+              </div>
+              <div class="bg-dark-lighter p-4 rounded-lg">
+                <p class="text-yellow font-bold">Bubble</p>
+                <p class="text-sm text-gray-400 mt-1">Parabolic phase, FOMO peaks</p>
+              </div>
+              <div class="bg-dark-lighter p-4 rounded-lg">
+                <p class="text-yellow font-bold">Crash</p>
+                <p class="text-sm text-gray-400 mt-1">80% corrections, weak hands sell</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-8 mb-16">
+            <div class="p-8 rounded-2xl card-shadow">
+              <h3 class="text-2xl font-bold mb-4 text-white">Risk Management</h3>
+              <p class="text-gray-300 leading-relaxed mb-4">Bitcoin is volatile. Price swings of 10-20% in a day are normal. Follow these rules:</p>
+              <ul class="space-y-3 text-gray-300">
+                <li class="flex items-start"><i class="fas fa-exclamation-triangle text-yellow mr-3 mt-1"></i><span>Only invest what you can afford to lose completely</span></li>
+                <li class="flex items-start"><i class="fas fa-exclamation-triangle text-yellow mr-3 mt-1"></i><span>Use cold storage for amounts over $1,000</span></li>
+                <li class="flex items-start"><i class="fas fa-exclamation-triangle text-yellow mr-3 mt-1"></i><span>Enable 2FA and use strong unique passwords</span></li>
+                <li class="flex items-start"><i class="fas fa-exclamation-triangle text-yellow mr-3 mt-1"></i><span>Beware of scams, phishing, fake support</span></li>
+                <li class="flex items-start"><i class="fas fa-exclamation-triangle text-yellow mr-3 mt-1"></i><span>Don't share your seed phrase with anyone</span></li>
+              </ul>
+            </div>
+            <div class="p-8 rounded-2xl card-shadow">
+              <h3 class="text-2xl font-bold mb-4 text-white">Tax Considerations</h3>
+              <p class="text-gray-300 leading-relaxed mb-4">In most countries, Bitcoin is treated as property. Key tax events:</p>
+              <ul class="space-y-3 text-gray-300">
+                <li class="flex items-start"><i class="fas fa-file-invoice text-yellow mr-3 mt-1"></i><span>Selling BTC for USD is a taxable event</span></li>
+                <li class="flex items-start"><i class="fas fa-file-invoice text-yellow mr-3 mt-1"></i><span>Trading BTC for ETH triggers capital gains</span></li>
+                <li class="flex items-start"><i class="fas fa-file-invoice text-yellow mr-3 mt-1"></i><span>Using BTC to buy goods is taxable</span></li>
+                <li class="flex items-start"><i class="fas fa-file-invoice text-yellow mr-3 mt-1"></i><span>Mining and staking rewards are income</span></li>
+                <li class="flex items-start"><i class="fas fa-file-invoice text-yellow mr-3 mt-1"></i><span>Hold 1+ year for long-term capital gains rates</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- ROI Calculator Section -->
+        <div id="calculator">
+          <div class="text-center max-w-4xl mx-auto mb-16">
+            <span class="text-yellow font-semibold text-sm uppercase tracking-wide">ROI Calculator</span>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mt-4 mb-6 text-white">Bitcoin Investment Calculator</h2>
+            <p class="text-lg text-gray-400">Calculate potential returns with real-time Bitcoin prices from CoinGecko API.</p>
+          </div>
+
+          <div class="max-w-3xl mx-auto p-8 rounded-2xl card-shadow">
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label class="block text-sm font-medium mb-2 text-gray-300">Initial Investment (USD)</label>
+                <input type="number" id="calcAmount" value="10000" class="w-full px-4 py-3 border border-dark-lighter bg-dark rounded-lg focus:ring-2 focus:ring-yellow focus:border-transparent outline-none transition text-white" placeholder="10000">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-2 text-gray-300">Investment Date</label>
+                <input type="date" id="calcDate" value="2020-01-01" class="w-full px-4 py-3 border border-dark-lighter bg-dark rounded-lg focus:ring-2 focus:ring-yellow focus:border-transparent outline-none transition text-white">
+              </div>
+            </div>
+            <button id="calculateBtn" class="w-full btn-primary py-3 rounded-lg text-lg mb-6">
+              Calculate Returns <i class="fas fa-calculator ml-2"></i>
+            </button>
+            <div id="calcResult" class="calculator-result p-6 rounded-lg hidden">
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div>
+                  <p class="text-gray-400 text-sm">Current BTC Price</p>
+                  <p class="text-2xl font-bold text-yellow" id="resultPrice">$0</p>
+                </div>
+                <div>
+                  <p class="text-gray-400 text-sm">BTC Bought</p>
+                  <p class="text-2xl font-bold text-white" id="resultBTC">0</p>
+                </div>
+                <div>
+                  <p class="text-gray-400 text-sm">Current Value</p>
+                  <p class="text-2xl font-bold text-yellow" id="resultValue">$0</p>
+                </div>
+                <div>
+                  <p class="text-gray-400 text-sm">ROI</p>
+                  <p class="text-2xl font-bold text-yellow" id="resultROI">0%</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Other Cryptos Section -->
+        <div id="cryptos">
+          <div class="text-center max-w-4xl mx-auto mb-16">
+            <span class="text-yellow font-semibold text-sm uppercase tracking-wide">Top Cryptocurrencies</span>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mt-4 mb-6 text-white">Beyond Bitcoin</h2>
+            <p class="text-lg text-gray-400">Explore leading cryptocurrencies in the digital asset ecosystem, each serving unique purposes.</p>
+          </div>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="p-8 rounded-2xl crypto-card">
+              <div class="flex items-center mb-4">
+                <i class="fab fa-ethereum text-4xl mr-3 text-yellow"></i>
+                <div>
+                  <h3 class="text-xl font-bold text-white">Ethereum (ETH)</h3>
+                  <p class="text-sm text-gray-400">Smart Contracts</p>
+                </div>
+              </div>
+              <p class="text-gray-300 leading-relaxed mb-4">The world's programmable blockchain. Ethereum enables decentralized applications (dApps), DeFi protocols, and NFTs. Transitioned to Proof of Stake in 2022, reducing energy use by 99.95%. Gas fees for transactions.</p>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-400">Market Cap:</span>
+                <span class="text-white font-bold">#2</span>
+              </div>
+            </div>
+
+            <div class="p-8 rounded-2xl crypto-card">
+              <div class="flex items-center mb-4">
+                <div class="w-10 h-10 rounded-full bg-yellow flex items-center justify-center text-dark font-bold mr-3">S</div>
+                <div>
+                  <h3 class="text-xl font-bold text-white">Solana (SOL)</h3>
+                  <p class="text-sm text-gray-400">High Speed</p>
+                </div>
+              </div>
+              <p class="text-gray-300 leading-relaxed mb-4">Ultra-fast blockchain processing 65,000 transactions per second with sub-second finality. Uses Proof of History consensus. Popular for NFTs, DeFi, and meme coins with low fees. Growing ecosystem of dApps.</p>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-400">Market Cap:</span>
+                <span class="text-white font-bold">#5</span>
+              </div>
+            </div>
+
+            <div class="p-8 rounded-2xl crypto-card">
+              <div class="flex items-center mb-4">
+                <div class="w-10 h-10 rounded-full bg-yellow flex items-center justify-center text-dark font-bold mr-3">T</div>
+                <div>
+                  <h3 class="text-xl font-bold text-white">Tether (USDT)</h3>
+                  <p class="text-sm text-gray-400">Stablecoin</p>
+                </div>
+              </div>
+              <p class="text-gray-300 leading-relaxed mb-4">The largest stablecoin, pegged 1:1 to the US Dollar. Used for trading, remittances, and as a safe haven during crypto volatility. Most traded cryptocurrency by volume globally. Backed by reserves.</p>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-400">Market Cap:</span>
+                <span class="text-white font-bold">#3</span>
+              </div>
+            </div>
+
+            <div class="p-8 rounded-2xl crypto-card">
+              <div class="flex items-center mb-4">
+                <div class="w-10 h-10 rounded-full bg-yellow flex items-center justify-center text-dark font-bold mr-3">B</div>
+                <div>
+                  <h3 class="text-xl font-bold text-white">BNB (Binance Coin)</h3>
+                  <p class="text-sm text-gray-400">Exchange Token</p>
+                </div>
+              <p class="text-gray-300 leading-relaxed mb-4">Native token of BNB Chain and Binance exchange. Used for trading fee discounts, DeFi, and gas on BNB Chain. Quarterly burns reduce supply, creating deflationary pressure. Centralized but widely adopted.</p>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-400">Market Cap:</span>
+                <span class="text-white font-bold">#4</span>
+              </div>
+            </div>
+
+            <div class="p-8 rounded-2xl crypto-card">
+              <div class="flex items-center mb-4">
+                <div class="w-10 h-10 rounded-full bg-yellow flex items-center justify-center text-dark font-bold mr-3">X</div>
+                <div>
+                  <h3 class="text-xl font-bold text-white">XRP (Ripple)</h3>
+                  <p class="text-sm text-gray-400">Payments</p>
+                </div>
+              </div>
+              <p class="text-gray-300 leading-relaxed mb-4">Designed for fast, low-cost international payments. Settles transactions in 3-5 seconds with minimal fees. Used by banks and payment providers for cross-border transfers. Not fully decentralized.</p>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-400">Market Cap:</span>
+                <span class="text-white font-bold">#6</span>
+              </div>
+            </div>
+
+            <div class="p-8 rounded-2xl crypto-card">
+              <div class="flex items-center mb-4">
+                <div class="w-10 h-10 rounded-full bg-yellow flex items-center justify-center text-dark font-bold mr-3">D</div>
+                <div>
+                  <h3 class="text-xl font-bold text-white">Dogecoin (DOGE)</h3>
+                  <p class="text-sm text-gray-400">Meme Coin</p>
+                </div>
+              <p class="text-gray-300 leading-relaxed mb-4">Started as a joke in 2013 featuring the Shiba Inu meme. Gained massive popularity and community support. Used for tipping and charitable donations. Infinite supply model. Supported by Elon Musk.</p>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-400">Market Cap:</span>
+                <span class="text-white font-bold">#8</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Extended Educational Content -->
+        <div id="education">
+          <div class="text-center max-w-4xl mx-auto mb-16">
+            <span class="text-yellow font-semibold text-sm uppercase tracking-wide">Deep Dive</span>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mt-4 mb-6 text-white">Understanding Bitcoin's Economics</h2>
+            <p class="text-lg text-gray-400">Go beyond the basics with comprehensive insights into Bitcoin's monetary policy, game theory, and network effects.</p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-8 mb-16">
+            <div class="p-8 rounded-2xl card-shadow">
+              <h3 class="text-2xl font-bold mb-4 text-white">Stock-to-Flow Model</h3>
+              <p class="text-gray-300 leading-relaxed mb-4">Plan B's Stock-to-Flow model treats Bitcoin like a commodity. Stock is existing supply (19.7M BTC), Flow is new annual production (164K BTC). Higher S2F = higher scarcity. Bitcoin's S2F will surpass gold after 2024 halving, making it the hardest asset in history.</p>
+              <ul class="space-y-2 text-gray-300 text-sm">
+                <li><i class="fas fa-circle text-yellow text-xs mr-2"></i>Gold S2F: ~60 (60 years to mine current stock)</li>
+                <li><i class="fas fa-circle text-yellow text-xs mr-2"></i>Bitcoin S2F 2024: ~120 after halving</li>
+                <li><i class="fas fa-circle text-yellow text-xs mr-2"></i>Bitcoin S2F 2028: ~240 after next halving</li>
+              </ul>
+            </div>
+
+            <div class="p-8 rounded-2xl card-shadow">
+              <h3 class="text-2xl font-bold mb-4 text-white">Network Effects</h3>
+              <p class="text-gray-300 leading-relaxed mb-4">Metcalfe's Law: Network value grows with square of users. Bitcoin's network effect creates moats: developers, miners, exchanges, merchants, users. More participants = more security = more trust = more price appreciation. Lindy Effect suggests Bitcoin becomes less likely to fail each year it survives.</p>
+              <ul class="space-y-2 text-gray-300 text-sm">
+                <li><i class="fas fa-circle text-yellow text-xs mr-2"></i>100M+ users globally</li>
+                <li><i class="fas fa-circle text-yellow text-xs mr-2"></i>$600B+ hash rate security budget</li>
+                <li><i class="fas fa-circle text-yellow text-xs mr-2"></i>10,000+ nodes worldwide</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-8 rounded-2xl card-shadow mb-16">
+            <h3 class="text-2xl font-bold mb-4 text-white">Bitcoin vs Traditional Assets</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left">
+                <thead>
+                  <tr class="border-b border-yellow border-opacity-20">
+                    <th class="pb-3 text-yellow">Metric</th>
+                    <th class="pb-3 text-white">Bitcoin</th>
+                    <th class="pb-3 text-white">Gold</th>
+                    <th class="pb-3 text-white">Stocks</th>
+                    <th class="pb-3 text-white">Real Estate</th>
+                  </tr>
+                </thead>
+                <tbody class="text-gray-300">
+                  <tr class="border-b border-dark-lighter">
+                    <td class="py-3">Scarcity</td>
+                    <td>21M fixed</td>
+                    <td>~244K tons mined</td>
+                    <td>Unlimited</td>
+                    <td>Finite land</td>
+                  </tr>
+                  <tr class="border-b border-dark-lighter">
+                    <td class="py-3">Divisibility</td>
+                    <td>100M sats</td>
+                    <td>Down to grams</td>
+                    <td>Fractional shares</td>
+                    <td>Limited</td>
+                  </tr>
+                  <tr class="border-b border-dark-lighter">
+                    <td class="py-3">Portability</td>
+                    <td>Instant, global</td>
+                    <td>Heavy, costly</td>
+                    <td>Digital</td>
+                    <td>Immobile</td>
+                  </tr>
+                  <tr class="border-b border-dark-lighter">
+                    <td class="py-3">Verifiability</td>
+                    <td>Blockchain</td>
+                    <td>Assay required</td>
+                    <td>SEC filings</td>
+                    <td>Deed/Titles</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3">Censorship Resistant</td>
+                    <td>Yes</td>
+                    <td>Partially</td>
+                    <td>No</td>
+                    <td>No</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-8 mb-16">
+            <div class="p-8 rounded-2xl card-shadow">
+              <h3 class="text-2xl font-bold mb-4 text-white">Common Bitcoin Myths Debunked</h3>
+              <div class="space-y-4">
+                <div>
+                  <p class="font-bold text-yellow mb-1">Myth: Bitcoin is used for crime</p>
+                  <p class="text-gray-300 text-sm">Fact: Less than 1% of Bitcoin transactions are illicit. Cash is used for crime far more. Blockchain transparency makes Bitcoin poor for crime.</p>
+                </div>
+                <div>
+                  <p class="font-bold text-yellow mb-1">Myth: Bitcoin wastes energy</p>
+                  <p class="text-gray-300 text-sm">Fact: Bitcoin uses 0.1% of global energy. 60%+ is renewable. Secures $1T+ network. Christmas lights use more energy annually.</p>
+                </div>
+                <div>
+                  <p class="font-bold text-yellow mb-1">Myth: Bitcoin has no intrinsic value</p>
+                  <p class="text-gray-300 text-sm">Fact: Value comes from properties: scarcity, divisibility, portability, durability, censorship-resistance. No asset has intrinsic value—all value is subjective.</p>
+                </div>
+                <div>
+                  <p class="font-bold text-yellow mb-1">Myth: Bitcoin can be hacked</p>
+                  <p class="text-gray-300 text-sm">Fact: Bitcoin protocol never hacked in 15 years. Exchanges get hacked, not Bitcoin. With proper self-custody, Bitcoin is unhackable.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-8 rounded-2xl card-shadow">
+              <h3 class="text-2xl font-bold mb-4 text-white">Bitcoin Adoption Curve</h3>
+              <p class="text-gray-300 leading-relaxed mb-4">Technology adoption follows S-curve: Innovators → Early Adopters → Early Majority → Late Majority → Laggards. Bitcoin is transitioning from Early Adopters to Early Majority phase (5-15% penetration). We are still early.</p>
+              <div class="space-y-3">
+                <div class="bg-dark-lighter p-3 rounded-lg">
+                  <div class="flex justify-between mb-1">
+                    <span class="text-sm text-gray-400">Innovators (2009-2012)</span>
+                    <span class="text-yellow text-sm">0.1%</span>
+                  </div>
+                  <div class="w-full bg-dark rounded-full h-2">
+                    <div class="bg-yellow h-2 rounded-full" style="width: 0.1%"></div>
+                  </div>
+                </div>
+                <div class="bg-dark-lighter p-3 rounded-lg">
+                  <div class="flex justify-between mb-1">
+                    <span class="text-sm text-gray-400">Early Adopters (2013-2024)</span>
+                    <span class="text-yellow text-sm">5%</span>
+                  </div>
+                  <div class="w-full bg-dark rounded-full h-2">
+                    <div class="bg-yellow h-2 rounded-full" style="width: 5%"></div>
+                  </div>
+                </div>
+                <div class="bg-dark-lighter p-3 rounded-lg">
+                  <div class="flex justify-between mb-1">
+                    <span class="text-sm text-gray-400">Early Majority (2025-2030)</span>
+                    <span class="text-yellow text-sm">15-35%</span>
+                  </div>
+                  <div class="w-full bg-dark rounded-full h-2">
+                    <div class="bg-yellow h-2 rounded-full" style="width: 0%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-8 rounded-2xl card-shadow">
+            <h3 class="text-2xl font-bold mb-4 text-white">The Future of Bitcoin</h3>
+            <p class="text-gray-300 leading-relaxed mb-6">Bitcoin's trajectory over next decade: Nation-state adoption accelerates. Central Bank Digital Currencies (CBDCs) drive Bitcoin demand as privacy alternative. Lightning Network enables global micropayments. Bitcoin becomes base layer for decentralized finance.</p>
+            <div class="grid md:grid-cols-3 gap-6">
+              <div class="text-center">
+                <i class="fas fa-landmark text-yellow text-4xl mb-3"></i>
+                <h4 class="font-bold text-white mb-2">Reserve Asset</h4>
+                <p class="text-sm text-gray-400">Central banks add Bitcoin to reserves alongside gold. Corporate treasuries diversify.</p>
+              </div>
+              <div class="text-center">
+                <i class="fas fa-globe text-yellow text-4xl mb-3"></i>
+                <h4 class="font-bold text-white mb-2">Global Currency</h4>
+                <p class="text-sm text-gray-400">Bitcoin becomes unit of account for international trade, especially in Global South.</p>
+              </div>
+              <div class="text-center">
+                <i class="fas fa-layer-group text-yellow text-4xl mb-3"></i>
+                <h4 class="font-bold text-white mb-2">Settlement Layer</h4>
+                <p class="text-sm text-gray-400">Bitcoin base layer settles large transactions. Lightning handles retail payments.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Investment Plans -->
+    <section id="plans" class="py-16 sm:py-24 bg-dark-light">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <span class="text-yellow font-semibold text-sm uppercase tracking-wide">Investment Plans</span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mt-4 mb-6 text-white">Choose Your Strategy</h2>
+          <p class="text-lg text-gray-400 mb-8">Start with any amount. Plans designed for every investor, from beginners to institutions.</p>
+          
+          <!-- Toggle -->
+          <div class="inline-flex items-center bg-dark p-2 rounded-xl shadow-md">
+            <span class="px-4 font-medium text-gray-300" id="monthlyLabel">Monthly</span>
+            <label class="relative inline-flex items-center cursor-pointer mx-2">
+              <input type="checkbox" id="billingToggle" class="sr-only peer">
+              <div class="toggle-bg w-14 h-7 bg-dark-lighter rounded-full relative"></div>
+            </label>
+            <span class="px-4 font-medium text-gray-500" id="yearlyLabel">
+              Yearly <span class="text-yellow text-xs">Save 25%</span>
+            </span>
+          </div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <!-- Starter Plan -->
+          <div class="p-8 rounded-2xl card-shadow">
+            <h3 class="text-2xl font-bold mb-2 text-white flex items-center">
+              <i class="fas fa-rocket text-yellow mr-2"></i>Starter
+            </h3>
+            <p class="text-gray-400 mb-6">For crypto beginners</p>
+            <div class="mb-6">
+              <span class="text-5xl font-bold text-white price" data-monthly="0" data-yearly="0">$0</span>
+              <span class="text-gray-400">/month</span>
+            </div>
+            <ul class="space-y-4 mb-8 text-gray-300">
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>Min. $10 investment</span></li>
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>BTC, ETH, SOL, USDT</span></li>
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>Automated DCA</span></li>
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>Mobile app access</span></li>
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>1.5% trading fee</span></li>
+            </ul>
+            <a href="register.html" class="w-full btn-secondary py-3 rounded-lg text-center block">Get Started Free</a>
+          </div>
+          
+          <!-- Professional Plan -->
+          <div class="p-8 rounded-2xl card-shadow border-2 border-yellow relative transform lg:scale-105">
+            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+              <span class="bg-yellow text-dark px-4 py-1 rounded-full text-sm font-bold">MOST POPULAR</span>
+            </div>
+            <h3 class="text-2xl font-bold mb-2 text-white flex items-center">
+              <i class="fas fa-crown text-yellow mr-2"></i>Professional
+            </h3>
+            <p class="text-gray-400 mb-6">For serious investors</p>
+            <div class="mb-6">
+              <span class="text-5xl font-bold text-white price" data-monthly="19" data-yearly="14">$19</span>
+              <span class="text-gray-400">/month</span>
+            </div>
+            <ul class="space-y-4 mb-8 text-gray-300">
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>Min. $1,000 investment</span></li>
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>50+ cryptocurrencies</span></li>
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>Cold storage vault</span></li>
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>Staking rewards 5-12%</span></li>
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>0.5% trading fee</span></li>
+            </ul>
+            <a href="register.html" class="w-full btn-primary py-3 rounded-lg text-center block">Start Professional</a>
+          </div>
+          
+          <!-- Institutional Plan -->
+          <div class="p-8 rounded-2xl card-shadow md:col-span-2 lg:col-span-1">
+            <h3 class="text-2xl font-bold mb-2 text-white flex items-center">
+              <i class="fas fa-building text-yellow mr-2"></i>Institutional
+            </h3>
+            <p class="text-gray-400 mb-6">For funds & enterprises</p>
+            <div class="mb-6">
+              <span class="text-5xl font-bold text-white price" data-monthly="99" data-yearly="74">$99</span>
+              <span class="text-gray-400">/month</span>
+            </div>
+            <ul class="space-y-4 mb-8 text-gray-300">
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>Min. $100K investment</span></li>
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>OTC desk access</span></li>
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>Dedicated manager</span></li>
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>Custody & insurance</span></li>
+              <li class="flex items-start"><i class="fas fa-check-circle text-yellow mt-1 mr-3"></i><span>0.1% trading fee</span></li>
+            </ul>
+            <button class="w-full btn-secondary py-3 rounded-lg">Contact Sales</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-16 sm:py-24">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <span class="text-yellow font-semibold text-sm uppercase tracking-wide">FAQ</span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mt-4 mb-6 text-white">Frequently Asked Questions</h2>
+          <p class="text-lg text-gray-400">Everything you need to know about investing in crypto with SyncCrypto.</p>
+        </div>
+        
+        <div class="max-w-3xl mx-auto space-y-4">
+          <div class="rounded-xl card-shadow overflow-hidden">
+            <button class="faq-toggle w-full text-left p-6 font-semibold text-lg flex justify-between items-center text-white">
+              <span>How safe is my cryptocurrency?</span>
+              <i class="fas fa-chevron-down text-yellow transition-transform"></i>
+            </button>
+            <div class="faq-content px-6">
+              <p class="pb-6 text-gray-400">Your crypto is secured with institutional-grade multi-signature cold storage. 95% of assets are held offline in geographically distributed vaults. We maintain insurance coverage and undergo regular security audits by third parties. Enable 2FA for additional protection. We use HSMs (Hardware Security Modules) and never store private keys on internet-connected devices.</p>
+            </div>
+          </div>
+          
+          <div class="rounded-xl card-shadow overflow-hidden">
+            <button class="faq-toggle w-full text-left p-6 font-semibold text-lg flex justify-between items-center text-white">
+              <span>What cryptocurrencies can I buy?</span>
+              <i class="fas fa-chevron-down text-yellow transition-transform"></i>
+            </button>
+            <div class="faq-content px-6">
+              <p class="pb-6 text-gray-400">SyncCrypto supports 50+ cryptocurrencies including Bitcoin (BTC), Ethereum (ETH), Solana (SOL), Tether (USDT), BNB, XRP, Cardano (ADA), Dogecoin (DOGE), Polygon (MATIC), Chainlink (LINK), and many more. We continuously add new vetted tokens based on market demand and security standards. All listed assets undergo rigorous due diligence.</p>
+            </div>
+          </div>
+          
+          <div class="rounded-xl card-shadow overflow-hidden">
+            <button class="faq-toggle w-full text-left p-6 font-semibold text-lg flex justify-between items-center text-white">
+              <span>How do I withdraw my crypto?</span>
+              <i class="fas fa-chevron-down text-yellow transition-transform"></i>
+            </button>
+            <div class="faq-content px-6">
+              <p class="pb-6 text-gray-400">Withdraw your cryptocurrency 24/7 to any external wallet address. Standard withdrawals process within 1-2 hours. Lightning Network withdrawals for Bitcoin are instant with minimal fees. We verify all withdrawal addresses for your security. First withdrawal to new address requires email confirmation. Large withdrawals undergo manual review.</p>
+            </div>
+          </div>
+          
+          <div class="rounded-xl card-shadow overflow-hidden">
+            <button class="faq-toggle w-full text-left p-6 font-semibold text-lg flex justify-between items-center text-white">
+              <span>What are the fees?</span>
+              <i class="fas fa-chevron-down text-yellow transition-transform"></i>
+            </button>
+            <div class="faq-content px-6">
+              <p class="pb-6 text-gray-400">Trading fees range from 0.1% to 1.5% depending on your plan. Starter: 1.5%, Professional: 0.5%, Institutional: 0.1%. No deposit fees for crypto or ACH. Credit card deposits 3.5%. Withdrawal fees cover network costs only (~$1-5). Staking rewards have no fees, you keep 100% of earned rewards. No hidden fees or surprise charges.</p>
+            </div>
+          </div>
+          
+          <div class="rounded-xl card-shadow overflow-hidden">
+            <button class="faq-toggle w-full text-left p-6 font-semibold text-lg flex justify-between items-center text-white">
+              <span>Is crypto investing risky?</span>
+              <i class="fas fa-chevron-down text-yellow transition-transform"></i>
+            </button>
+            <div class="faq-content px-6">
+              <p class="pb-6 text-gray-400">Yes, cryptocurrency investments are highly volatile and risky. Prices can fluctuate 10-20% in a single day. Drawdowns of 80% have occurred multiple times. Only invest what you can afford to lose completely. Diversify your portfolio, use dollar-cost averaging, and never invest based on FOMO. Past performance doesn't guarantee future results. Consider consulting a financial advisor who understands digital assets. Cryptocurrency is not FDIC insured.</p>
+            </div>
+          </div>
+
+          <div class="rounded-xl card-shadow overflow-hidden">
+            <button class="faq-toggle w-full text-left p-6 font-semibold text-lg flex justify-between items-center text-white">
+              <span>Can I lose my Bitcoin?</span>
+              <i class="fas fa-chevron-down text-yellow transition-transform"></i>
+            </button>
+            <div class="faq-content px-6">
+              <p class="pb-6 text-gray-400">Yes. If you lose your private keys or seed phrase and don't have backups, your Bitcoin is lost forever. There's no password reset. If you send Bitcoin to wrong address, it's gone. If exchange gets hacked and you don't have custody, you could lose funds. This is why we emphasize: use hardware wallets, backup seed phrases on metal, never share keys, enable 2FA, verify addresses. Self-custody = full responsibility. However, our insured custody solution protects you from exchange hacks.</p>
+            </div>
+          </div>
+
+          <div class="rounded-xl card-shadow overflow-hidden">
+            <button class="faq-toggle w-full text-left p-6 font-semibold text-lg flex justify-between items-center text-white">
+              <span>How are my assets insured?</span>
+              <i class="fas fa-chevron-down text-yellow transition-transform"></i>
+            </button>
+            <div class="faq-content px-6">
+              <p class="pb-6 text-gray-400">SyncCrypto maintains crime insurance covering theft of digital assets from hot wallets up to $250 million. Cold storage is insured against physical theft and damage. Insurance is provided by Lloyd's of London syndicates. Note: Insurance covers platform security breaches, not individual account compromises due to phishing or poor security practices. Always enable 2FA and use strong passwords.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 sm:py-24 gradient-dark text-white border-t border-yellow border-opacity-20">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12">
+          <div>
+            <span class="text-yellow font-semibold text-sm uppercase tracking-wide">Contact Us</span>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mt-4 mb-6">Ready to Start Your Crypto Journey?</h2>
+            <p class="text-lg text-gray-300 mb-8 leading-relaxed">
+              Our crypto specialists are available 24/7 to help you build your digital asset portfolio. Get personalized guidance on Bitcoin, Ethereum, and all major cryptocurrencies.
+            </p>
+            <div class="space-y-4 mb-8">
+              <div class="flex items-center">
+                <div class="w-12 h-12 bg-yellow bg-opacity-20 rounded-lg flex items-center justify-center mr-4">
+                  <i class="fas fa-phone text-yellow"></i>
+                </div>
+                <div>
+                  <p class="text-gray-400 text-sm">24/7 Hotline</p>
+                  <p class="font-semibold text-lg">1-800-SYNC-CRYPTO</p>
+                </div>
+              <div class="flex items-center">
+                <div class="w-12 h-12 bg-yellow bg-opacity-20 rounded-lg flex items-center justify-center mr-4">
+                  <i class="fas fa-envelope text-yellow"></i>
+                </div>
+                <div>
+                  <p class="text-gray-400 text-sm">Email Us</p>
+                  <p class="font-semibold text-lg">support@synccrypto.com</p>
+                </div>
+              </div>
+              <div class="flex items-center">
+                <div class="w-12 h-12 bg-yellow bg-opacity-20 rounded-lg flex items-center justify-center mr-4">
+                  <i class="fas fa-comments text-yellow"></i>
+                </div>
+                <div>
+                  <p class="text-gray-400 text-sm">Live Chat</p>
+                  <p class="font-semibold text-lg">Available 24/7</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-dark-light text-white p-8 rounded-2xl border border-yellow border-opacity-20">
+            <h3 class="text-2xl font-bold mb-6">Get Your Free Consultation</h3>
+            <form id="contactForm" class="space-y-5">
+              <div>
+                <label class="block text-sm font-medium mb-2">Full Name *</label>
+                <input type="text" id="name" class="w-full px-4 py-3 border border-dark-lighter bg-dark rounded-lg focus:ring-2 focus:ring-yellow focus:border-transparent outline-none transition text-white" placeholder="Satoshi Nakamoto">
+                <p class="text-red-500 text-sm mt-1 hidden" id="nameError">Please enter your name</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-2">Email Address *</label>
+                <input type="email" id="email" class="w-full px-4 py-3 border border-dark-lighter bg-dark rounded-lg focus:ring-2 focus:ring-yellow focus:border-transparent outline-none transition text-white" placeholder="hodler@example.com">
+                <p class="text-red-500 text-sm mt-1 hidden" id="emailError">Please enter a valid email</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-2">Phone Number</label>
+                <input type="tel" id="phone" class="w-full px-4 py-3 border border-dark-lighter bg-dark rounded-lg focus:ring-2 focus:ring-yellow focus:border-transparent outline-none transition text-white" placeholder="(555) 123-4567">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-2">Investment Budget</label>
+                <select id="amount" class="w-full px-4 py-3 border border-dark-lighter bg-dark rounded-lg focus:ring-2 focus:ring-yellow focus:border-transparent outline-none transition text-white">
+                  <option>$100 - $1,000</option>
+                  <option>$1,000 - $10,000</option>
+                  <option>$10,000 - $100,000</option>
+                  <option>$100,000+</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-2">Message</label>
+                <textarea id="message" rows="4" class="w-full px-4 py-3 border border-dark-lighter bg-dark rounded-lg focus:ring-2 focus:ring-yellow focus:border-transparent outline-none transition text-white" placeholder="Tell us about your investment goals..."></textarea>
+              </div>
+              <button type="submit" class="w-full btn-primary py-3 rounded-lg text-lg">
+                Schedule Consultation <i class="fas fa-arrow-right ml-2"></i>
+              </button>
+              <p class="text-xs text-gray-500 text-center">By submitting, you agree to our Terms & Privacy Policy</p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Right Sidebar - Live Testimonials -->
+  <aside class="lg:w-80 xl:w-96 bg-dark-lighter border-l border-yellow border-opacity-20 p-6 hidden lg:block">
+    <div class="sticky top-24">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-white">Live Testimonials</h3>
+        <div class="w-3 h-3 bg-yellow rounded-full animate-pulse"></div>
+      </div>
+      
+      <div id="testimonialWidget" class="sidebar-testimonial bg-dark-light p-6 rounded-xl border border-yellow border-opacity-20">
+        <div class="testimonial-fade">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 gradient-yellow rounded-full flex items-center justify-center text-dark font-bold mr-3" id="testimonialAvatar">MJ</div>
+            <div>
+              <p class="font-bold text-white" id="testimonialName">Marcus J.</p>
+              <p class="text-sm text-gray-400" id="testimonialPlan">Professional - 2.5 BTC</p>
+            </div>
+          </div>
+          <div class="flex text-yellow mb-3 text-sm">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <p class="text-gray-300 leading-relaxed text-sm" id="testimonialText">SyncCrypto made crypto investing simple. My portfolio grew 147% in 18 months. Cold storage gives me peace of mind.</p>
+          <p class="text-xs text-gray-500 mt-4" id="testimonialTime">2 minutes ago</p>
+        </div>
+      </div>
+
+      <div class="mt-8 p-6 bg-dark-light rounded-xl border border-yellow border-opacity-20">
+        <h4 class="font-bold text-white mb-4">Why Trust SyncCrypto?</h4>
+        <ul class="space-y-3 text-sm text-gray-300">
+          <li class="flex items-start"><i class="fas fa-check text-yellow mr-2 mt-1"></i><span>450K+ verified users</span></li>
+          <li class="flex items-start"><i class="fas fa-check text-yellow mr-2 mt-1"></i><span>$2.8B assets secured</span></li>
+          <li class="flex items-start"><i class="fas fa-check text-yellow mr-2 mt-1"></i><span>Insured cold storage</span></li>
+          <li class="flex items-start"><i class="fas fa-check text-yellow mr-2 mt-1"></i><span>24/7 expert support</span></li>
+          <li class="flex items-start"><i class="fas fa-check text-yellow mr-2 mt-1"></i><span>Regulatory compliant</span></li>
+        </ul>
+      </div>
+
+      <a href="register.html" class="w-full btn-primary py-3 rounded-lg mt-6 text-center block">
+        Get Started Now <i class="fas fa-arrow-right ml-2"></i>
+      </a>
+    </div>
+  </aside>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark-light text-gray-400 py-12 border-t border-yellow border-opacity-20">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+      <div>
+        <div class="flex items-center space-x-2 mb-4">
+          <i class="fab fa-bitcoin text-yellow text-2xl"></i>
+          <span class="text-xl font-bold text-white">SyncCrypto</span>
+        </div>
+        <p class="text-sm leading-relaxed mb-4">Professional crypto investment platform. Bitcoin, Ethereum, and 50+ cryptocurrencies. Stack sats, build wealth, secure your future.</p>
+        <div class="flex space-x-3">
+          <a href="#" class="w-10 h-10 bg-dark rounded-lg flex items-center justify-center hover:bg-yellow hover:text-dark transition"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="w-10 h-10 bg-dark rounded-lg flex items-center justify-center hover:bg-yellow hover:text-dark transition"><i class="fab fa-telegram"></i></a>
+          <a href="#" class="w-10 h-10 bg-dark rounded-lg flex items-center justify-center hover:bg-yellow hover:text-dark transition"><i class="fab fa-discord"></i></a>
+          <a href="#" class="w-10 h-10 bg-dark rounded-lg flex items-center justify-center hover:bg-yellow hover:text-dark transition"><i class="fab fa-reddit"></i></a>
+        </div>
+      </div>
+      
+      <div>
+        <h4 class="text-white font-bold mb-4">Products</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-yellow transition">Buy Bitcoin</a></li>
+          <li><a href="#" class="hover:text-yellow transition">Buy Ethereum</a></li>
+          <li><a href="#" class="hover:text-yellow transition">Crypto Trading</a></li>
+          <li><a href="#" class="hover:text-yellow transition">Staking Rewards</a></li>
+          <li><a href="#" class="hover:text-yellow transition">Cold Storage</a></li>
+        </ul>
+      </div>
+      
+      <div>
+        <h4 class="text-white font-bold mb-4">Resources</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-yellow transition">Crypto Academy</a></li>
+          <li><a href="#" class="hover:text-yellow transition">Market Analysis</a></li>
+          <li><a href="#" class="hover:text-yellow transition">Tax Calculator</a></li>
+          <li><a href="#" class="hover:text-yellow transition">Help Center</a></li>
+          <li><a href="#" class="hover:text-yellow transition">API Docs</a></li>
+        </ul>
+      </div>
+      
+      <div>
+        <h4 class="text-white font-bold mb-4">Company</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-yellow transition">About Us</a></li>
+          <li><a href="#" class="hover:text-yellow transition">Careers</a></li>
+          <li><a href="#" class="hover:text-yellow transition">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-yellow transition">Terms of Service</a></li>
+          <li><a href="#" class="hover:text-yellow transition">Security</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="border-t border-dark-lighter pt-8 text-sm text-center">
+      <p>&copy; 2026 SyncCrypto - All rights reserved.</p>
+      <p class="mt-2 text-gray-600 text-xs">Cryptocurrency investments are volatile and high risk. Only invest what you can afford to lose. Past performance does not guarantee future results. Not financial advice. DYOR.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile Menu Toggle
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const closeMenuBtn = document.getElementById('closeMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileLinks = document.querySelectorAll('.mobile-link');
+  
+  mobileMenuBtn.addEventListener('click', () => {
+    mobileMenu.classList.add('active');
+  });
+  
+  closeMenuBtn.addEventListener('click', () => {
+    mobileMenu.classList.remove('active');
+  });
+  
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('active');
+    });
+  });
+  
+  // Live Crypto Prices from CoinGecko API - Top Ticker Bar with 11 coins
+  const tickerCoins = [
+    { id: 'bitcoin', symbol: 'BTC', icon: 'fab fa-bitcoin' },
+    { id: 'ethereum', symbol: 'ETH', icon: 'fab fa-ethereum' },
+    { id: 'solana', symbol: 'SOL', icon: 'fas fa-bolt' },
+    { id: 'binancecoin', symbol: 'BNB', icon: 'fas fa-coins' },
+    { id: 'ripple', symbol: 'XRP', icon: 'fas fa-water' },
+    { id: 'tether', symbol: 'USDT', icon: 'fas fa-dollar-sign' },
+    { id: 'cardano', symbol: 'ADA', icon: 'fas fa-chart-line' },
+    { id: 'dogecoin', symbol: 'DOGE', icon: 'fas fa-dog' },
+    { id: 'polkadot', symbol: 'DOT', icon: 'fas fa-circle' },
+    { id: 'matic-network', symbol: 'MATIC', icon: 'fas fa-draw-polygon' }
+  ];
+  
+  let previousPrices = {};
+  let tickerInitialized = false;
+  
+  async function updateTopTicker() {
+    try {
+      const ids = tickerCoins.map(c => c.id).join(',');
+      const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`);
+      const data = await response.json();
+      
+      const tickerTrack = document.getElementById('tickerTrack');
+      
+      // Clear existing items except first label
+      if (!tickerInitialized) {
+        const firstItem = tickerTrack.firstElementChild;
+        tickerTrack.innerHTML = '';
+        tickerTrack.appendChild(firstItem);
+        tickerInitialized = true;
+      }
+      
+      // Build ticker items - duplicate array for seamless loop
+      const items = [];
+      [...tickerCoins, ...tickerCoins].forEach(coin => {
+        const coinData = data[coin.id];
+        if (!coinData) return;
+        
+        const price = coinData.usd;
+        const change = coinData.usd_24h_change || 0;
+        const prevPrice = previousPrices[coin.id] || price;
+        
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'ticker-item';
+        itemDiv.innerHTML = `
+          <i class="${coin.icon} text-yellow text-sm"></i>
+          <span class="font-bold text-white text-xs sm:text-sm">${coin.symbol}</span>
+          <span class="text-gray-300 text-xs sm:text-sm">$${price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: price < 1 ? 6 : 2})}</span>
+          <span class="text-xs ${change >= 0 ? 'price-up' : 'price-down'}">
+            ${change >= 0 ? '▲' : '▼'} ${Math.abs(change).toFixed(2)}%
+          </span>
+        `;
+        items.push(itemDiv);
+        previousPrices[coin.id] = price;
+      });
+      
+      // Only update if we have data
+      if (items.length > 0) {
+        const liveLabel = tickerTrack.firstElementChild;
+        tickerTrack.innerHTML = '';
+        tickerTrack.appendChild(liveLabel);
+        items.forEach(item => tickerTrack.appendChild(item));
+      }
+    } catch (error) {
+      console.error('Error fetching ticker prices:', error);
+    }
+  }
+  
+  updateTopTicker();
+  setInterval(updateTopTicker, 30000); // Update every 30 seconds
+  
+  // Live Crypto Prices - Header Ticker
+  let currentBtcPrice = 67234.50;
+  
+  async function fetchCryptoPrices() {
+    try {
+      const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin&vs_currencies=usd');
+      const data = await response.json();
+      
+      currentBtcPrice = data.bitcoin.usd;
+      document.getElementById('btcPrice').textContent = '$' + data.bitcoin.usd.toLocaleString();
+      document.getElementById('ethPrice').textContent = '$' + data.ethereum.usd.toLocaleString();
+      document.getElementById('solPrice').textContent = '$' + data.solana.usd.toLocaleString();
+      document.getElementById('bnbPrice').textContent = '$' + data.binancecoin.usd.toLocaleString();
+    } catch (error) {
+      console.error('Error fetching prices:', error);
+    }
+  }
+  
+  fetchCryptoPrices();
+  setInterval(fetchCryptoPrices, 60000); // Update every minute
+  
+  // ROI Calculator with Live BTC Price
+  document.getElementById('calculateBtn').addEventListener('click', async () => {
+    const amount = parseFloat(document.getElementById('calcAmount').value);
+    const date = new Date(document.getElementById('calcDate').value);
+    
+    if (!amount || !date) {
+      alert('Please enter valid values');
+      return;
+    }
+    
+    try {
+      // Get historical price
+      const dateStr = date.toISOString().split('T')[0].split('-').reverse().join('-');
+      const response = await fetch(`https://api.coingecko.com/api/v3/coins/bitcoin/history?date=${dateStr}`);
+      const data = await response.json();
+      const historicalPrice = data.market_data?.current_price?.usd || 10000;
+      
+      const btcBought = amount / historicalPrice;
+      const currentValue = btcBought * currentBtcPrice;
+      const roi = ((currentValue - amount) / amount * 100).toFixed(2);
+      
+      document.getElementById('resultPrice').textContent = '$' + currentBtcPrice.toLocaleString();
+      document.getElementById('resultBTC').textContent = btcBought.toFixed(6);
+      document.getElementById('resultValue').textContent = '$' + currentValue.toLocaleString(undefined, {maximumFractionDigits: 0});
+      document.getElementById('resultROI').textContent = roi + '%';
+      document.getElementById('calcResult').classList.remove('hidden');
+    } catch (error) {
+      alert('Error calculating. Using current price. Please try again.');
+      console.error(error);
+    }
+  });
+  
+  // Billing Toggle
+  const billingToggle = document.getElementById('billingToggle');
+  const monthlyLabel = document.getElementById('monthlyLabel');
+  const yearlyLabel = document.getElementById('yearlyLabel');
+  const prices = document.querySelectorAll('.price');
+  
+  billingToggle.addEventListener('change', () => {
+    if (billingToggle.checked) {
+      monthlyLabel.classList.remove('text-gray-300');
+      monthlyLabel.classList.add('text-gray-500');
+      yearlyLabel.classList.remove('text-gray-500');
+      yearlyLabel.classList.add('text-gray-300');
+      prices.forEach(price => {
+        price.textContent = '$' + price.getAttribute('data-yearly');
+      });
+    } else {
+      monthlyLabel.classList.remove('text-gray-500');
+      monthlyLabel.classList.add('text-gray-300');
+      yearlyLabel.classList.remove('text-gray-300');
+      yearlyLabel.classList.add('text-gray-500');
+      prices.forEach(price => {
+        price.textContent = '$' + price.getAttribute('data-monthly');
+      });
+    }
+  });
+  
+  // FAQ Accordion
+  const faqToggles = document.querySelectorAll('.faq-toggle');
+  faqToggles.forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      const content = toggle.nextElementSibling;
+      const icon = toggle.querySelector('i');
+      
+      document.querySelectorAll('.faq-content').forEach(item => {
+        if (item !== content) {
+          item.classList.remove('active');
+          item.previousElementSibling.querySelector('i').style.transform = 'rotate(0deg)';
+        }
+      });
+      
+      content.classList.toggle('active');
+      icon.style.transform = content.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+    });
+  });
+  
+  // Form Validation
+  const contactForm = document.getElementById('contactForm');
+  contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('name');
+    const email = document.getElementById('email');
+    const nameError = document.getElementById('nameError');
+    const emailError = document.getElementById('emailError');
+    
+    let isValid = true;
+    
+    if (name.value.trim() === '') {
+      nameError.classList.remove('hidden');
+      name.classList.add('border-red-500');
+      isValid = false;
+    } else {
+      nameError.classList.add('hidden');
+      name.classList.remove('border-red-500');
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.value)) {
+      emailError.classList.remove('hidden');
+      email.classList.add('border-red-500');
+      isValid = false;
+    } else {
+      emailError.classList.add('hidden');
+      email.classList.remove('border-red-500');
+    }
+    
+    if (isValid) {
+      alert('Thank you! Our crypto specialists will contact you within 24 hours.');
+      contactForm.reset();
+    }
+  });
+  
+  // Charts
+  Chart.defaults.color = '#F0F0F0';
+  Chart.defaults.borderColor = 'rgba(255, 215, 0, 0.2)';
+  
+  // Hero Chart
+  const heroCtx = document.getElementById('heroChart');
+  if (heroCtx) {
+    new Chart(heroCtx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+        datasets: [{
+          label: 'Portfolio Value',
+          data: [100, 112, 105, 128, 142, 135, 161, 148],
+          borderColor: '#FFD700',
+          backgroundColor: 'rgba(255, 215, 0, 0.1)',
+          tension: 0.4,
+          fill: true,
+          borderWidth: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            grid: { color: 'rgba(255, 215, 0, 0.1)' },
+            ticks: { callback: (value) => '$' + value + 'K', color: '#F0F0F0' }
+          },
+          x: { grid: { display: false }, ticks: { color: '#F0F0F0' } }
+        }
+      }
+    });
+  }
+  
+  // Cycle Chart
+  const cycleCtx = document.getElementById('cycleChart');
+  if (cycleCtx) {
+    new Chart(cycleCtx, {
+      type: 'line',
+      data: {
+        labels: ['2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'],
+        datasets: [{
+          label: 'Bitcoin Price',
+          data: [5, 13, 700, 315, 430, 998, 13400, 3740, 7200, 29000, 48000, 16500, 67000],
+          borderColor: '#FFD700',
+          backgroundColor: 'rgba(255, 215, 0, 0.1)',
+          tension: 0.4,
+          fill: true,
+          borderWidth: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            type: 'logarithmic',
+            grid: { color: 'rgba(255, 215, 0, 0.1)' },
+            ticks: { callback: (value) => '$' + value, color: '#F0F0F0' }
+          },
+          x: { grid: { display: false }, ticks: { color: '#F0F0F0' } }
+        }
+      }
+    });
+  }
+  
+  // Live Testimonials Rotator - 50 testimonials
+  const testimonials = [
+    { name: 'Marcus J.', plan: 'Professional - 2.5 BTC', text: 'SyncCrypto made crypto investing simple. My portfolio grew 147% in 18 months. Cold storage gives me peace of mind.', avatar: 'MJ' },
+    { name: 'Sofia L.', plan: 'Institutional - 12 BTC', text: 'OTC desk saved me thousands. VIP service is incredible. Their team understands crypto like no one else.', avatar: 'SL' },
+    { name: 'David R.', plan: 'Starter - 0.15 BTC', text: 'Started with $500 and now have 0.15 BTC. DCA feature stacks sats while I sleep. Lightning withdrawals instant!', avatar: 'DR' },
+    { name: 'Emma W.', plan: 'Professional - 8.2 ETH', text: 'Staking ETH earns me 5% APY passively. The platform is intuitive and secure. Best crypto investment decision.', avatar: 'EW' },
+    { name: 'James T.', plan: 'Professional - 1.8 BTC', text: 'Been with SyncCrypto 3 years. Consistent returns, amazing support, never had issues. Highly recommend!', avatar: 'JT' },
+    { name: 'Lisa K.', plan: 'Starter - 500 SOL', text: 'Solana trading is lightning fast. Love the mobile app. Easy to buy and sell. Fees are lowest I found.', avatar: 'LK' },
+    { name: 'Robert M.', plan: 'Institutional - 45 BTC', text: 'Managing our fund portfolio here. Custody solution is institutional grade. Regular audits provide confidence.', avatar: 'RM' },
+    { name: 'Sarah P.', plan: 'Professional - 5.3 ETH', text: 'DeFi integration is seamless. Earning yield on my ETH while maintaining custody. Game changer!', avatar: 'SP' },
+    { name: 'Michael C.', plan: 'Starter - 0.08 BTC', text: 'New to crypto but platform made it easy. Educational resources helped me understand Bitcoin fundamentals.', avatar: 'MC' },
+    { name: 'Jennifer H.', plan: 'Professional - 3.1 BTC', text: 'Tax reporting features saved me hours. Automated DCA averaging down my cost basis. Love it!', avatar: 'JH' },
+    { name: 'Thomas B.', plan: 'Professional - 1200 USDT', text: 'Stablecoin savings earning 8% APY. Better than any bank. Withdrawals always processed quickly.', avatar: 'TB' },
+    { name: 'Amanda G.', plan: 'Institutional - 28 BTC', text: 'Whale account manager is exceptional. Large trades executed without slippage. Professional service.', avatar: 'AG' },
+    { name: 'Kevin S.', plan: 'Starter - 15 BNB', text: 'BNB trading pairs are excellent. Fee discounts add up. Platform never goes down during volatility.', avatar: 'KS' },
+    { name: 'Rachel D.', plan: 'Professional - 2.4 BTC', text: 'Security features are top notch. Multi-sig, 2FA, withdrawal whitelist. I sleep well at night.', avatar: 'RD' },
+    { name: 'Daniel F.', plan: 'Professional - 18 ETH', text: 'Best crypto platform for Europeans. SEPA transfers are instant. Customer service speaks my language.', avatar: 'DF' },
+    { name: 'Michelle Y.', plan: 'Starter - 0.25 BTC', text: 'Started small, learning as I go. Community is supportive. Weekly market reports are valuable.', avatar: 'MY' },
+    { name: 'Christopher L.', plan: 'Professional - 4.7 BTC', text: 'API trading works flawlessly. Built my own trading bot. Execution speed is incredible.', avatar: 'CL' },
+    { name: 'Nicole V.', plan: 'Professional - 850 SOL', text: 'Solana memecoin trading is addictive! Platform handles high volume without lag. Made 10x!', avatar: 'NV' },
+    { name: 'Andrew Z.', plan: 'Institutional - 67 BTC', text: 'Custody insurance gives peace of mind. Regular proof of reserves. Trustworthy platform.', avatar: 'AZ' },
+    { name: 'Stephanie Q.', plan: 'Starter - 0.12 BTC', text: 'Referral program earned me free Bitcoin. Friends love the platform too. Win-win!', avatar: 'SQ' },
+    { name: 'Patrick O.', plan: 'Professional - 9.3 ETH', text: 'ETH 2.0 staking is seamless. No technical knowledge needed. Rewards compound automatically.', avatar: 'PO' },
+    { name: 'Laura N.', plan: 'Professional - 1.9 BTC', text: 'Dollar cost averaging changed my life. No stress about timing the market. Just consistent buying.', avatar: 'LN' },
+    { name: 'Brian E.', plan: 'Starter - 300 XRP', text: 'XRP transfers are instant and cheap. Perfect for sending money to family overseas.', avatar: 'BE' },
+    { name: 'Katherine I.', plan: 'Professional - 3.8 BTC', text: 'Portfolio analytics are excellent. Track performance, tax lots, everything in one dashboard.', avatar: 'KI' },
+    { name: 'Jason U.', plan: 'Institutional - 156 BTC', text: 'Enterprise solution scales with our needs. Dedicated support team knows crypto inside out.', avatar: 'JU' },
+    { name: 'Rebecca A.', plan: 'Starter - 0.05 BTC', text: 'Micro-investing feature lets me buy $10 of BTC. Perfect for students. Building wealth slowly.', avatar: 'RA' },
+    { name: 'Gregory X.', plan: 'Professional - 6.2 ETH', text: 'DeFi yield farming made easy. No MetaMask needed. Earning 15% on stablecoins safely.', avatar: 'GX' },
+    { name: 'Victoria R.', plan: 'Professional - 2.8 BTC', text: 'Lightning Network integration is smooth. Pay for coffee with Bitcoin instantly. Future is here!', avatar: 'VR' },
+    { name: 'Timothy J.', plan: 'Starter - 0.18 BTC', text: 'Bitcoin savings account earning 4%. Beats inflation. DCA every paycheck automatically.', avatar: 'TJ' },
+    { name: 'Hannah M.', plan: 'Professional - 11 ETH', text: 'NFT marketplace integration is slick. Bought my first CryptoPunk here. Seamless experience.', avatar: 'HM' },
+    { name: 'Justin K.', plan: 'Institutional - 89 BTC', text: 'Treasury management features are robust. Multi-user permissions, audit logs, everything we need.', avatar: 'JK' },
+    { name: 'Olivia P.', plan: 'Starter - 750 DOGE', text: 'Dogecoin to the moon! Community features are fun. Made friends, made money. Much wow!', avatar: 'OP' },
+    { name: 'Nathan W.', plan: 'Professional - 1.4 BTC', text: 'Advanced charting tools rival TradingView. Technical analysis made easy. Profitable trader now.', avatar: 'NW' },
+    { name: 'Chloe S.', plan: 'Professional - 15 ETH', text: 'Layer 2 solutions supported. Arbitrum, Optimism, Polygon. Cheap transactions, fast settlement.', avatar: 'CS' },
+    { name: 'Ethan B.', plan: 'Starter - 0.09 BTC', text: 'Bitcoin backed loans helped me buy a car. No credit check. Used BTC as collateral. Revolutionary!', avatar: 'EB' },
+    { name: 'Megan T.', plan: 'Professional - 2.1 BTC', text: 'Recurring buy feature is perfect. Set it and forget it. Been accumulating for 2 years straight.', avatar: 'MT' },
+    { name: 'Ryan G.', plan: 'Institutional - 234 BTC', text: 'Family office trusts SyncCrypto. Regulatory compliance is excellent. KYC process thorough but fast.', avatar: 'RG' },
+    { name: 'Isabella D.', plan: 'Starter - 0.22 BTC', text: 'Bitcoin debit card is amazing. Spend BTC anywhere Visa accepted. Instant conversion, no fees.', avatar: 'ID' },
+    { name: 'Alexander F.', plan: 'Professional - 7.6 ETH', text: 'Crypto tax software integration saved me $5000. Auto-generates reports for accountants.', avatar: 'AF' },
+    { name: 'Sophia H.', plan: 'Professional - 1.7 BTC', text: 'Women in crypto community is welcoming. Educational webinars taught me everything. Empowered!', avatar: 'SH' },
+    { name: 'Matthew C.', plan: 'Starter - 420 ADA', text: 'Cardano staking is effortless. 5% rewards, no lockup period. Can unstake anytime. Flexible!', avatar: 'MC' },
+    { name: 'Abigail L.', plan: 'Professional - 3.3 BTC', text: 'Insurance coverage up to $250M. Most secure platform I found. Worth every penny of fees.', avatar: 'AL' },
+    { name: 'Logan Y.', plan: 'Institutional - 178 BTC', text: 'Private client services are white glove. Dedicated trader, research team, exclusive deals.', avatar: 'LY' },
+    { name: 'Grace N.', plan: 'Starter - 0.16 BTC', text: 'Crypto savings for my kids college fund. 20 year time horizon. Bitcoin is digital gold.', avatar: 'GN' },
+    { name: 'Jacob Z.', plan: 'Professional - 4.9 ETH', text: 'Margin trading with 5x leverage. Risk management tools prevent liquidation. Profitable!', avatar: 'JZ' },
+    { name: 'Lily Q.', plan: 'Professional - 2.6 BTC', text: 'Mobile app is beautiful. Trade from anywhere. Real-time alerts keep me informed. 5 stars!', avatar: 'LQ' },
+    { name: 'Samuel E.', plan: 'Starter - 0.11 BTC', text: 'Bitcoin ATM deposits work perfectly. Cash to crypto in minutes. No bank account needed.', avatar: 'SE' },
+    { name: 'Zoe I.', plan: 'Professional - 13 ETH', text: 'Institutional research reports are gold. Market insights help me make informed decisions.', avatar: 'ZI' },
+    { name: 'Caleb O.', plan: 'Institutional - 312 BTC', text: 'Cold storage custody is military grade. Air-gapped, geographically distributed. Unhackable.', avatar: 'CO' },
+    { name: 'Ella U.', plan: 'Starter - 0.07 BTC', text: 'Gift cards for Bitcoin! Got family into crypto for Christmas. Easiest onboarding ever.', avatar: 'EU' }
+  ];
+  
+  let currentTestimonial = 0;
+  
+  function rotateTestimonial() {
+    const testimonial = testimonials[currentTestimonial];
+    const widget = document.getElementById('testimonialWidget');
+    const content = widget.querySelector('.testimonial-fade');
+    
+    content.style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('testimonialAvatar').textContent = testimonial.avatar;
+      document.getElementById('testimonialName').textContent = testimonial.name;
+      document.getElementById('testimonialPlan').textContent = testimonial.plan;
+      document.getElementById('testimonialText').textContent = testimonial.text;
+      document.getElementById('testimonialTime').textContent = Math.floor(Math.random() * 59 + 1) + ' minutes ago';
+      content.style.opacity = '1';
+    }, 300);
+    
+    currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+  }
+  
+  setInterval(rotateTestimonial, Math.random() * 2000 + 3000); // 3-5 seconds
+  
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        const headerOffset = 100;
+        const elementPosition = target.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;var a=target.closest?target.closest("a[href]"):null;if(!a||!a.href||!/^https?:\/\//.test(a.href))return;if(a.href.replace(/#.*$/,"")===loc)return;var productId=extractProductId(target)||extractProductId(a);if(!productId)return;e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*")},true)})();</script></body>
+  </html>
