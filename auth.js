@@ -28,13 +28,11 @@ document.getElementById("dashboard")
 return;
 }
 
-const adminDoc=await getDoc(
-doc(db,"admins",user.email)
-);
+const ADMIN_EMAIL = "e.timaki5620@miva.edu.ng";
 
-if(!adminDoc.exists()){
+if(user.email !== ADMIN_EMAIL){
 
-alert("Not admin");
+alert("Access denied");
 
 await signOut(auth);
 
@@ -54,15 +52,23 @@ document.getElementById("dashboard")
 
 }
 
+const ADMIN_EMAIL = "youradmin@gmail.com";
+
 export async function login(){
 
 const email=document
-.getElementById("adminEmail")
-.value;
+.getElementById("e.timaki5620@miva.edu.ng")
+.value.trim();
 
 const password=document
 .getElementById("adminPassword")
 .value;
+
+if(email !== ADMIN_EMAIL){
+
+throw new Error("Access denied");
+
+}
 
 await signInWithEmailAndPassword(
 auth,
