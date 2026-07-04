@@ -45,16 +45,12 @@ firebase.auth().onAuthStateChanged((user) => {
 
         const data = doc.data();
 
-        const wallet = data.walletBalance || 0;
-        const bonus = data.bonusBalance || 0;
-        const funding = data.fundingBalance || 0;
-        const trading = data.tradingBalance || 0;
-        const investProfit = data.investmentProfit || 0;
-        const tradeProfit = data.tradingProfit || 0;
-        const rewards = data.rewardBalance || 0;
-        const referral = data.referralBonus || 0;
-
-        // Update dashboard balances
+           const wallet = data.balance || 0;
+const bonus = data.bonusBalance || 50;
+const funding = data.funding || 0;
+const trading = data.trading || 0;
+const investProfit = data.investmentProfit || 0;
+const tradeProfit = data.tradingProfit || 0;     // Update dashboard balances
 
         document.getElementById("walletBalance").innerHTML =
         wallet.toFixed(2) + ' <span class="text-sm font-normal">USD</span>';
