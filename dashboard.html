@@ -211,7 +211,8 @@
     <!-- Total Assets -->
     <div class="text-center py-4">
       <h3 class="text-4xl sm:text-5xl font-bold text-blue-600 mb-1">
-        50.00 <span class="text-2xl sm:text-3xl">USD</span>
+  <span id="totalAssets">0.00</span> <span class="text-2xl sm:text-3xl">USD</span>
+      </h3>
       </h3>
       <p class="text-gray-600 text-sm">Total Assets</p>
     </div>
@@ -247,7 +248,9 @@
           <span class="text-xs text-gray-600 font-medium">Wallet Balance</span>
           <i class="fa-solid fa-gift text-blue-500"></i>
         </div>
-        <p class="text-xl font-bold text-gray-800">0.00 <span class="text-sm font-normal">USD</span></p>
+        <p class="text-xl font-bold text-gray-800">
+  <span id="walletBalance">0.00</span> <span class="text-sm font-normal">USD</span>
+        </p>
       </div>
 
       <div class="balance-card bg-green-500 text-white rounded-xl p-4 shadow-sm">
@@ -423,16 +426,32 @@
     }
 
     // Load user data from Firebase Auth
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        document.getElementById('userName').textContent = user.displayName || 'King Amos';
-        document.getElementById('userEmail').textContent = user.email || 'famousjohn636@gmail.com';
-        const initials = (user.displayName || 'KA').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-        document.querySelectorAll('.avatar-initials').forEach(el => {
-          el.textContent = initials;
-        });
-      }
-    });
+    firebase.auth().onAuthStateChanged(async (user) => {
+  if (!user) return;
+
+  document.getElementById('userName').textContent =
+    user.displayName || 'User';
+
+  document.getElementById('userEmail').textContent =
+    user.email || '';
+
+  const uid = user.uid;
+
+  const userRef = db.collection("users").doc(uid);
+
+  const doc = await userRef.get();
+
+  if (doc.exists) {
+    const data = doc.data();
+
+    const wallet = data.walletBalance || 0;
+    const bonus = data.bonusBalance || 0;
+
+    document.getElementById("walletBalance").textContent = wallet.toFixed(2);
+    document.getElementById("bonusBalance").textContent = bonus.toFixed(2);
+    document.getElementById("totalAssets").textContent = (wallet + bonus).toFixed(2);
+  }
+});
 
     // Ticker Messages
     const tickerMessages = [
