@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SyncCrypto Admin</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+body{
+background:#0a0a0a;
+color:white;
+font-family:Arial,sans-serif;
+}
+
+.glass{
+background:rgba(26,26,26,.7);
+backdrop-filter:blur(12px);
+border:1px solid rgba(255,215,0,.1);
+}
+
+.btn{
+background:#FFD700;
+color:black;
+font-weight:bold;
+padding:12px;
+border-radius:10px;
+width:100%;
+}
+
+input,select{
+width:100%;
+padding:12px;
+background:#1a1a1a;
+border:1px solid #333;
+border-radius:10px;
+color:white;
+}
+
+.hidden{
+display:none;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="loginScreen"
+class="min-h-screen flex items-center justify-center">
+
+<div class="glass p-8 rounded-xl w-[90%] max-w-md">
+
+<h1 class="text-center text-3xl mb-6 text-yellow-400">
+SyncCrypto Admin
+</h1>
+
+<form id="loginForm">
+
+<div class="mb-4">
+
+<label>Email</label>
+
+<input
+type="email"
+id="adminEmail"
+value="e.timaki5620@miva.edu.ng"
+readonly>
+
+</div>
+
+<div class="mb-4">
+
+<label>Password</label>
+
+<input
+type="password"
+id="adminPassword"
+placeholder="Password">
+
+</div>
+
+<button
+type="submit"
+class="btn">
+
+Login
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+<!-- DASHBOARD -->
+
+<div id="dashboard" class="hidden">
+
+<header class="glass p-4">
+
+<div class="flex justify-between">
+
+<div>
+
+<h2 class="text-yellow-400">
+SyncCrypto Dashboard
+</h2>
+
+<p id="adminEmailDisplay"></p>
+
+</div>
+
+<button
+id="logoutBtn"
+class="btn w-auto px-5">
+
+Logout
+
+</button>
+
+</div>
+
+</header>
+
+<div class="p-5">
+
+<div class="glass p-5 rounded-xl mb-5">
+
+<h3 class="mb-3">
+Search User
+</h3>
+
+<div class="flex gap-3">
+
+<input
+id="searchEmail"
+placeholder="Enter user email">
+
+<button
+id="searchBtn"
+class="btn">
+
+Search
+
+</button>
+
+</div>
+
+</div>
+
+<div
+id="userCard"
+class="glass p-5 rounded-xl hidden">
+
+<h3>User Details</h3>
+
+<p>Name:
+<span id="userName"></span>
+</p>
+
+<p>Email:
+<span id="userEmailCard"></span>
+</p>
+
+<p>Country:
+<span id="userCountry"></span>
+</p>
+
+<p>
+Balance:
+<span id="userBalance"></span>
+</p>
+
+<hr class="my-4">
+
+<form id="fundForm">
+
+<input
+id="fundAmount"
+type="number"
+placeholder="Amount">
+
+<select id="fundCurrency">
+
+<option value="USD">
+USD
+</option>
+
+<option value="BTC">
+BTC
+</option>
+
+<option value="ETH">
+ETH
+</option>
+
+</select>
+
+<br><br>
+
+<button
+type="submit"
+class="btn">
+
+Fund Wallet
+
+</button>
+
+</form>
+
+</div>
+
+<div
+class="glass p-5 rounded-xl mt-5">
+
+<h3>Users</h3>
+
+<table class="w-full mt-4">
+
+<thead>
+
+<tr>
+
+<th>Name</th>
+<th>Email</th>
+<th>Balance</th>
+
+</tr>
+
+</thead>
+
+<tbody id="allUsersTable">
+
+<tr>
+
+<td colspan="3">
+
+Loading...
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ONLY LOAD ADMIN JS -->
+
+<script type="module" src="admin.js"></script>
+
+</body>
+</html>
