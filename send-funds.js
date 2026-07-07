@@ -36,17 +36,32 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     const userRef = doc(db, "users", user.uid);
+
+try {
+
     const snap = await getDoc(userRef);
 
-    if (snap.exists()) {
+    console.log("UID:", user.uid);
 
-        const data = snap.data();
-
-        walletBalance = data.balance || 0;
-
-        document.getElementById("walletSelect").innerHTML =
-        `<option>Funding - ${walletBalance.toFixed(2)} USD</option>`;
+    if (!snap.exists()) {
+        alert("User document not found in Firestore.");
+        return;
     }
+
+    const data = snap.data();
+
+    console.log(data);
+
+    walletBalance = Number(data.balance || 0);
+
+    document.getElementById("walletSelect").innerHTML =
+        `<option>Funding - ${walletBalance.toFixed(2)} USD</option>`;
+
+} catch (error) {
+    console.error(error);
+    alert(error.message);
+}
+    
 
 });
 
