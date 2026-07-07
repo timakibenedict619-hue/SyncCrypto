@@ -134,3 +134,34 @@ function showToast(message){
     },3000);
 
 }
+// Floating Action Button (FAB)
+
+const fabBtn = document.getElementById("fabBtn");
+const fabMenu = document.getElementById("fabMenu");
+const fabIcon = document.getElementById("fabIcon");
+
+let menuOpen = false;
+
+if (fabBtn && fabMenu && fabIcon) {
+
+    fabBtn.addEventListener("click", () => {
+
+        menuOpen = !menuOpen;
+
+        if (menuOpen) {
+            fabMenu.classList.remove("hidden");
+            fabMenu.classList.add("flex");
+
+            fabIcon.classList.remove("fa-plus");
+            fabIcon.classList.add("fa-xmark");
+        } else {
+            fabMenu.classList.add("hidden");
+            fabMenu.classList.remove("flex");
+
+            fabIcon.classList.remove("fa-xmark");
+            fabIcon.classList.add("fa-plus");
+        }
+
+    });
+
+}
