@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exchange</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        body { font-family: system-ui, sans-serif; background: rgba(0,0,0,0.5); }
+        .modal { background: #f0f9ff; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="modal w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-sky-200">
+        <div class="p-5 border-b border-sky-100">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold text-slate-900">Exchange</h3>
+                <button onclick="window.close()" class="text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-5 space-y-5">
+            <input type="text" value="100.00" class="w-full px-4 py-3 border border-sky-200 rounded-2xl text-center text-2xl font-semibold focus:outline-none focus:border-blue-500 bg-white">
+            
+            <div class="flex gap-3">
+                <div class="flex-1">
+                    <label class="text-xs text-slate-500 block mb-1">From Account</label>
+                    <select class="w-full px-4 py-3 border border-sky-200 rounded-2xl focus:outline-none focus:border-blue-500 bg-white">
+                        <option>funding Wall</option>
+                    </select>
+                    <p class="text-xs text-slate-400 mt-1">0.00</p>
+                </div>
+                <div class="flex items-center pt-6">
+                    <button class="w-10 h-10 bg-blue-600 text-white rounded-2xl flex items-center justify-center">
+                        <i data-lucide="arrow-right-left" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div class="flex-1">
+                    <label class="text-xs text-slate-500 block mb-1">To Account</label>
+                    <select class="w-full px-4 py-3 border border-sky-200 rounded-2xl focus:outline-none focus:border-blue-500 bg-white">
+                        <option>funding Wall</option>
+                    </select>
+                    <p class="text-xs text-slate-400 mt-1">0.00</p>
+                </div>
+            </div>
+
+            <div class="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex gap-3">
+                <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-600 mt-0.5"></i>
+                <div>
+                    <p class="font-medium text-amber-700 text-sm">Low balance!</p>
+                    <p class="text-sm text-amber-700">Not enough funds in the selected account.</p>
+                </div>
+            </div>
+
+            <button class="w-full bg-blue-600 text-white py-4 rounded-2xl font-semibold">Move Funds</button>
+            <button onclick="window.close()" class="w-full text-slate-600 py-4 font-medium">Close</button>
+        </div>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
