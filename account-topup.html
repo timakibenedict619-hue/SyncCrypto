@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account TopUp</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <style>
+        body{
+            font-family:system-ui,sans-serif;
+            background:rgba(0,0,0,.5);
+        }
+
+        .modal{
+            background:#f0f9ff;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4">
+
+<div class="modal w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-sky-200">
+
+    <div class="p-5 border-b border-sky-100">
+        <div class="flex justify-between items-center">
+
+            <h3 class="text-xl font-bold text-slate-900">
+                Account TopUp
+            </h3>
+
+            <button onclick="window.location.href='dashboard.html'"
+                class="text-slate-400 hover:text-slate-600">
+
+                <i data-lucide="x" class="w-6 h-6"></i>
+
+            </button>
+
+        </div>
+    </div>
+
+    <div class="p-5 space-y-5">
+
+        <!-- Amount -->
+
+        <div>
+
+            <label class="text-sm text-slate-500">
+                Amount
+            </label>
+
+            <input
+                id="amount"
+                type="number"
+                placeholder="0.00"
+                class="w-full mt-1 px-4 py-3 border border-sky-200 rounded-2xl focus:outline-none focus:border-blue-500 text-lg bg-white">
+
+        </div>
+
+        <!-- Wallet -->
+
+        <div>
+
+            <label class="text-sm text-slate-500">
+                Deposit to
+            </label>
+
+            <select
+                id="walletSelect"
+                class="w-full mt-1 px-4 py-3 border border-sky-200 rounded-2xl focus:outline-none focus:border-blue-500 bg-white">
+
+                <option>
+                    Funding - 0.00 USD
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- Payment Method -->
+
+        <div>
+
+            <label class="text-sm text-slate-500">
+                Select Payment Method
+            </label>
+
+            <select
+                id="paymentMethod"
+                class="w-full mt-1 px-4 py-3 border border-sky-200 rounded-2xl focus:outline-none focus:border-blue-500 bg-white">
+
+                <option value="">
+                    -- Select a Payment Method --
+                </option>
+
+                <option value="bitcoin">
+                    Bitcoin
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- Upload Receipt -->
+
+        <div>
+
+            <input
+                id="receipt"
+                type="file"
+                accept="image/png,image/jpeg"
+                class="hidden">
+
+            <label for="receipt"
+                class="border-2 border-dashed border-sky-300 rounded-2xl p-8 text-center bg-white cursor-pointer block">
+
+                <i data-lucide="upload-cloud"
+                    class="w-10 h-10 mx-auto text-sky-400">
+                </i>
+
+                <p class="text-sm text-slate-600 mt-2">
+                    Click or Drag & Drop
+                </p>
+
+                <p class="text-xs text-slate-400">
+                    JPEG / PNG Only
+                </p>
+
+                <p id="fileName"
+                    class="text-blue-600 text-sm mt-2 font-medium">
+                </p>
+
+            </label>
+
+        </div>
+
+        <!-- Buttons -->
+
+        <button
+            id="paidBtn"
+            class="w-full bg-blue-600 text-white py-4 rounded-2xl font-semibold">
+
+            Paid
+
+        </button>
+
+        <button
+            onclick="window.location.href='dashboard.html'"
+            class="w-full text-slate-600 py-4 font-medium">
+
+            Cancel
+
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+lucide.createIcons();
+</script>
+
+<script type="module" src="account-topup.js"></script>
+
+</body>
+</html>
