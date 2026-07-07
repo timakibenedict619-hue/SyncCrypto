@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Funds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        body { font-family: system-ui, sans-serif; background: rgba(0,0,0,0.5); }
+        .modal { background: #f0f9ff; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="modal w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-sky-200">
+        <div class="p-5 border-b border-sky-100">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold text-slate-900">Send Funds</h3>
+                <button onclick="window.close()" class="text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-5 space-y-5">
+            <div>
+                <label class="text-sm text-slate-500">Send money to</label>
+                <input type="text" placeholder="" class="w-full mt-1 px-4 py-3 border border-sky-200 rounded-2xl focus:outline-none focus:border-blue-500 bg-white">
+            </div>
+            <div>
+                <label class="text-sm text-slate-500">Amount...</label>
+                <input type="number" class="w-full mt-1 px-4 py-3 border border-sky-200 rounded-2xl focus:outline-none focus:border-blue-500 text-lg bg-white">
+            </div>
+            <div>
+                <label class="text-sm text-slate-500">From Wallet</label>
+                <select class="w-full mt-1 px-4 py-3 border border-sky-200 rounded-2xl focus:outline-none focus:border-blue-500 bg-white">
+                    <option>funding - 0.00</option>
+                </select>
+            </div>
+
+            <button class="w-full bg-blue-600 text-white py-4 rounded-2xl font-semibold mt-4">Send Money</button>
+            <button onclick="window.close()" class="w-full text-slate-600 py-4 font-medium">Cancel</button>
+        </div>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
