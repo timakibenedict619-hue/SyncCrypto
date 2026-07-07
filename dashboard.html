@@ -388,7 +388,31 @@
     </div>
 
   </main>
+<!-- Floating Menu -->
+<div id="fabMenu"
+class="fixed bottom-24 left-1/2 -translate-x-1/2 hidden flex-col gap-3 z-50">
 
+<button onclick="window.location.href='account-topup.html'" class="bg-white rounded-xl shadow-lg px-5 py-3 flex items-center gap-3">
+<i class="fa-solid fa-wallet text-blue-500"></i>
+<span>Deposit</span>
+</button>
+
+<button onclick="window.location.href='send-funds.html'" class="bg-white rounded-xl shadow-lg px-5 py-3 flex items-center gap-3">
+<i class="fa-solid fa-paper-plane text-green-500"></i>
+<span>Send Funds</span>
+</button>
+
+<button onclick="window.location.href='exchange.html'" class="bg-white rounded-xl shadow-lg px-5 py-3 flex items-center gap-3">
+<i class="fa-solid fa-arrow-right-arrow-left text-orange-500"></i>
+<span>Exchange</span>
+</button>
+
+<button onclick="window.location.href='withdraw.html'" class="bg-white rounded-xl shadow-lg px-5 py-3 flex items-center gap-3">
+<i class="fa-solid fa-money-bill-wave text-purple-500"></i>
+<span>Withdraw</span>
+</button>
+
+</div>
   <!-- Bottom Navigation -->
   <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
     <div class="max-w-7xl mx-auto px-4">
@@ -402,7 +426,9 @@
           <span class="text-xs">Invest</span>
         </button>
         <div class="flex-1 flex justify-center">
-          <button class="w-14 h-14 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg -mt-6 transition">
+          <button id="fabBtn" class="w-14 h-14 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg -mt-6 transition">
+    <i id="fabIcon" class="fa-solid fa-plus text-xl"></i>
+          </button>
             <i class="fa-solid fa-plus text-xl"></i>
           </button>
         </div>
