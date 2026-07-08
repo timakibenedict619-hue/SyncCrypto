@@ -9,15 +9,45 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
     <style>
-        body{
-            font-family:system-ui,sans-serif;
-            background:rgba(0,0,0,0.5);
-        }
+    body{
+        font-family:system-ui,sans-serif;
+        background:rgba(0,0,0,0.5);
+    }
 
-        .modal{
-            background:#f0f9ff;
-        }
+    .modal{
+        background:#f0f9ff;
+    }
+
+    @keyframes shake{
+        0%{transform:translateX(0);}
+        20%{transform:translateX(-8px);}
+        40%{transform:translateX(8px);}
+        60%{transform:translateX(-8px);}
+        80%{transform:translateX(8px);}
+        100%{transform:translateX(0);}
+    }
+
+    .shake{
+        animation:shake .4s;
+    }
+
+    .error-text{
+        display:none;
+        color:#dc2626;
+        font-size:14px;
+        text-align:center;
+        font-weight:500;
+    }
     </style>
+        
+            
+            
+        
+
+        
+        
+        
+    
 </head>
 
 <body class="min-h-screen flex items-center justify-center p-4">
@@ -154,6 +184,7 @@
             </div>
 
         </div>
+        <p id="errorMessage" class="error-text"></p>
 
         <!-- Buttons -->
 
