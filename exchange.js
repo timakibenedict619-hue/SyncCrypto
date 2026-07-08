@@ -96,11 +96,18 @@ document.getElementById("moveBtn").addEventListener("click", () => {
         return;
     }
 
-    if (amount > fundingBalance) {
-        alert("Insufficient funds.");
-        return;
-    }
+    const lowBalanceBox = document.getElementById("lowBalanceBox");
 
-    alert("Balance check passed. Funds are ready to move.");
+// Hide the warning before checking
+lowBalanceBox.classList.add("hidden");
+
+if (amount > fundingBalance) {
+    lowBalanceBox.classList.remove("hidden");
+    return;
+}
+
+lowBalanceBox.classList.add("hidden");
+alert("Balance check passed. Funds are ready to move.");
+    
 
 });
