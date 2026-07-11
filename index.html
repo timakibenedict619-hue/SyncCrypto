@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SyncCrypto - Trade Cryptocurrencies With Confidence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --bg-dark: #0A0E1A;
+  --bg-card: #121725;
+  --bg-card-hover: #1A1F2E;
+  --gold-primary: #F5B800;
+  --gold-secondary: #F7931A;
+  --text-primary: #FFFFFF;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
+  --success: #10B981;
+  --danger: #EF4444;
+  --border: rgba(245, 184, 0, 0.15);
+  --shadow-gold: 0 8px 32px rgba(245, 184, 0, 0.2);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header & Ticker */
+.header-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(10, 14, 26, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.ticker {
+  background: linear-gradient(90deg, var(--gold-primary), var(--gold-secondary));
+  padding: 8px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ticker-content {
+  display: inline-block;
+  animation: ticker 30s linear infinite;
+  color: #000;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gold-primary);
+  text-decoration: none;
+}
+
+.logo i {
+  font-size: 28px;
+}
+
+.nav {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+.nav a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav a:hover {
+  color: var(--gold-primary);
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Buttons */
+.btn {
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+  color: #000;
+  box-shadow: var(--shadow-gold);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(245, 184, 0, 0.35);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 2px solid var(--gold-primary);
+}
+
+.btn-secondary:hover {
+  background: rgba(245, 184, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Hero Section */
+.hero {
+  padding: 100px 0 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(245, 184, 0, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.hero-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  position: relative;
+}
+
+.hero-text h1 {
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #FFF 0%, var(--gold-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-text p {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245, 184, 0, 0.1);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 14px;
+  color: var(--gold-primary);
+  margin-bottom: 24px;
+}
+
+.hero-visual {
+  position: relative;
+}
+
+.balance-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.balance-title {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.balance-amount {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.balance-change {
+  color: var(--success);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.crypto-list {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.crypto-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: var(--bg-dark);
+  border-radius: 12px;
+}
+
+.crypto-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.crypto-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.crypto-details span {
+  display: block;
+}
+
+.crypto-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.crypto-amount {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.crypto-value {
+  text-align: right;
+}
+
+.crypto-price {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.crypto-change {
+  font-size: 12px;
+}
+
+.positive { color: var(--success); }
+.negative { color: var(--danger); }
+
+/* Feature Cards */
+.section {
+  padding: 80px 0;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 60px;
+  font-size: 16px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--gold-primary);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-gold);
+}
+
+.card-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #000;
+  margin-bottom: 20px;
+}
+
+.card h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.card p {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* Converter Widget */
+.converter {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.converter-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.converter-input {
+  flex: 1;
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.converter-select {
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  color: var(--text-primary);
+  font-weight: 600;
+  min-width: 120px;
+}
+
+.converter-swap {
+  width: 48px;
+  height: 48px;
+  background: var(--gold-primary);
+  border: none;
+  border-radius: 50%;
+  color: #000;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.converter-swap:hover {
+  transform: rotate(180deg);
+}
+
+.converter-rate {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+.price-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: var(--bg-dark);
+  border-radius: 12px;
+  margin-top: 24px;
+}
+
+.price-label {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.price-value {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.price-change {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Pricing Plans */
+.pricing-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 32px;
+  text-align: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.pricing-card.featured {
+  border: 2px solid var(--gold-primary);
+  transform: scale(1.05);
+}
+
+.pricing-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+  color: #000;
+  padding: 6px 20px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pricing-name {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--gold-primary);
+}
+
+.pricing-price {
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.pricing-duration {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+.pricing-features {
+  list-style: none;
+  margin-bottom: 32px;
+}
+
+.pricing-features li {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+}
+
+.pricing-features li:last-child {
+  border-bottom: none;
+}
+
+.pricing-features i {
+  color: var(--success);
+  margin-right: 8px;
+}
+
+/* ICO Timer */
+.ico-timer {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+}
+
+.timer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin: 32px 0;
+}
+
+.timer-item {
+  background: var(--bg-dark);
+  border-radius: 12px;
+  padding: 24px 16px;
+}
+
+.timer-value {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--gold-primary);
+  line-height: 1;
+}
+
+.timer-label {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* Testimonials */
+.testimonial-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.stars {
+  color: var(--gold-primary);
+  margin-bottom: 16px;
+}
+
+.testimonial-text {
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 24px;
+  line-height: 1.8;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.author-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #000;
+}
+
+.author-name {
+  font-weight: 600;
+}
+
+.author-role {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Team */
+.team-card {
+  text-align: center;
+}
+
+.team-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  font-weight: 700;
+  color: #000;
+}
+
+.team-name {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.team-role {
+  color: var(--gold-primary);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+/* Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--gold-primary);
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* Footer */
+.footer {
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  padding: 60px 0 30px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.footer-logo {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gold-primary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-desc {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.footer-social {
+  display: flex;
+  gap: 12px;
+}
+
+.social-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.3s;
+}
+
+.social-icon:hover {
+  border-color: var(--gold-primary);
+  color: var(--gold-primary);
+}
+
+.footer-links h4 {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.footer-links ul {
+  list-style: none;
+}
+
+.footer-links li {
+  margin-bottom: 12px;
+}
+
+.footer-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover {
+  color: var(--gold-primary);
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 30px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* Earning Popup */
+.earning-popup {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--gold-primary);
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: center;
+  gap: 12px;
+  z-index: 999;
+  animation: slideIn 0.5s ease;
+  max-width: 320px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.popup-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.popup-text {
+  font-size: 14px;
+}
+
+.popup-text strong {
+  color: var(--gold-primary);
+}
+
+/* ============= LIVE CHAT WIDGET ============= */
+.chat-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10000;
+}
+
+.chat-button {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+  color: #000;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(245, 184, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.chat-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 35px rgba(245, 184, 0, 0.5);
+}
+
+.chat-window {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 340px;
+  height: 480px;
+  background: var(--bg-card);
+  border: 1px solid var(--gold-primary);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+  color: #000;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+}
+
+.chat-header .close-chat {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #000;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-body {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background: var(--bg-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.message {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.message.user {
+  align-self: flex-end;
+  background: var(--gold-primary);
+  color: #000;
+  border-bottom-right-radius: 4px;
+}
+
+.message.admin {
+  align-self: flex-start;
+  background: #1F2937;
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+
+.chat-footer {
+  padding: 16px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+}
+
+.chat-input {
+  flex: 1;
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  padding: 12px 20px;
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+.chat-send {
+  background: var(--gold-primary);
+  color: #000;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .hero-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+  }
+  
+  .mobile-menu-btn {
+    display: block;
+  }
+  
+  .hero-text h1 {
+    font-size: 36px;
+  }
+  
+  .section-title {
+    font-size: 32px;
+  }
+  
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .pricing-card.featured {
+    transform: scale(1);
+  }
+  
+  .timer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 390px) {
+  .hero-text h1 {
+    font-size: 28px;
+  }
+  
+  .balance-amount {
+    font-size: 28px;
+  }
+  
+  .stat-value {
+    font-size: 36px;
+  }
+  
+  .pricing-price {
+    font-size: 36px;
+  }
+  
+  .timer-value {
+    font-size: 32px;
+  }
+  
+  .chat-window {
+    width: 300px;
+    height: 420px;
+    bottom: 80px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="header-wrapper">
+  <div class="ticker">
+    <div class="ticker-content" id="tickerContent">
+      <span>BTCStacker from GERMANY just earned $35,000 • </span>
+      <span>CryptoKing from USA just earned $12,500 • </span>
+      <span>TraderPro from UK just earned $8,900 • </span>
+      <span>BitcoinMax from CANADA just earned $22,100 • </span>
+    </div>
+  </div>
+  <header class="header container">
+    <a href="#" class="logo">
+      <i class="fa-solid fa-bolt"></i>
+      SyncCrypto
+    </a>
+    <nav class="nav">
+      <a href="#home">Home</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#team">Team</a>
+      <a href="login.html" class="btn btn-secondary">Sign In</a>
+    </nav>
+    <button class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+  </header>
+</div>
+
+<section class="hero" id="home">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="badge">
+          <i class="fa-solid fa-arrow-trend-up"></i>
+          Exchange Cryptocurrency At The Best Rate
+        </div>
+        <h1>Start Trading The World's Most Popular Cryptocurrencies!</h1>
+        <p>Just Enjoy Your Best Rates While We Are Doing The Rest For You. Trade Bitcoin, Ethereum, and many more with confidence.</p>
+        <div class="hero-buttons">
+          <a href="register.html" class="btn btn-primary">Get Started</a>
+          <a href="login.html" class="btn btn-secondary">Sign In</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="balance-card">
+          <div class="balance-header">
+            <div>
+              <div class="balance-title">Current Balance</div>
+              <div class="balance-amount">$24,562.80</div>
+              <div class="balance-change">Daily Profit +$1,245 ↑</div>
+            </div>
+            <i class="fa-solid fa-wallet" style="font-size: 32px; color: var(--gold-primary);"></i>
+          </div>
+          <div class="crypto-list">
+            <div class="crypto-item">
+              <div class="crypto-info">
+                <div class="crypto-icon" style="background: #F7931A;"><i class="fab fa-bitcoin"></i></div>
+                <div class="crypto-details">
+                  <span class="crypto-name">Bitcoin</span>
+                  <span class="crypto-amount">0.352 BTC</span>
+                </div>
+              </div>
+              <div class="crypto-value">
+                <span class="crypto-price">$23,630</span>
+                <span class="crypto-change positive">+5.2%</span>
+              </div>
+            </div>
+            <div class="crypto-item">
+              <div class="crypto-info">
+                <div class="crypto-icon" style="background: #627EEA;"><i class="fab fa-ethereum"></i></div>
+                <div class="crypto-details">
+                  <span class="crypto-name">Ethereum</span>
+                  <span class="crypto-amount">4.28 ETH</span>
+                </div>
+              </div>
+              <div class="crypto-value">
+                <span class="crypto-price">$7,845</span>
+                <span class="crypto-change positive">+3.8%</span>
+              </div>
+            </div>
+            <div class="crypto-item">
+              <div class="crypto-info">
+                <div class="crypto-icon" style="background: #345D9D;"><i class="fa-solid fa-litecoin-sign"></i></div>
+                <div class="crypto-details">
+                  <span class="crypto-name">Litecoin</span>
+                  <span class="crypto-amount">25.5 LTC</span>
+                </div>
+              </div>
+              <div class="crypto-value">
+                <span class="crypto-price">$1,932</span>
+                <span class="crypto-change negative">-1.2%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="container">
+    <h2 class="section-title">Why Choose Fast Cash Signal</h2>
+    <p class="section-subtitle">Everything you need to trade cryptocurrencies successfully</p>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3>Protection & Security</h3>
+        <p>Your funds are protected with bank-grade security, 2FA authentication, and cold wallet storage. We prioritize your safety above all.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-certificate"></i></div>
+        <h3>Licensed Exchange</h3>
+        <p>Fully regulated and licensed cryptocurrency exchange operating under international compliance standards for your peace of mind.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid-2">
+      <div class="converter">
+        <h3 style="margin-bottom: 24px; font-size: 24px;">Cryptocurrency Converter</h3>
+        <div class="converter-row">
+          <input type="number" class="converter-input" id="fromAmount" value="1" step="0.01">
+          <select class="converter-select" id="fromCurrency">
+            <option value="BTC">BTC</option>
+            <option value="ETH">ETH</option>
+            <option value="LTC">LTC</option>
+          </select>
+        </div>
+        <div style="text-align: center; margin: 16px 0;">
+          <button class="converter-swap" id="swapBtn"><i class="fa-solid fa-arrow-up-down"></i></button>
+        </div>
+        <div class="converter-row">
+          <input type="number" class="converter-input" id="toAmount" value="67120" readonly>
+          <select class="converter-select" id="toCurrency">
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+          </select>
+        </div>
+        <div class="converter-rate">1 BTC = $67,120</div>
+        <div class="price-display">
+          <div>
+            <div class="price-label">Bitcoin Price</div>
+            <div class="price-value">$67,163</div>
+          </div>
+          <div class="price-change positive">+3.77%</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-headset"></i></div>
+        <h3>Expert Support Team</h3>
+        <p>Our dedicated support team is available 24/7 to assist you with any questions or concerns. Get professional help whenever you need it.</p>
+        <div class="stats-grid" style="margin-top: 32px; grid-template-columns: repeat(2, 1fr);">
+          <div class="stat-item">
+            <div class="stat-value">$1B</div>
+            <div class="stat-label">Trading Volume</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">50K+</div>
+            <div class="stat-label">Active Users</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">99.9%</div>
+            <div class="stat-label">Uptime</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">24/7</div>
+            <div class="stat-label">Support</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">What Our Clients Say</h2>
+    <p class="section-subtitle">Trusted by thousands of traders worldwide</p>
+    <div class="grid-3">
+      <div class="testimonial-card">
+        <div class="stars">
+          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        </div>
+        <p class="testimonial-text">"FastCashSignal transformed my trading experience. The platform is intuitive and the support team is incredible. I've seen consistent profits since joining."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">AF</div>
+          <div>
+            <div class="author-name">Ayman Fikry</div>
+            <div class="author-role">Professional Trader</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">
+          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        </div>
+        <p class="testimonial-text">"Best crypto trading platform I've used. Secure, fast, and profitable. The automated signals have helped me make smarter trading decisions."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">FB</div>
+          <div>
+            <div class="author-name">Fouad Badawy</div>
+            <div class="author-role">Crypto Investor</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">
+          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        </div>
+        <p class="testimonial-text">"Started with the Starter plan and upgraded to Professional within a month. The returns are impressive and withdrawals are always processed quickly."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">MB</div>
+          <div>
+            <div class="author-name">Mahmoud Baghagho</div>
+            <div class="author-role">Day Trader</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="container">
+    <h2 class="section-title">Our Pricing Plans</h2>
+    <p class="section-subtitle">Choose the perfect plan for your trading goals</p>
+    <div class="grid-3">
+      <div class="pricing-card">
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-price">$1,500</div>
+        <div class="pricing-duration">7 Days</div>
+        <ul class="pricing-features">
+          <li><i class="fa-solid fa-check"></i> Basic Trading Signals</li>
+          <li><i class="fa-solid fa-check"></i> Email Support</li>
+          <li><i class="fa-solid fa-check"></i> Market Analysis</li>
+          <li><i class="fa-solid fa-check"></i> Up to 5% Daily ROI</li>
+        </ul>
+        <a href="register.html" class="btn btn-secondary" style="width: 100%;">Choose Plan</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">MOST POPULAR</div>
+        <div class="pricing-name">Professional</div>
+        <div class="pricing-price">$5,000</div>
+        <div class="pricing-duration">14 Days</div>
+        <ul class="pricing-features">
+          <li><i class="fa-solid fa-check"></i> Advanced Trading Signals</li>
+          <li><i class="fa-solid fa-check"></i> Priority Support 24/7</li>
+          <li><i class="fa-solid fa-check"></i> Real-time Market Data</li>
+          <li><i class="fa-solid fa-check"></i> Up to 8% Daily ROI</li>
+          <li><i class="fa-solid fa-check"></i> Dedicated Account Manager</li>
+        </ul>
+        <a href="register.html" class="btn btn-primary" style="width: 100%;">Choose Plan</a>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-price">$10,000</div>
+        <div class="pricing-duration">30 Days</div>
+        <ul class="pricing-features">
+          <li><i class="fa-solid fa-check"></i> Premium Trading Signals</li>
+          <li><i class="fa-solid fa-check"></i> VIP Support 24/7</li>
+          <li><i class="fa-solid fa-check"></i> Advanced Analytics</li>
+          <li><i class="fa-solid fa-check"></i> Up to 12% Daily ROI</li>
+          <li><i class="fa-solid fa-check"></i> Personal Trading Coach</li>
+        </ul>
+        <a href="register.html" class="btn btn-secondary" style="width: 100%;">Choose Plan</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="ico-timer">
+      <h2 class="section-title" style="margin-bottom: 16px;">ICO Starts In</h2>
+      <p class="section-subtitle" style="margin-bottom: 0;">Don't miss your chance to join the next big opportunity</p>
+      <div class="timer-grid" id="icoTimer">
+        <div class="timer-item">
+          <div class="timer-value" id="days">15</div>
+          <div class="timer-label">Days</div>
+        </div>
+        <div class="timer-item">
+          <div class="timer-value" id="hours">08</div>
+          <div class="timer-label">Hours</div>
+        </div>
+        <div class="timer-item">
+          <div class="timer-value" id="minutes">42</div>
+          <div class="timer-label">Minutes</div>
+        </div>
+        <div class="timer-item">
+          <div class="timer-value" id="seconds">18</div>
+          <div class="timer-label">Seconds</div>
+        </div>
+      </div>
+      <a href="register.html" class="btn btn-primary">Join ICO Now</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="team">
+  <div class="container">
+    <h2 class="section-title">Meet Our Team</h2>
+    <p class="section-subtitle">Expert professionals dedicated to your success</p>
+    <div class="grid-3">
+      <div class="team-card card">
+        <div class="team-avatar">JW</div>
+        <div class="team-name">James Warfe</div>
+        <div class="team-role">CEO & Founder</div>
+        <p style="color: var(--text-secondary); font-size: 14px;">15+ years in financial markets and blockchain technology</p>
+      </div>
+      <div class="team-card card">
+        <div class="team-avatar">MS</div>
+        <div class="team-name">Marko Smith</div>
+        <div class="team-role">Head of Trading</div>
+        <p style="color: var(--text-secondary); font-size: 14px;">Expert crypto trader with proven track record</p>
+      </div>
+      <div class="team-card card">
+        <div class="team-avatar">JT</div>
+        <div class="team-name">John Tommy</div>
+        <div class="team-role">Security Lead</div>
+        <p style="color: var(--text-secondary); font-size: 14px;">Cybersecurity specialist ensuring platform safety</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">
+          <i class="fa-solid fa-bolt"></i>
+          SyncCrypto
+        </div>
+        <p class="footer-desc">Trade the world's most popular cryptocurrencies with confidence. Secure, fast, and profitable trading platform for everyone.</p>
+        <div class="footer-social">
+          <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Our Team</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Trading Guide</a></li>
+          <li><a href="#">Market News</a></li>
+          <li><a href="#">Help Center</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Risk Disclosure</a></li>
+          <li><a href="#">AML Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 SyncCrypto. All rights reserved. Cryptocurrency trading involves substantial risk of loss.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="earning-popup" id="earningPopup">
+  <div class="popup-icon"><i class="fa-solid fa-coins"></i></div>
+  <div class="popup-text" id="popupText">
+    <strong>BTCStacker</strong> from GERMANY just earned <strong>$35,000</strong>
+  </div>
+</div>
+
+<!-- LIVE CHAT WIDGET -->
+<div class="chat-widget">
+  <button class="chat-button" id="chatToggle">
+    <i class="fa-solid fa-comment-dots"></i>
+  </button>
+
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <i class="fa-solid fa-headset"></i>
+        <div>
+          <strong>Live Support</strong><br>
+          <small style="opacity: 0.8;">Usually replies in seconds</small>
+        </div>
+      </div>
+      <button class="close-chat" id="closeChat">✕</button>
+    </div>
+    
+    <div class="chat-body" id="chatBody">
+      <!-- Messages will be added here by JS -->
+      <div class="message admin">
+        Hello! 👋 How can I help you today with your SyncCrypto trading?
+      </div>
+    </div>
+    
+    <div class="chat-footer">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Type your message...">
+      <button class="chat-send" id="sendMessage">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const users = [
+  { name: 'BTCStacker', country: 'GERMANY', amount: '$35,000' },
+  { name: 'CryptoKing', country: 'USA', amount: '$12,500' },
+  { name: 'TraderPro', country: 'UK', amount: '$8,900' },
+  { name: 'BitcoinMax', country: 'CANADA', amount: '$22,100' },
+  { name: 'EthereumAce', country: 'AUSTRALIA', amount: '$15,300' },
+  { name: 'CryptoQueen', country: 'FRANCE', amount: '$9,700' },
+  { name: 'TradeMaster', country: 'JAPAN', amount: '$28,400' },
+  { name: 'CoinHunter', country: 'BRAZIL', amount: '$11,200' }
+];
+
+let currentUserIndex = 0;
+
+function showEarningPopup() {
+  const popup = document.getElementById('earningPopup');
+  const popupText = document.getElementById('popupText');
+  const user = users[currentUserIndex];
+  
+  popupText.innerHTML = `<strong>${user.name}</strong> from \( {user.country} just earned <strong> \){user.amount}</strong>`;
+  popup.style.display = 'flex';
+  
+  setTimeout(() => {
+    popup.style.display = 'none';
+  }, 5000);
+  
+  currentUserIndex = (currentUserIndex + 1) % users.length;
+}
+
+setTimeout(() => {
+  showEarningPopup();
+  setInterval(showEarningPopup, 8000);
+}, 2000);
+
+function updateCountdown() {
+  const targetDate = new Date();
+  targetDate.setDate(targetDate.getDate() + 15);
+  targetDate.setHours(targetDate.getHours() + 8);
+  targetDate.setMinutes(targetDate.getMinutes() + 42);
+  targetDate.setSeconds(targetDate.getSeconds() + 18);
+  
+  const now = new Date().getTime();
+  const distance = targetDate - now;
+  
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  
+  document.getElementById('days').textContent = String(days).padStart(2, '0');
+  document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+  document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+  document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+}
+
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+const rates = {
+  BTC: { USD: 67120, EUR: 61500 },
+  ETH: { USD: 3420, EUR: 3130 },
+  LTC: { USD: 75.8, EUR: 69.5 }
+};
+
+document.getElementById('fromAmount').addEventListener('input', updateConversion);
+document.getElementById('fromCurrency').addEventListener('change', updateConversion);
+document.getElementById('toCurrency').addEventListener('change', updateConversion);
+
+document.getElementById('swapBtn').addEventListener('click', () => {
+  const fromCurrency = document.getElementById('fromCurrency');
+  const toCurrency = document.getElementById('toCurrency');
+  const temp = fromCurrency.value;
+  fromCurrency.value = toCurrency.value === 'USD' ? 'BTC' : 'USD';
+  toCurrency.value = temp === 'BTC' ? 'USD' : 'BTC';
+  updateConversion();
+});
+
+function updateConversion() {
+  const amount = parseFloat(document.getElementById('fromAmount').value) || 0;
+  const from = document.getElementById('fromCurrency').value;
+  const to = document.getElementById('toCurrency').value;
+  
+  let result;
+  if (rates[from] && rates[from][to]) {
+    result = amount * rates[from][to];
+  } else if (rates[to] && rates[to][from]) {
+    result = amount / rates[to][from];
+  } else {
+    result = amount;
+  }
+  
+  document.getElementById('toAmount').value = result.toFixed(2);
+  
+  const rateText = `1 ${from} = $${rates[from]?.USD || rates[to]?.USD || 0}`;
+  document.querySelector('.converter-rate').textContent = rateText;
+}
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+  const nav = document.querySelector('.nav');
+  nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+  nav.style.position = 'absolute';
+  nav.style.top = '100%';
+  nav.style.left = '0';
+  nav.style.right = '0';
+  nav.style.background = 'var(--bg-dark)';
+  nav.style.flexDirection = 'column';
+  nav.style.padding = '20px';
+  nav.style.borderBottom = '1px solid var(--border)';
+});
+
+/* ============= LIVE CHAT LOGIC ============= */
+const chatToggle = document.getElementById('chatToggle');
+const chatWindow = document.getElementById('chatWindow');
+const closeChat = document.getElementById('closeChat');
+const chatBody = document.getElementById('chatBody');
+const chatInput = document.getElementById('chatInput');
+const sendMessage = document.getElementById('sendMessage');
+
+let isChatOpen = false;
+
+function toggleChat() {
+  isChatOpen = !isChatOpen;
+  chatWindow.style.display = isChatOpen ? 'flex' : 'none';
+  
+  if (isChatOpen) {
+    chatInput.focus();
+  }
+}
+
+chatToggle.addEventListener('click', toggleChat);
+closeChat.addEventListener('click', toggleChat);
+
+// Send message function
+function sendUserMessage() {
+  const messageText = chatInput.value.trim();
+  if (!messageText) return;
+
+  // Add user message
+  const userMsg = document.createElement('div');
+  userMsg.className = 'message user';
+  userMsg.textContent = messageText;
+  chatBody.appendChild(userMsg);
+  
+  // Scroll to bottom
+  chatBody.scrollTop = chatBody.scrollHeight;
+  
+  // Clear input
+  chatInput.value = '';
+
+  // Simulate admin reply after a short delay
+  setTimeout(() => {
+    const adminReplies = [
+      "Thank you for your message! Our team is reviewing it now.",
+      "Great question! Let me check that for you right away.",
+      "I can help with that. Could you provide a bit more detail?",
+      "One moment please while I look into your account.",
+      "We appreciate your patience. How else can I assist you today?"
+    ];
+    
+    const randomReply = adminReplies[Math.floor(Math.random() * adminReplies.length)];
+    
+    const adminMsg = document.createElement('div');
+    adminMsg.className = 'message admin';
+    adminMsg.textContent = randomReply;
+    chatBody.appendChild(adminMsg);
+    
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }, 1200);
+}
+
+// Send on button click or Enter key
+sendMessage.addEventListener('click', sendUserMessage);
+
+chatInput.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    sendUserMessage();
+  }
+});
+
+// You can later replace the simulation with real backend integration via livechat.js
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+<script>(function(){var loc=location.href.replace(/#.*\( /,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,} \)/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;var a=target.closest?target.closest("a[href]"):null;if(!a||!a.href||!/^https?:\/\//.test(a.href))return;if(a.href.replace(/#.*$/,"")===loc)return;var productId=extractProductId(target)||extractProductId(a);if(!productId)return;e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*")},true)})();</script></body>
+  </html>
