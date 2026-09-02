@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Up Account | SyncCrypto</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      color: #f8fafc;
+      font-family: "DM Sans", sans-serif;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(248, 200, 70, 0.16), transparent 28rem),
+        radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.15), transparent 30rem),
+        #080b12;
+    }
+
+    h1, h2, h3 { font-family: "Space Grotesk", sans-serif; }
+
+    input, select {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      color: #f8fafc;
+      outline: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 13px;
+      background: rgba(7, 12, 21, 0.75);
+    }
+
+    input:focus, select:focus {
+      border-color: rgba(248, 200, 70, 0.85);
+      box-shadow: 0 0 0 4px rgba(248, 200, 70, 0.1);
+    }
+
+    select option { color: white; background: #151b28; }
+
+    .hidden { display: none !important; }
+
+    .upload-label {
+      display: block;
+      cursor: pointer;
+      border: 2px dashed rgba(96, 165, 250, 0.45);
+      border-radius: 16px;
+      padding: 1.75rem 1rem;
+      text-align: center;
+      background: rgba(59, 130, 246, 0.04);
+      transition: 0.2s ease;
+    }
+
+    .upload-label:hover {
+      border-color: rgba(248, 200, 70, 0.75);
+      background: rgba(248, 200, 70, 0.05);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen px-4 py-8 sm:flex sm:items-center sm:justify-center">
+  <main class="w-full max-w-xl overflow-hidden rounded-3xl border border-white/10 bg-[rgba(19,25,38,.9)] shadow-2xl shadow-black/40 backdrop-blur-xl">
+    <header class="flex items-center justify-between border-b border-white/10 px-6 py-5">
+      <div class="flex items-center gap-3">
+        <div class="grid h-11 w-11 place-items-center rounded-xl bg-yellow-400/10 text-yellow-400">
+          <i data-lucide="circle-plus" class="h-5 w-5"></i>
+        </div>
+
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.16em] text-yellow-400">Wallet funding</p>
+          <h1 class="text-xl font-bold">Top up account</h1>
+        </div>
+      </div>
+
+      <button onclick="window.location.href='dashboard.html'" class="rounded-xl p-2 text-slate-400 transition hover:bg-white/5 hover:text-white">
+        <i data-lucide="x" class="h-5 w-5"></i>
+      </button>
+    </header>
+
+    <section class="p-5 sm:p-6">
+      <div class="mb-6 rounded-2xl border border-yellow-400/15 bg-yellow-400/[0.06] p-4">
+        <div class="flex gap-3">
+          <i data-lucide="clock-3" class="mt-0.5 h-5 w-5 shrink-0 text-yellow-400"></i>
+          <div>
+            <p class="font-semibold text-white">Top-ups require approval</p>
+            <p class="mt-1 text-sm leading-5 text-slate-400">
+              Your wallet is funded only after an administrator verifies your payment.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <form id="topupForm" class="space-y-5">
+        <div>
+          <label for="amount" class="mb-2 block text-sm font-semibold text-slate-300">Deposit amount (USD)</label>
+          <input id="amount" type="number" min="1" step="any" placeholder="Enter amount" required>
+        </div>
+
+        <div>
+          <label for="walletSelect" class="mb-2 block text-sm font-semibold text-slate-300">Deposit to</label>
+          <select id="walletSelect">
+            <option value="funding">Funding wallet — Loading balance...</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="paymentMethod" class="mb-2 block text-sm font-semibold text-slate-300">Payment method</label>
+          <select id="paymentMethod" required>
+            <option value="" selected disabled>Select payment method</option>
+            <option value="bitcoin">Bitcoin</option>
+          </select>
+        </div>
+
+        <div id="bitcoinInstructions" class="hidden rounded-2xl border border-orange-400/15 bg-orange-400/[0.05] p-4">
+          <div class="mb-4 flex items-center gap-3">
+            <div class="grid h-10 w-10 place-items-center rounded-xl bg-orange-400/10 text-orange-400">
+              <i data-lucide="bitcoin" class="h-5 w-5"></i>
+            </div>
+
+            <div>
+              <h2 class="font-bold text-white">Pay with Bitcoin</h2>
+              <p class="text-xs text-slate-400">Send Bitcoin to the address below, then upload your receipt.</p>
+            </div>
+          </div>
+
+          <p class="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Bitcoin receiving address</p>
+
+          <div class="flex gap-2">
+            <code id="bitcoinAddress" class="min-w-0 flex-1 break-all rounded-xl border border-white/10 bg-black/20 px-3 py-3 text-xs text-yellow-200">
+              bc1REPLACE_WITH_YOUR_REAL_BITCOIN_ADDRESS
+            </code>
+
+            <button id="copyAddressBtn" type="button" class="rounded-xl border border-white/10 bg-white/[0.06] px-4 text-sm font-bold text-white transition hover:bg-white/[0.12]">
+              Copy
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <input id="receipt" type="file" accept="image/png,image/jpeg,image/webp" class="hidden">
+
+          <label for="receipt" class="upload-label">
+            <i data-lucide="upload-cloud" class="mx-auto h-10 w-10 text-blue-400"></i>
+            <p class="mt-3 text-sm font-semibold text-slate-200">Upload payment receipt</p>
+            <p class="mt-1 text-xs text-slate-500">PNG, JPG, or WEBP · Maximum 5 MB</p>
+            <p id="fileName" class="mt-3 text-sm font-semibold text-yellow-300"></p>
+          </label>
+        </div>
+
+        <button id="paidBtn" type="submit" class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-yellow-300 to-amber-500 px-5 py-4 font-bold text-[#171209] transition hover:-translate-y-0.5 hover:brightness-105">
+          <i data-lucide="send" class="h-5 w-5"></i>
+          Submit top-up request
+        </button>
+
+        <button type="button" onclick="window.location.href='dashboard.html'" class="w-full rounded-xl py-3 text-sm font-semibold text-slate-400 transition hover:bg-white/5 hover:text-white">
+          Cancel
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <script>lucide.createIcons();</script>
+  <script type="module" src="account-topup.js"></script>
+</body>
+</html>
