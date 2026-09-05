@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Funds | SyncCrypto</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background:
+                radial-gradient(circle at top right, rgba(250, 204, 21, 0.10), transparent 32%),
+                radial-gradient(circle at bottom left, rgba(250, 204, 21, 0.06), transparent 30%),
+                #050505;
+            color: #fff;
+        }
+
+        .page-glow {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(250, 204, 21, 0.025),
+                    transparent 35%,
+                    rgba(250, 204, 21, 0.02)
+                );
+        }
+
+        .modal {
+            position: relative;
+            background: rgba(15, 15, 15, 0.96);
+            border: 1px solid rgba(250, 204, 21, 0.18);
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, 0.65),
+                0 0 40px rgba(250, 204, 21, 0.035);
+            backdrop-filter: blur(18px);
+        }
+
+        .modal::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                #facc15,
+                transparent
+            );
+            opacity: 0.8;
+        }
+
+        .header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .icon-box {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: rgba(250, 204, 21, 0.10);
+            border: 1px solid rgba(250, 204, 21, 0.20);
+            color: #facc15;
+        }
+
+        .close-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            color: #777;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            color: #facc15;
+            background: rgba(250, 204, 21, 0.08);
+        }
+
+        .field-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a3a3a3;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #737373;
+            pointer-events: none;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            min-height: 54px;
+            border-radius: 15px;
+            border: 1px solid #292929;
+            background: #0b0b0b;
+            color: #f5f5f5;
+            outline: none;
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .form-input {
+            padding: 0 16px 0 46px;
+        }
+
+        .form-input.amount-input {
+            padding-left: 16px;
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+        .form-select {
+            padding: 0 42px 0 16px;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .form-select option {
+            background: #0b0b0b;
+            color: #fff;
+        }
+
+        .form-input::placeholder {
+            color: #555;
+        }
+
+        .form-input:hover,
+        .form-select:hover {
+            border-color: #3a3a3a;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            border-color: #facc15;
+            background: #0d0d0d;
+            box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.08);
+        }
+
+        .select-wrap {
+            position: relative;
+        }
+
+        .select-arrow {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #737373;
+            pointer-events: none;
+        }
+
+        .wallet-card {
+            padding: 14px 16px;
+            border-radius: 15px;
+            background: rgba(250, 204, 21, 0.055);
+            border: 1px solid rgba(250, 204, 21, 0.12);
+        }
+
+        .send-button {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            min-height: 56px;
+            border: 0;
+            border-radius: 15px;
+            background: #facc15;
+            color: #050505;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            cursor: pointer;
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+            box-shadow: 0 10px 28px rgba(250, 204, 21, 0.14);
+        }
+
+        .send-button:hover {
+            background: #fde047;
+            transform: translateY(-1px);
+            box-shadow: 0 14px 34px rgba(250, 204, 21, 0.20);
+        }
+
+        .send-button:active {
+            transform: translateY(0);
+        }
+
+        .send-button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .cancel-button {
+            width: 100%;
+            min-height: 48px;
+            border-radius: 14px;
+            color: #888;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .cancel-button:hover {
+            color: #facc15;
+            background: rgba(255, 255, 255, 0.025);
+        }
+
+        .secure-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            color: #626262;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .secure-note svg {
+            color: #facc15;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 480px) {
+            .modal {
+                border-radius: 24px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 18px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="page-glow"></div>
+
+    <div class="modal w-full max-w-md rounded-3xl overflow-hidden">
+
+        <!-- Header -->
+        <div class="header px-6 py-5">
+            <div class="flex items-center justify-between">
+
+                <div class="flex items-center gap-3">
+                    <div class="icon-box">
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-bold text-white">
+                            Send Funds
+                        </h3>
+
+                        <p class="text-xs text-neutral-500 mt-0.5">
+                            Transfer funds securely
+                        </p>
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    onclick="window.location.href='dashboard.html'"
+                    class="close-btn"
+                    aria-label="Close">
+
+                    <i data-lucide="x" class="w-5 h-5"></i>
+
+                </button>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="content p-6 space-y-5">
+
+            <!-- Recipient -->
+            <div>
+                <label for="recipient" class="field-label">
+                    Send money to
+                </label>
+
+                <div class="input-wrap">
+                    <i data-lucide="mail" class="input-icon w-5 h-5"></i>
+
+                    <input
+                        id="recipient"
+                        type="text"
+                        autocomplete="email"
+                        placeholder="Recipient email address"
+                        class="form-input">
+                </div>
+            </div>
+
+            <!-- Amount -->
+            <div>
+                <label for="amount" class="field-label">
+                    Amount
+                </label>
+
+                <div class="input-wrap">
+                    <input
+                        id="amount"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        inputmode="decimal"
+                        placeholder="0.00"
+                        class="form-input amount-input">
+                </div>
+            </div>
+
+            <!-- Wallet -->
+            <div>
+                <label for="walletSelect" class="field-label">
+                    From Wallet
+                </label>
+
+                <div class="select-wrap">
+                    <select
+                        id="walletSelect"
+                        class="form-select">
+
+                        <option value="funding">
+                            Funding - 0.00 USD
+                        </option>
+
+                    </select>
+
+                    <i data-lucide="chevron-down" class="select-arrow w-5 h-5"></i>
+                </div>
+            </div>
+
+            <!-- Send -->
+            <div class="pt-1">
+                <button
+                    id="sendBtn"
+                    type="button"
+                    class="send-button flex items-center justify-center gap-2">
+
+                    <i data-lucide="send" class="w-5 h-5"></i>
+
+                    <span>Send Money</span>
+
+                </button>
+            </div>
+
+            <!-- Cancel -->
+            <button
+                type="button"
+                onclick="window.location.href='dashboard.html'"
+                class="cancel-button">
+
+                Cancel
+
+            </button>
+
+            <!-- Security -->
+            <div class="secure-note">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                <span>Secure wallet transfer</span>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+
+    <script type="module" src="sendfunds.js"></script>
+
+</body>
+</html>
