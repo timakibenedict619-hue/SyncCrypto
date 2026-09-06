@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SyncCrypto - Trade Cryptocurrencies With Confidence</title>
+
+    <meta name="description"
+          content="Trade Bitcoin, Ethereum and other popular cryptocurrencies with SyncCrypto.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background: #07111f;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        /* =========================
+           ANNOUNCEMENT BAR
+        ========================= */
+
+        .announcement {
+            width: 100%;
+            overflow: hidden;
+            background: #0d1929;
+            border-bottom: 1px solid rgba(255,255,255,.07);
+            white-space: nowrap;
+        }
+
+        .announcement-track {
+            display: inline-block;
+            padding: 10px 0;
+            animation: ticker 28s linear infinite;
+            color: #c8d2df;
+            font-size: 13px;
+        }
+
+        .announcement-track span {
+            margin-right: 70px;
+        }
+
+        @keyframes ticker {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* =========================
+           NAVIGATION
+        ========================= */
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(7,17,31,.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+
+        .nav {
+            width: min(1180px, 92%);
+            height: 76px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #4f7cff, #7a5cff);
+            box-shadow: 0 8px 25px rgba(79,124,255,.28);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            color: #aab6c7;
+            font-size: 14px;
+        }
+
+        .nav-links a {
+            transition: .25s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            border-radius: 9px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: .25s;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #527cff, #7358ff);
+            box-shadow: 0 10px 25px rgba(82,124,255,.22);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(82,124,255,.3);
+        }
+
+        .btn-outline {
+            border-color: #26364d;
+            color: #dce5f1;
+        }
+
+        .btn-outline:hover {
+            background: #101e31;
+        }
+
+        .menu-btn {
+            display: none;
+            background: transparent;
+            color: white;
+            border: 0;
+            font-size: 26px;
+            cursor: pointer;
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 100px 0 75px;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            width: 650px;
+            height: 650px;
+            background: #315fff;
+            opacity: .09;
+            filter: blur(130px);
+            border-radius: 50%;
+            left: -250px;
+            top: 50px;
+        }
+
+        .hero-inner {
+            width: min(1180px, 92%);
+            margin: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content {
+            max-width: 760px;
+            margin-bottom: 65px;
+        }
+
+        .eyebrow {
+            color: #738aff;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .hero h1 {
+            font-size: clamp(42px, 6vw, 72px);
+            line-height: 1.05;
+            letter-spacing: -3px;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(90deg, #5c83ff, #8c68ff);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            color: #94a2b6;
+            max-width: 650px;
+            font-size: 17px;
+            margin-bottom: 30px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* =========================
+           PORTFOLIO
+        ========================= */
+
+        .portfolio {
+            display: grid;
+            grid-template-columns: 1.25fr 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .balance-card,
+        .coin-card {
+            background: linear-gradient(145deg, #101d30, #0b1727);
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 16px;
+            padding: 22px;
+            transition: .3s;
+        }
+
+        .balance-card:hover,
+        .coin-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(100,130,255,.25);
+        }
+
+        .small-label {
+            color: #8795aa;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .balance {
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .profit {
+            color: #3ddc97;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .coin-top {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            margin-bottom: 18px;
+        }
+
+        .coin-icon {
+            width: 39px;
+            height: 39px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+            background: #172b48;
+        }
+
+        .coin-name {
+            font-weight: 700;
+        }
+
+        .coin-symbol {
+            color: #728097;
+            font-size: 12px;
+        }
+
+        .coin-value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .coin-change {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .positive {
+            color: #3ddc97;
+        }
+
+        .negative {
+            color: #ff6875;
+        }
+
+        /* =========================
+           SECTION
+        ========================= */
+
+        section {
+            padding: 95px 0;
+        }
+
+        .container {
+            width: min(1180px, 92%);
+            margin: auto;
+        }
+
+        .section-head {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-head h2 {
+            font-size: clamp(30px, 4vw, 44px);
+            letter-spacing: -1.5px;
+            margin-bottom: 10px;
+        }
+
+        .section-head p {
+            color: #8190a5;
+        }
+
+        /* =========================
+           FEATURES
+        ========================= */
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .feature {
+            padding: 30px;
+            background: #0c1828;
+            border: 1px solid rgba(255,255,255,.06);
+            border-radius: 16px;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: #17294a;
+            color: #7790ff;
+            font-size: 21px;
+            margin-bottom: 22px;
+        }
+
+        .feature h3 {
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            color: #7f8da2;
+            font-size: 14px;
+        }
+
+        /* =========================
+           CONVERTER
+        ========================= */
+
+        .converter-section {
+            background: #091522;
+        }
+
+        .converter {
+            max-width: 850px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 20px;
+            background: #0d1b2d;
+            border: 1px solid rgba(255,255,255,.07);
+        }
+
+        .converter-grid {
+            display: grid;
+            grid-template-columns: 1fr 180px 1fr;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .field label {
+            display: block;
+            color: #8492a6;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .input-wrap {
+            display: flex;
+            background: #081321;
+            border: 1px solid #213047;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .input-wrap input,
+        .input-wrap select {
+            width: 100%;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: white;
+            padding: 14px;
+        }
+
+        .input-wrap select {
+            width: 110px;
+            border-left: 1px solid #213047;
+        }
+
+        .equals {
+            text-align: center;
+            color: #7082ff;
+            font-size: 28px;
+            padding-bottom: 10px;
+        }
+
+        .rate {
+            text-align: center;
+            color: #77869b;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+
+        /* =========================
+           STATS
+        ========================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 18px;
+            overflow: hidden;
+            background: #0b1726;
+        }
+
+        .stat {
+            padding: 35px 20px;
+            text-align: center;
+            border-right: 1px solid rgba(255,255,255,.07);
+        }
+
+        .stat:last-child {
+            border-right: 0;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 31px;
+            margin-bottom: 5px;
+        }
+
+        .stat span {
+            color: #7d8ba0;
+            font-size: 13px;
+        }
+
+        /* =========================
+           TESTIMONIALS
+        ========================= */
+
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .testimonial {
+            background: #0c1828;
+            border: 1px solid rgba(255,255,255,.06);
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .stars {
+            color: #ffc857;
+            margin-bottom: 18px;
+        }
+
+        .testimonial p {
+            color: #9aa7b9;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .person {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: #1c3151;
+            color: #9cb0ff;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .person small {
+            display: block;
+            color: #718097;
+            font-size: 11px;
+        }
+
+        /* =========================
+           PRICING
+        ========================= */
+
+        .pricing {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .price-card {
+            position: relative;
+            padding: 32px;
+            background: #0c1828;
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 17px;
+        }
+
+        .price-card.popular {
+            border-color: #667fff;
+            box-shadow: 0 0 45px rgba(75,98,255,.09);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: #586fff;
+            color: white;
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .price-card h3 {
+            margin-bottom: 15px;
+        }
+
+        .price {
+            font-size: 38px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .duration {
+            color: #718097;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 28px;
+        }
+
+        .features-list li {
+            color: #a0adbd;
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,.05);
+        }
+
+        .features-list li::before {
+            content: "✓";
+            color: #55dca0;
+            margin-right: 9px;
+        }
+
+        .price-card .btn {
+            width: 100%;
+        }
+
+        /* =========================
+           ICO
+        ========================= */
+
+        .ico {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #111f42, #171733);
+        }
+
+        .ico::before {
+            content: "";
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            border-radius: 50%;
+            background: #5c65ff;
+            opacity: .09;
+            filter: blur(100px);
+            left: 50%;
+            top: -200px;
+        }
+
+        .countdown {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .time-box {
+            min-width: 110px;
+            padding: 20px;
+            text-align: center;
+            border-radius: 13px;
+            background: rgba(7,17,31,.65);
+            border: 1px solid rgba(255,255,255,.08);
+        }
+
+        .time-box strong {
+            display: block;
+            font-size: 34px;
+        }
+
+        .time-box span {
+            color: #7d8ba1;
+            font-size: 11px;
+        }
+
+        .ico-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        /* =========================
+           TEAM
+        ========================= */
+
+        .team {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .team-card {
+            text-align: center;
+            padding: 30px;
+            background: #0c1828;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.06);
+        }
+
+        .team-avatar {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 18px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #273b69, #172545);
+            color: #aab9ff;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .team-card p {
+            color: #718096;
+            font-size: 13px;
+            margin-top: 7px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            padding: 70px 0 25px;
+            background: #050d17;
+            border-top: 1px solid rgba(255,255,255,.06);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.6fr repeat(3, 1fr);
+            gap: 45px;
+            margin-bottom: 50px;
+        }
+
+        .footer-brand p {
+            color: #718095;
+            font-size: 13px;
+            max-width: 310px;
+            margin-top: 16px;
+        }
+
+        footer h4 {
+            margin-bottom: 18px;
+        }
+
+        footer ul {
+            list-style: none;
+        }
+
+        footer li {
+            margin-bottom: 10px;
+        }
+
+        footer li a {
+            color: #718095;
+            font-size: 13px;
+        }
+
+        footer li a:hover {
+            color: white;
+        }
+
+        .copyright {
+            border-top: 1px solid rgba(255,255,255,.06);
+            padding-top: 22px;
+            color: #58677b;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* =========================
+           SUPPORT CHAT
+        ========================= */
+
+        .chat-button {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            width: 58px;
+            height: 58px;
+            border: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #577fff, #715cff);
+            color: white;
+            cursor: pointer;
+            font-size: 22px;
+            box-shadow: 0 12px 30px rgba(0,0,0,.35);
+            z-index: 2000;
+        }
+
+        .chat-box {
+            position: fixed;
+            right: 24px;
+            bottom: 92px;
+            width: 330px;
+            max-width: calc(100% - 30px);
+            background: #0d1a2b;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,.4);
+            display: none;
+            z-index: 1999;
+        }
+
+        .chat-box.active {
+            display: block;
+        }
+
+        .chat-header {
+            padding: 18px;
+            background: #13233a;
+            font-weight: 700;
+        }
+
+        .chat-status {
+            display: block;
+            color: #4ddd9c;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .chat-body {
+            padding: 20px;
+            min-height: 130px;
+            color: #a4b0c0;
+            font-size: 13px;
+        }
+
+        .chat-input {
+            display: flex;
+            border-top: 1px solid rgba(255,255,255,.06);
+        }
+
+        .chat-input input {
+            flex: 1;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: white;
+            padding: 14px;
+        }
+
+        .chat-input button {
+            border: 0;
+            background: #5977ff;
+            color: white;
+            padding: 0 18px;
+            cursor: pointer;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 950px) {
+            .portfolio {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .features,
+            .testimonials,
+            .pricing,
+            .team {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 76px;
+                padding: 20px;
+                background: #081321;
+                flex-direction: column;
+                border-bottom: 1px solid rgba(255,255,255,.07);
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .nav-actions {
+                display: none;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .hero {
+                padding-top: 70px;
+            }
+
+            .hero h1 {
+                letter-spacing: -2px;
+            }
+
+            .portfolio,
+            .features,
+            .testimonials,
+            .pricing,
+            .team,
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .stat {
+                border-right: 0;
+                border-bottom: 1px solid rgba(255,255,255,.07);
+            }
+
+            .stat:last-child {
+                border-bottom: 0;
+            }
+
+            .converter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .equals {
+                padding: 0;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .time-box {
+                min-width: 85px;
+            }
+
+            .time-box strong {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================
+     ANNOUNCEMENT
+========================= -->
+
+<div class="announcement">
+    <div class="announcement-track">
+        <span>BTCStacker from GERMANY just earned $35,000</span>
+        <span>CryptoKing from USA just earned $12,500</span>
+        <span>TraderPro from UK just earned $8,900</span>
+        <span>BitcoinMax from CANADA just earned $22,100</span>
+
+        <span>BTCStacker from GERMANY just earned $35,000</span>
+        <span>CryptoKing from USA just earned $12,500</span>
+        <span>TraderPro from UK just earned $8,900</span>
+        <span>BitcoinMax from CANADA just earned $22,100</span>
+    </div>
+</div>
+
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<header>
+    <nav class="nav">
+
+        <a href="#" class="logo">
+            <span class="logo-icon">₿</span>
+            SyncCrypto
+        </a>
+
+        <div class="nav-links" id="navLinks">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#team">Team</a>
+        </div>
+
+        <div class="nav-actions">
+            <a href="login.html" class="btn btn-outline">Sign In</a>
+            <a href="register.html" class="btn btn-primary">Get Started</a>
+        </div>
+
+        <button class="menu-btn" id="menuBtn">☰</button>
+
+    </nav>
+</header>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<main id="home">
+
+<section class="hero">
+
+    <div class="hero-inner">
+
+        <div class="hero-content">
+
+            <div class="eyebrow">
+                Exchange Cryptocurrency At The Best Rate
+            </div>
+
+            <h1>
+                Start Trading The World's
+                <span>Most Popular Cryptocurrencies!</span>
+            </h1>
+
+            <p>
+                Just Enjoy Your Best Rates While We Are Doing The Rest For You.
+                Trade Bitcoin, Ethereum, and many more with confidence.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="register.html" class="btn btn-primary">
+                    Get Started
+                </a>
+
+                <a href="login.html" class="btn btn-outline">
+                    Sign In
+                </a>
+            </div>
+
+        </div>
+
+
+        <!-- Portfolio cards -->
+
+        <div class="portfolio">
+
+            <div class="balance-card">
+
+                <div class="small-label">
+                    Current Balance
+                </div>
+
+                <div class="balance">
+                    $24,562.80
+                </div>
+
+                <div class="profit">
+                    Daily Profit +$1,245 ↑
+                </div>
+
+            </div>
+
+
+            <div class="coin-card">
+
+                <div class="coin-top">
+                    <div class="coin-icon">₿</div>
+
+                    <div>
+                        <div class="coin-name">Bitcoin</div>
+                        <div class="coin-symbol">0.352 BTC</div>
+                    </div>
+                </div>
+
+                <div class="coin-value">$23,630</div>
+
+                <div class="coin-change positive">
+                    +5.2%
+                </div>
+
+            </div>
+
+
+            <div class="coin-card">
+
+                <div class="coin-top">
+                    <div class="coin-icon">Ξ</div>
+
+                    <div>
+                        <div class="coin-name">Ethereum</div>
+                        <div class="coin-symbol">4.28 ETH</div>
+                    </div>
+                </div>
+
+                <div class="coin-value">$7,845</div>
+
+                <div class="coin-change positive">
+                    +3.8%
+                </div>
+
+            </div>
+
+
+            <div class="coin-card">
+
+                <div class="coin-top">
+                    <div class="coin-icon">Ł</div>
+
+                    <div>
+                        <div class="coin-name">Litecoin</div>
+                        <div class="coin-symbol">25.5 LTC</div>
+                    </div>
+                </div>
+
+                <div class="coin-value">$1,932</div>
+
+                <div class="coin-change negative">
+                    -1.2%
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FEATURES
+========================= -->
+
+<section id="features">
+
+    <div class="container">
+
+        <div class="section-head">
+
+            <div class="eyebrow">
+                Why Choose Fast Cash Signal
+            </div>
+
+            <h2>
+                Everything you need to trade cryptocurrencies successfully
+            </h2>
+
+        </div>
+
+
+        <div class="features">
+
+            <article class="feature">
+
+                <div class="feature-icon">🛡</div>
+
+                <h3>Protection & Security</h3>
+
+                <p>
+                    Your funds are protected with bank-grade security,
+                    2FA authentication, and cold wallet storage.
+                    We prioritize your safety above all.
+                </p>
+
+            </article>
+
+
+            <article class="feature">
+
+                <div class="feature-icon">✓</div>
+
+                <h3>Licensed Exchange</h3>
+
+                <p>
+                    Fully regulated and licensed cryptocurrency exchange
+                    operating under international compliance standards
+                    for your peace of mind.
+                </p>
+
+            </article>
+
+
+            <article class="feature">
+
+                <div class="feature-icon">↔</div>
+
+                <h3>Cryptocurrency Converter</h3>
+
+                <p>
+                    Quickly calculate cryptocurrency conversions
+                    using the latest displayed market rates.
+                </p>
+
+            </article>
+
+
+            <article class="feature">
+
+                <div class="feature-icon">₿</div>
+
+                <h3>Bitcoin Price</h3>
+
+                <p>
+                    1 BTC = <strong>$67,120</strong>
+                    <br>
+                    <span class="positive">+3.77%</span>
+                </p>
+
+            </article>
+
+
+            <article class="feature">
+
+                <div class="feature-icon">◈</div>
+
+                <h3>Expert Support Team</h3>
+
+                <p>
+                    Our dedicated support team is available 24/7
+                    to assist with questions and concerns.
+                </p>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CONVERTER
+========================= -->
+
+<section class="converter-section">
+
+    <div class="container">
+
+        <div class="section-head">
+
+            <div class="eyebrow">
+                Cryptocurrency Converter
+            </div>
+
+            <h2>
+                Convert Your Crypto
+            </h2>
+
+            <p>
+                Quickly calculate your cryptocurrency conversion.
+            </p>
+
+        </div>
+
+
+        <div class="converter">
+
+            <div class="converter-grid">
+
+                <div class="field">
+
+                    <label>Amount</label>
+
+                    <div class="input-wrap">
+
+                        <input
+                            type="number"
+                            id="amount"
+                            value="1"
+                            min="0"
+                        >
+
+                        <select id="fromCoin">
+                            <option value="BTC">BTC</option>
+                            <option value="ETH">ETH</option>
+                            <option value="LTC">LTC</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="equals">
+                    =
+                </div>
+
+
+                <div class="field">
+
+                    <label>Converted Amount</label>
+
+                    <div class="input-wrap">
+
+                        <input
+                            type="text"
+                            id="converted"
+                            value="67120"
+                            readonly
+                        >
+
+                        <select id="toCoin">
+                            <option value="USD">USD</option>
+                            <option value="BTC">BTC</option>
+                            <option value="ETH">ETH</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="rate" id="rateText">
+                1 BTC = $67,120
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     STATS
+========================= -->
+
+<section>
+
+    <div class="container">
+
+        <div class="stats">
+
+            <div class="stat">
+                <strong>$1B</strong>
+                <span>Trading Volume</span>
+            </div>
+
+            <div class="stat">
+                <strong>50K+</strong>
+                <span>Active Users</span>
+            </div>
+
+            <div class="stat">
+                <strong>99.9%</strong>
+                <span>Uptime</span>
+            </div>
+
+            <div class="stat">
+                <strong>24/7</strong>
+                <span>Support</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     TESTIMONIALS
+========================= -->
+
+<section>
+
+    <div class="container">
+
+        <div class="section-head">
+
+            <div class="eyebrow">
+                What Our Clients Say
+            </div>
+
+            <h2>Trusted by traders worldwide</h2>
+
+            <p>
+                Feedback from our trading community.
+            </p>
+
+        </div>
+
+
+        <div class="testimonials">
+
+            <article class="testimonial">
+
+                <div class="stars">★★★★★</div>
+
+                <p>
+                    "FastCashSignal transformed my trading experience.
+                    The platform is intuitive and the support team is incredible.
+                    I've seen consistent profits since joining."
+                </p>
+
+                <div class="person">
+
+                    <div class="avatar">AF</div>
+
+                    <div>
+                        <strong>Ayman Fikry</strong>
+                        <small>Professional Trader</small>
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <article class="testimonial">
+
+                <div class="stars">★★★★★</div>
+
+                <p>
+                    "Best crypto trading platform I've used.
+                    Secure, fast, and profitable. The automated signals
+                    have helped me make smarter trading decisions."
+                </p>
+
+                <div class="person">
+
+                    <div class="avatar">FB</div>
+
+                    <div>
+                        <strong>Fouad Badawy</strong>
+                        <small>Crypto Investor</small>
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <article class="testimonial">
+
+                <div class="stars">★★★★★</div>
+
+                <p>
+                    "Started with the Starter plan and upgraded to
+                    Professional within a month. The returns are impressive."
+                </p>
+
+                <div class="person">
+
+                    <div class="avatar">MB</div>
+
+                    <div>
+                        <strong>Mahmoud Baghagho</strong>
+                        <small>Day Trader</small>
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     PRICING
+========================= -->
+
+<section id="pricing">
+
+    <div class="container">
+
+        <div class="section-head">
+
+            <div class="eyebrow">
+                Our Pricing Plans
+            </div>
+
+            <h2>
+                Choose the perfect plan for your trading goals
+            </h2>
+
+        </div>
+
+
+        <div class="pricing">
+
+            <article class="price-card">
+
+                <h3>Starter</h3>
+
+                <div class="price">$1,500</div>
+
+                <div class="duration">7 Days</div>
+
+                <ul class="features-list">
+                    <li>Basic Trading Signals</li>
+                    <li>Email Support</li>
+                    <li>Market Analysis</li>
+                    <li>Up to 5% Daily ROI</li>
+                </ul>
+
+                <a href="register.html" class="btn btn-primary">
+                    Choose Plan
+                </a>
+
+            </article>
+
+
+            <article class="price-card popular">
+
+                <div class="popular-badge">
+                    MOST POPULAR
+                </div>
+
+                <h3>Professional</h3>
+
+                <div class="price">$5,000</div>
+
+                <div class="duration">14 Days</div>
+
+                <ul class="features-list">
+                    <li>Advanced Trading Signals</li>
+                    <li>Priority Support 24/7</li>
+                    <li>Real-time Market Data</li>
+                    <li>Up to 8% Daily ROI</li>
+                    <li>Dedicated Account Manager</li>
+                </ul>
+
+                <a href="register.html" class="btn btn-primary">
+                    Choose Plan
+                </a>
+
+            </article>
+
+
+            <article class="price-card">
+
+                <h3>Enterprise</h3>
+
+                <div class="price">$10,000</div>
+
+                <div class="duration">30 Days</div>
+
+                <ul class="features-list">
+                    <li>Premium Trading Signals</li>
+                    <li>VIP Support 24/7</li>
+                    <li>Advanced Analytics</li>
+                    <li>Up to 12% Daily ROI</li>
+                    <li>Personal Trading Coach</li>
+                </ul>
+
+                <a href="register.html" class="btn btn-primary">
+                    Choose Plan
+                </a>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     ICO
+========================= -->
+
+<section class="ico">
+
+    <div class="container ico-content">
+
+        <div class="eyebrow">
+            ICO Starts In
+        </div>
+
+        <h2>
+            Don't miss your chance to join the next big opportunity
+        </h2>
+
+
+        <div class="countdown">
+
+            <div class="time-box">
+                <strong id="days">15</strong>
+                <span>Days</span>
+            </div>
+
+            <div class="time-box">
+                <strong id="hours">08</strong>
+                <span>Hours</span>
+            </div>
+
+            <div class="time-box">
+                <strong id="minutes">42</strong>
+                <span>Minutes</span>
+            </div>
+
+            <div class="time-box">
+                <strong id="seconds">18</strong>
+                <span>Seconds</span>
+            </div>
+
+        </div>
+
+
+        <a href="register.html" class="btn btn-primary">
+            Join ICO Now
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     TEAM
+========================= -->
+
+<section id="team">
+
+    <div class="container">
+
+        <div class="section-head">
+
+            <div class="eyebrow">
+                Meet Our Team
+            </div>
+
+            <h2>
+                Expert professionals dedicated to your success
+            </h2>
+
+        </div>
+
+
+        <div class="team">
+
+            <article class="team-card">
+
+                <div class="team-avatar">
+                    JW
+                </div>
+
+                <h3>James Warfe</h3>
+
+                <p>
+                    CEO & Founder
+                </p>
+
+                <p>
+                    15+ years in financial markets and blockchain technology
+                </p>
+
+            </article>
+
+
+            <article class="team-card">
+
+                <div class="team-avatar">
+                    MS
+                </div>
+
+                <h3>Marko Smith</h3>
+
+                <p>
+                    Head of Trading
+                </p>
+
+                <p>
+                    Expert crypto trader with proven track record
+                </p>
+
+            </article>
+
+
+            <article class="team-card">
+
+                <div class="team-avatar">
+                    JT
+                </div>
+
+                <h3>John Tommy</h3>
+
+                <p>
+                    Security Lead
+                </p>
+
+                <p>
+                    Cybersecurity specialist ensuring platform safety
+                </p>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    <div class="container">
+
+        <div class="footer-grid">
+
+            <div class="footer-brand">
+
+                <a href="#" class="logo">
+                    <span class="logo-icon">₿</span>
+                    SyncCrypto
+                </a>
+
+                <p>
+                    Trade the world's most popular cryptocurrencies
+                    with confidence. Secure, fast, and profitable
+                    trading platform for everyone.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h4>Company</h4>
+
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#team">Our Team</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+
+            </div>
+
+
+            <div>
+
+                <h4>Resources</h4>
+
+                <ul>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Trading Guide</a></li>
+                    <li><a href="#">Market News</a></li>
+                    <li><a href="#">Help Center</a></li>
+                </ul>
+
+            </div>
+
+
+            <div>
+
+                <h4>Legal</h4>
+
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Risk Disclosure</a></li>
+                    <li><a href="#">AML Policy</a></li>
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <div class="copyright">
+            © 2026 SyncCrypto. All rights reserved.
+            Cryptocurrency trading involves substantial risk of loss.
+        </div>
+
+    </div>
+
+</footer>
+
+
+<!-- =========================
+     SUPPORT CHAT
+========================= -->
+
+<div class="chat-box" id="chatBox">
+
+    <div class="chat-header">
+        Live Support
+        <span class="chat-status">
+            Usually replies in seconds
+        </span>
+    </div>
+
+    <div class="chat-body">
+        Hello! 👋 How can I help you today with your SyncCrypto trading?
+    </div>
+
+    <div class="chat-input">
+
+        <input
+            type="text"
+            id="chatMessage"
+            placeholder="Type your message..."
+        >
+
+        <button id="sendChat">
+            ➤
+        </button>
+
+    </div>
+
+</div>
+
+
+<button class="chat-button" id="chatButton">
+    💬
+</button>
+
+
+<script>
+
+    /* =========================
+       MOBILE MENU
+    ========================= */
+
+    const menuBtn = document.getElementById("menuBtn");
+    const navLinks = document.getElementById("navLinks");
+
+    menuBtn.addEventListener("click", () => {
+        navLinks.classList.toggle("open");
+    });
+
+
+    /* =========================
+       CONVERTER
+    ========================= */
+
+    const rates = {
+        BTC: 67120,
+        ETH: 1833,
+        LTC: 75.76
+    };
+
+    const amount = document.getElementById("amount");
+    const fromCoin = document.getElementById("fromCoin");
+    const converted = document.getElementById("converted");
+    const toCoin = document.getElementById("toCoin");
+    const rateText = document.getElementById("rateText");
+
+    function convertCrypto() {
+
+        const value = parseFloat(amount.value) || 0;
+        const from = fromCoin.value;
+        const to = toCoin.value;
+
+        if (to === "USD") {
+
+            const result = value * rates[from];
+
+            converted.value = result.toLocaleString(
+                "en-US",
+                {
+                    maximumFractionDigits: 2
+                }
+            );
+
+            rateText.textContent =
+                `1 ${from} = $${rates[from].toLocaleString()}`;
+
+            return;
+        }
+
+        if (from === to) {
+
+            converted.value = value;
+            rateText.textContent = `1 ${from} = 1 ${to}`;
+
+            return;
+        }
+
+        const usdValue = value * rates[from];
+        const result = usdValue / rates[to];
+
+        converted.value = result.toFixed(6);
+
+        rateText.textContent =
+            `1 ${from} = ${(rates[from] / rates[to]).toFixed(6)} ${to}`;
+    }
+
+    amount.addEventListener("input", convertCrypto);
+    fromCoin.addEventListener("change", convertCrypto);
+    toCoin.addEventListener("change", convertCrypto);
+
+    convertCrypto();
+
+
+    /* =========================
+       COUNTDOWN
+    ========================= */
+
+    let countdownSeconds =
+        (15 * 24 * 60 * 60) +
+        (8 * 60 * 60) +
+        (42 * 60) +
+        18;
+
+    function updateCountdown() {
+
+        if (countdownSeconds <= 0) {
+            countdownSeconds = 15 * 24 * 60 * 60;
+        }
+
+        const days =
+            Math.floor(countdownSeconds / 86400);
+
+        const hours =
+            Math.floor((countdownSeconds % 86400) / 3600);
+
+        const minutes =
+            Math.floor((countdownSeconds % 3600) / 60);
+
+        const seconds =
+            countdownSeconds % 60;
+
+        document.getElementById("days").textContent =
+            String(days).padStart(2, "0");
+
+        document.getElementById("hours").textContent =
+            String(hours).padStart(2, "0");
+
+        document.getElementById("minutes").textContent =
+            String(minutes).padStart(2, "0");
+
+        document.getElementById("seconds").textContent =
+            String(seconds).padStart(2, "0");
+
+        countdownSeconds--;
+    }
+
+    updateCountdown();
+
+    setInterval(updateCountdown, 1000);
+
+
+    /* =========================
+       CHAT
+    ========================= */
+
+    const chatButton = document.getElementById("chatButton");
+    const chatBox = document.getElementById("chatBox");
+
+    chatButton.addEventListener("click", () => {
+        chatBox.classList.toggle("active");
+
+        chatButton.textContent =
+            chatBox.classList.contains("active")
+                ? "✕"
+                : "💬";
+    });
+
+
+    /* =========================
+       DEMO CHAT
+    ========================= */
+
+    const sendChat = document.getElementById("sendChat");
+    const chatMessage = document.getElementById("chatMessage");
+    const chatBody = document.querySelector(".chat-body");
+
+    sendChat.addEventListener("click", sendMessage);
+
+    chatMessage.addEventListener("keydown", event => {
+
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+
+    });
+
+    function sendMessage() {
+
+        const message = chatMessage.value.trim();
+
+        if (!message) return;
+
+        chatBody.innerHTML += `
+            <div style="
+                margin-top:12px;
+                color:#ffffff;
+                background:#17294a;
+                padding:9px 11px;
+                border-radius:8px;
+            ">
+                ${escapeHTML(message)}
+            </div>
+        `;
+
+        chatMessage.value = "";
+
+        setTimeout(() => {
+
+            chatBody.innerHTML += `
+                <div style="
+                    margin-top:12px;
+                    color:#8f9db0;
+                ">
+                    Thanks for your message. A support representative
+                    will respond shortly.
+                </div>
+            `;
+
+        }, 700);
+    }
+
+
+    function escapeHTML(text) {
+
+        const div = document.createElement("div");
+
+        div.textContent = text;
+
+        return div.innerHTML;
+    }
+
+</script>
+
+</body>
+</html>
