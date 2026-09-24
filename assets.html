@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assets | SyncCrypto</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold: #f8c846;
+      --dark: #080b12;
+      --panel: rgba(20, 26, 40, 0.8);
+      --border: rgba(255, 255, 255, 0.09);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      margin: 0;
+      color: #f8fafc;
+      font-family: "DM Sans", sans-serif;
+      background:
+        radial-gradient(circle at 3% 0%, rgba(248, 200, 70, 0.15), transparent 28rem),
+        radial-gradient(circle at 100% 8%, rgba(59, 130, 246, 0.16), transparent 30rem),
+        var(--dark);
+    }
+
+    h1, h2, h3, h4 { font-family: "Space Grotesk", sans-serif; }
+
+    .glass {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.23);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .asset-card { transition: transform 0.2s ease, border-color 0.2s ease; }
+    .asset-card:hover { border-color: rgba(248, 200, 70, 0.35); transform: translateY(-3px); }
+
+    .fade-up { animation: fadeUp 0.5s ease both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+    }
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .mini-chart { width: 80px !important; height: 40px !important; }
+    @media (max-width: 390px) {
+      .mini-chart { width: 60px !important; height: 32px !important; }
+    }
+
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+
+<body class="pb-24 lg:pb-8">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 border-b border-white/5 bg-[#080b12]/80 backdrop-blur-xl">
+    <div class="mx-auto flex h-[74px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3">
+        <button onclick="window.location.href='dashboard.html'" aria-label="Back" class="grid h-10 w-10 place-items-center rounded-xl text-slate-400 transition hover:bg-white/5 hover:text-yellow-400">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <a href="dashboard.html" class="flex items-center gap-3">
+          <div class="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-yellow-200 to-amber-500 text-[#171209] shadow-lg shadow-yellow-500/20">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <div>
+            <p class="text-lg font-bold tracking-tight text-white">SyncCrypto<span class="text-yellow-400">.</span></p>
+            <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">Assets</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div id="userInitialsSmall" class="grid h-10 w-10 place-items-center rounded-full bg-blue-500/20 text-sm font-bold text-blue-300">U</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+
+    <!-- Total Portfolio Value -->
+    <section class="fade-up relative overflow-hidden rounded-3xl border border-yellow-400/15 bg-gradient-to-br from-[#222944] via-[#171e31] to-[#101522] p-6 shadow-xl shadow-black/20 sm:p-8">
+      <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-yellow-400/10 blur-3xl"></div>
+      <div class="relative">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-sm font-semibold text-slate-400">Total portfolio value</p>
+            <h2 id="totalBalance" class="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">$0.00</h2>
+          </div>
+          <div id="totalChange" class="flex items-center gap-1 px-3 py-1 rounded-full bg-white/[0.06]">
+            <span class="text-sm font-semibold text-slate-300">0.00%</span>
+          </div>
+        </div>
+        <div class="mt-6 flex items-center gap-4 border-t border-white/10 pt-4">
+          <div class="flex-1">
+            <p class="text-xs text-slate-400 mb-1">Cash balance</p>
+            <p id="cashBalance" class="text-sm font-semibold text-white">$0.00</p>
+          </div>
+          <div class="w-px h-8 bg-white/10"></div>
+          <div class="flex-1">
+            <p class="text-xs text-slate-400 mb-1">Crypto holdings</p>
+            <p id="cryptoBalance" class="text-sm font-semibold text-white">$0.00</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="fade-up grid grid-cols-3 gap-3">
+      <button id="sendBtn" class="flex flex-col items-center gap-2 rounded-xl bg-yellow-400 px-4 py-3.5 text-sm font-bold text-[#171209] transition hover:-translate-y-0.5 hover:brightness-105">
+        <i class="fa-solid fa-paper-plane"></i>
+        <span>Send</span>
+      </button>
+      <button id="receiveBtn" class="flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3.5 text-sm font-bold text-white transition hover:bg-white/[0.11]">
+        <i class="fa-solid fa-arrow-down text-yellow-400"></i>
+        <span>Receive</span>
+      </button>
+      <button id="swapBtn" class="flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3.5 text-sm font-bold text-white transition hover:bg-white/[0.11]">
+        <i class="fa-solid fa-arrows-rotate text-yellow-400"></i>
+        <span>Swap</span>
+      </button>
+    </section>
+
+    <!-- My Holdings -->
+    <section class="fade-up">
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-lg font-bold text-white">My Holdings</h2>
+        <span id="holdingsCount" class="text-sm text-slate-400">0 assets</span>
+      </div>
+      <div id="holdingsList" class="space-y-3">
+        <div class="glass rounded-xl p-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full skeleton"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-24 skeleton rounded"></div>
+              <div class="h-3 w-16 skeleton rounded"></div>
+            </div>
+            <div class="text-right space-y-2">
+              <div class="h-4 w-20 skeleton rounded ml-auto"></div>
+              <div class="h-3 w-16 skeleton rounded ml-auto"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="noHoldings" class="hidden glass rounded-xl p-8 text-center">
+        <i class="fa-solid fa-layer-group mb-3 text-3xl text-slate-600"></i>
+        <p class="text-slate-300 text-sm">No assets yet</p>
+        <p class="text-slate-500 text-xs mt-1">Start investing to see your holdings here</p>
+      </div>
+    </section>
+
+    <!-- Market Prices -->
+    <section class="fade-up">
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-lg font-bold text-white">Market Prices</h2>
+        <button id="refreshMarket" class="text-yellow-400 text-sm font-semibold hover:opacity-80 transition">Refresh</button>
+      </div>
+      <div class="glass rounded-xl overflow-hidden">
+        <div id="marketList" class="divide-y divide-white/5">
+          <div class="p-4">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full skeleton"></div>
+              <div class="flex-1 space-y-2">
+                <div class="h-4 w-20 skeleton rounded"></div>
+                <div class="h-3 w-12 skeleton rounded"></div>
+              </div>
+              <div class="mini-chart skeleton rounded"></div>
+              <div class="text-right space-y-2">
+                <div class="h-4 w-20 skeleton rounded ml-auto"></div>
+                <div class="h-3 w-16 skeleton rounded ml-auto"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Navigation (matches dashboard.html) -->
+  <nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 bg-[#0b101b]/90 backdrop-blur-xl lg:hidden">
+    <div class="mx-auto flex h-[68px] max-w-lg items-center justify-around px-4">
+      <a href="dashboard.html" class="flex flex-col items-center gap-1 text-slate-400">
+        <i class="fa-solid fa-house"></i>
+        <span class="text-[11px]">Home</span>
+      </a>
+      <a href="send-funds.html" class="flex flex-col items-center gap-1 text-slate-400">
+        <i class="fa-solid fa-paper-plane"></i>
+        <span class="text-[11px]">Send</span>
+      </a>
+      <a href="withdrawal.html" class="flex flex-col items-center gap-1 text-slate-400">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        <span class="text-[11px]">Withdraw</span>
+      </a>
+      <a href="assets.html" class="flex flex-col items-center gap-1 text-yellow-400">
+        <i class="fa-solid fa-wallet"></i>
+        <span class="text-[11px] font-semibold">Assets</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="pointer-events-none fixed right-4 top-20 z-50 w-[calc(100%-2rem)] max-w-sm translate-x-[120%] rounded-xl bg-slate-900 px-4 py-3 text-white shadow-2xl transition duration-300">
+    <p id="toastMessage" class="text-sm"></p>
+  </div>
+
+  <script type="module" src="assets.js"></script>
+</body>
+</html>
