@@ -1,0 +1,211 @@
+<!-- SYNC CRYPTO ADMIN DASHBOARD: NAVIGATION FIX
+Apply this patch to the HTML you pasted. It adds a mobile menu button/overlay,
+working sidebar navigation, and section mapping without replacing your Firebase
+business logic. -->
+
+<style>
+  /* Add these rules to your existing <style> block. */
+  #adminSidebar {
+    transition: transform .3s ease;
+  }
+
+  @media (min-width: 1024px) {
+    #adminSidebar {
+      transform: translateX(0) !important;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    #adminSidebar {
+      transform: translateX(-100%);
+    }
+
+    #adminSidebar.sidebar-open {
+      transform: translateX(0);
+    }
+
+    #sidebarOverlay.overlay-visible {
+      display: block;
+    }
+  }
+
+  .admin-content-section {
+    display: none;
+  }
+
+  .admin-content-section.section-active {
+    display: block;
+  }
+
+  .sidebar-link.nav-active {
+    background: rgba(250, 204, 21, .10);
+    color: #facc15;
+  }
+</style>
+
+<!-- Add this overlay immediately before <aside id="adminSidebar"> -->
+<div
+  id="sidebarOverlay"
+  class="fixed inset-0 z-40 hidden bg-black/60 lg:hidden"
+  aria-hidden="true"
+></div>
+
+<!-- Add this button inside the header's left side, before the SyncCrypto logo/title. -->
+<button
+  id="sidebarToggle"
+  type="button"
+  class="btn border border-white/10 bg-white/5 text-white lg:hidden"
+  aria-label="Open navigation menu"
+  aria-controls="adminSidebar"
+  aria-expanded="false"
+>
+  <i class="fa-solid fa-bars"></i>
+</button>
+
+<!--
+SECTION WRAPPING:
+1. Put the current "Find Customer" section inside:
+   <div id="section-overview" class="admin-content-section section-active"> ... </div>
+   Keep the existing Find Customer section in Overview.
+
+2. Put the existing "Customer Account" section inside:
+   <div id="section-funding" class="admin-content-section"> ... </div>
+
+3. Put the existing "Pending Requests" section inside:
+   <div id="section-withdrawals" class="admin-content-section"> ... </div>
+
+4. Put the existing "All Customer Records" section inside:
+   <div id="section-users" class="admin-content-section"> ... </div>
+
+5. Add placeholder sections for the sidebar items whose full modules are not
+   present in this HTML. Insert these inside <main>, alongside the sections above.
+-->
+
+<section id="section-transactions" class="admin-content-section glass rounded-3xl p-6">
+  <h2 class="text-lg font-bold">Transactions</h2>
+  <p class="mt-2 text-sm text-slate-400">
+    The transactions module is not included in this HTML yet. Connect this section
+    to your Firestore transactions collection to display transaction history.
+  </p>
+</section>
+
+<section id="section-notifications" class="admin-content-section glass rounded-3xl p-6">
+  <h2 class="text-lg font-bold">Notifications</h2>
+  <p class="mt-2 text-sm text-slate-400">
+    The notifications module is not included in this HTML yet. Add your notification
+    composer and sending logic here.
+  </p>
+</section>
+
+<section id="section-activity" class="admin-content-section glass rounded-3xl p-6">
+  <h2 class="text-lg font-bold">Activity Logs</h2>
+  <p class="mt-2 text-sm text-slate-400">
+    The activity-log module is not included in this HTML yet. Add audit-log records
+    and their Firestore query here.
+  </p>
+</section>
+
+<section id="section-settings" class="admin-content-section glass rounded-3xl p-6">
+  <h2 class="text-lg font-bold">Settings</h2>
+  <p class="mt-2 text-sm text-slate-400">
+    The settings module is not included in this HTML yet. Add administrator settings
+    here when their behavior and storage are defined.
+  </p>
+</section>
+
+<script>
+/*
+  Add this block inside your existing <script type="module">, near the end of
+  DOMContentLoaded, before its closing `});`. Do not add a second script module
+  if you can insert it into the existing one.
+*/
+function setupAdminNavigation() {
+  const sidebar = document.getElementById("adminSidebar");
+  const toggle = document.getElementById("sidebarToggle");
+  const overlay = document.getElementById("sidebarOverlay");
+  const links = [...document.querySelectorAll("#adminSidebar .sidebar-link")];
+
+  const sectionIds = {
+    overview: "section-overview",
+    users: "section-users",
+    funding: "section-funding",
+    withdrawals: "section-withdrawals",
+    transactions: "section-transactions",
+    notifications: "section-notifications",
+    activity: "section-activity",
+    settings: "section-settings"
+  };
+
+  function closeSidebar() {
+    sidebar?.classList.remove("sidebar-open");
+    overlay?.classList.remove("overlay-visible");
+    if (toggle) toggle.setAttribute("aria-expanded", "false");
+  }
+
+  function openSidebar() {
+    sidebar?.classList.add("sidebar-open");
+    overlay?.classList.add("overlay-visible");
+    if (toggle) toggle.setAttribute("aria-expanded", "true");
+  }
+
+  function activateSection(sectionName) {
+    const targetId = sectionIds[sectionName];
+    const target = targetId && document.getElementById(targetId);
+
+    if (!target) {
+      console.warn(`Admin section not found: ${sectionName}`);
+      return;
+    }
+
+    document.querySelectorAll(".admin-content-section").forEach(section => {
+      section.classList.remove("section-active");
+    });
+    target.classList.add("section-active");
+
+    links.forEach(link => {
+      const active = link.dataset.section === sectionName;
+      link.classList.toggle("nav-active", active);
+      link.classList.toggle("bg-yellow-400/10", active);
+      link.classList.toggle("text-yellow-400", active);
+      link.classList.toggle("text-slate-400", !active);
+      link.setAttribute("aria-current", active ? "page" : "false");
+    });
+
+    closeSidebar();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  toggle?.addEventListener("click", () => {
+    if (sidebar?.classList.contains("sidebar-open")) closeSidebar();
+    else openSidebar();
+  });
+
+  overlay?.addEventListener("click", closeSidebar);
+
+  links.forEach(link => {
+    link.addEventListener("click", event => {
+      event.preventDefault();
+      activateSection(link.dataset.section);
+    });
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeSidebar();
+  });
+
+  // Start at the overview section.
+  activateSection("overview");
+}
+
+// Call setupAdminNavigation() once inside DOMContentLoaded.
+setupAdminNavigation();
+</script>
+
+<!-- IMPORTANT:
+The "Transactions", "Notifications", "Activity Logs", and "Settings" entries in
+the source you supplied had no corresponding functional modules. The placeholder
+sections above make navigation work, but do not invent those missing features.
+Also, do not rely on hiding admin UI for security: enforce administrator access
+and all balance/withdrawal mutations in trusted server-side code and Firestore
+Security Rules. The current client-side balance mutation should not be treated
+as a secure financial ledger. -->
