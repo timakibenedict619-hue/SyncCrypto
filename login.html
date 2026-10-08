@@ -401,28 +401,50 @@ try{
 btnText.style.display="none";
 btnSpinner.classList.remove("hidden");
 signInBtn.disabled=true;
-
 // Maintenance mode check
-try {
-  const maintenanceSnap = await getDoc(doc(db, "settings", "maintenance"));
+let maintenanceEnabled = false;
 
-  if (maintenanceSnap.exists() && maintenanceSnap.data().enabled === true) {
+try {
+    const maintenanceSnap = await getDoc(
+        doc(db, "settings", "maintenance")
+    );
+
+    if (!maintenanceSnap.exists()) {
+        throw new Error(
+            "Maintenance settings could not be found."
+        );
+    }
+
+    maintenanceEnabled =
+        maintenanceSnap.data().enabled === true;
+
+    if (maintenanceEnabled) {
+        maintenanceMessage.textContent =
+            maintenanceSnap.data().message ||
+            "We're currently undergoing scheduled maintenance. Please try again later.";
+
+        maintenanceAlert.classList.remove("hidden");
+
+        maintenanceAlert.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
+        });
+
+        return;
+    }
+
+} catch (checkError) {
+    console.error(
+        "Maintenance mode check failed:",
+        checkError
+    );
 
     maintenanceMessage.textContent =
-      maintenanceSnap.data().message ||
-      "We're currently undergoing scheduled maintenance. Please try again later.";
+        "We couldn't verify service availability. Please try again shortly.";
 
     maintenanceAlert.classList.remove("hidden");
 
-    maintenanceAlert.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest"
-    });
-
     return;
-  }
-} catch (checkError) {
-  console.warn("Maintenance check skipped:", checkError);
 }
 
 const userCredential =
