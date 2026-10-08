@@ -18,7 +18,7 @@ button:disabled{opacity:.5}
 <body>
 <div class="box">
   <h1>Maintenance Mode Patcher</h1>
-  <p>Choose your original <b>admin-dashboard.html</b>. This adds the maintenance mode feature and downloads the full updated file. Nothing is uploaded anywhere; it runs in your browser.</p>
+  <p>Choose your original <b>admin.html</b>. This adds the maintenance mode feature and downloads the full updated file. Nothing is uploaded anywhere; it runs in your browser.</p>
   <input type="file" id="file" accept=".html">
   <button id="go" disabled>Add Maintenance Mode &amp; Download</button>
   <div id="msg"></div>
@@ -187,10 +187,10 @@ go.addEventListener("click", async () => {
     const blob = new Blob([s], { type: "text/html" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "admin-dashboard.html";
+    a.download = "admin.html";
     a.click();
     msg.className = "ok";
-    msg.textContent = "Done. admin-dashboard.html has been downloaded with maintenance mode added.";
+    msg.textContent = "Done. admin.html has been downloaded with maintenance mode added.";
   } catch (err) {
     fail(err.message + " Your original file was not changed.");
   }
