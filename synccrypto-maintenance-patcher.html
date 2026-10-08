@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SyncCrypto Maintenance Patcher</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#07111f;color:#e5e7eb;display:flex;justify-content:center;padding:30px 16px}
+.box{max-width:480px;width:100%;background:#0b1728;border:1px solid #1e293b;border-radius:16px;padding:24px}
+h1{font-size:18px;margin-bottom:8px}p{font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:16px}
+input{width:100%;margin-bottom:14px;color:#e5e7eb}
+button{background:#eab308;color:#111827;border:0;border-radius:10px;padding:12px 16px;font-weight:700;width:100%;cursor:pointer}
+button:disabled{opacity:.5}
+#msg{margin-top:14px;font-size:13px;line-height:1.5}
+.ok{color:#6ee7b7}.err{color:#fca5a5}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>SyncCrypto Maintenance Patcher</h1>
+  <p>Choose your original SyncCrypto admin HTML file. This adds a working navigation menu (including a mobile menu button) and a Settings page with the maintenance mode switch, then downloads the full updated file. It runs in your browser; nothing is uploaded.</p>
+  <input type="file" id="file" accept=".html">
+  <button id="go" disabled>Patch &amp; Download</button>
+  <div id="msg"></div>
+</div>
+
+<script>
+const SETTINGS = `
+
+      <!-- SETTINGS / MAINTENANCE MODE -->
+      <section id="section-settings" class="glass rounded-3xl p-5 sm:p-6 hidden-section">
+        <div class="mb-5">
+          <h2 class="text-lg font-bold text-white">Settings</h2>
+          <p class="mt-1 text-sm text-slate-400">Control customer access to the website.</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-black/10 p-5">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p id="maintenanceStatus" class="font-bold text-white">Maintenance mode is OFF</p>
+              <p class="mt-1 text-sm text-slate-400">When ON, customers cannot log in and see your message instead.</p>
+            </div>
+            <label class="relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center">
+              <input id="maintenanceToggle" type="checkbox" class="peer sr-only">
+              <span class="absolute inset-0 rounded-full bg-white/10 transition peer-checked:bg-yellow-400/40"></span>
+              <span class="absolute left-1 top-1 h-5 w-5 rounded-full bg-slate-300 transition peer-checked:translate-x-5 peer-checked:bg-yellow-400"></span>
+            </label>
+          </div>
+          <div class="mt-5">
+            <label class="mb-2 block text-sm font-semibold text-slate-300">Message shown to customers</label>
+            <textarea id="maintenanceMessage" rows="3" class="input"></textarea>
+          </div>
+          <button id="saveMaintenanceBtn" type="button" class="btn btn-primary mt-4">
+            <i class="fa-solid fa-floppy-disk"></i> Save message
+          </button>
+        </div>
+      </section>
+
+    `;
+
+const LOGIC = `// ============================================================
+// NAVIGATION + MAINTENANCE MODE
+// ============================================================
+
+const maintenanceRef = doc(db, "settings", "maintenance");
+const DEFAULT_MAINTENANCE_MESSAGE =
+  "We're currently under maintenance. Please try again later.";
+
+function initNavigation() {
+  const sidebar = $("adminSidebar");
+  const settingsSection = $("section-settings");
+  if (!sidebar || !settingsSection) return;
+
+  const mainSections = Array.from(
+    document.querySelectorAll("main > section")
+  ).filter((s) => s !== settingsSection);
+
+  const links = Array.from(document.querySelectorAll(".sidebar-link"));
+
+  // Mobile menu button + backdrop
+  const backdrop = document.createElement("div");
+  backdrop.className = "fixed inset-0 hidden bg-black/60 lg:hidden";
+  backdrop.style.zIndex = "45";
+  document.body.appendChild(backdrop);
+
+  const menuBtn = document.createElement("button");
+  menuBtn.type = "button";
+  menuBtn.setAttribute("aria-label", "Open menu");
+  menuBtn.className = "btn btn-primary lg:hidden";
+  menuBtn.style.padding = "10px 13px";
+  menuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+
+  const headerLeft = document.querySelector("header .flex.items-center.gap-3");
+  if (headerLeft) headerLeft.prepend(menuBtn);
+
+  const openMenu = () => {
+    sidebar.classList.add("sidebar-open");
+    backdrop.classList.remove("hidden");
+  };
+  const closeMenu = () => {
+    sidebar.classList.remove("sidebar-open");
+    backdrop.classList.add("hidden");
+  };
+
+  menuBtn.addEventListener("click", openMenu);
+  backdrop.addEventListener("click", closeMenu);
+
+  // Switch between views
+  function showView(name) {
+    const isSettings = name === "settings";
+    mainSections.forEach((s) => s.classList.toggle("hidden-section", isSettings));
+    settingsSection.classList.toggle("hidden-section", !isSettings);
+
+    links.forEach((link) => {
+      const on = link.dataset.section === name;
+      link.classList.toggle("bg-yellow-400/10", on);
+      link.classList.toggle("text-yellow-400", on);
+      link.classList.toggle("text-slate-400", !on);
+    });
+  }
+
+  // Which existing block each menu item jumps to
+  const jumpTo = { users: 3, funding: 1, withdrawals: 2 };
+
+  links.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      const name = link.dataset.section;
+
+      if (name === "settings") {
+        showView("settings");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (name === "overview") {
+        showView("overview");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (name in jumpTo) {
+        showView(name);
+        const target = mainSections[jumpTo[name]];
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        showToast("This section isn't available yet.", "info");
+      }
+
+      closeMenu();
+    });
+  });
+}
+
+function listenMaintenance() {
+  onSnapshot(
+    maintenanceRef,
+    (snap) => {
+      const data = snap.exists() ? snap.data() : {};
+      const enabled = data.enabled === true;
+
+      $("maintenanceToggle").checked = enabled;
+      $("maintenanceStatus").textContent = enabled
+        ? "Maintenance mode is ON — customer logins are blocked"
+        : "Maintenance mode is OFF";
+
+      const msg = $("maintenanceMessage");
+      if (document.activeElement !== msg) {
+        msg.value = data.message || DEFAULT_MAINTENANCE_MESSAGE;
+      }
+    },
+    (error) => console.error("Maintenance listener:", error)
+  );
+}
+
+async function saveMaintenance(enabled) {
+  const message =
+    $("maintenanceMessage").value.trim() || DEFAULT_MAINTENANCE_MESSAGE;
+
+  try {
+    await setDoc(
+      maintenanceRef,
+      {
+        enabled,
+        message,
+        updatedAt: serverTimestamp(),
+        updatedBy: auth.currentUser?.email || "admin"
+      },
+      { merge: true }
+    );
+
+    showToast(
+      enabled ? "Maintenance mode is now ON." : "Maintenance mode is now OFF.",
+      "success"
+    );
+    return true;
+  } catch (error) {
+    console.error("Maintenance save error:", error);
+    showToast(
+      error.code === "permission-denied"
+        ? "Permission denied. Check your Firestore rules."
+        : error.message || "Unable to save maintenance settings.",
+      "error"
+    );
+    return false;
+  }
+}
+
+$("maintenanceToggle").addEventListener("change", async (event) => {
+  const enabled = event.target.checked;
+
+  if (
+    enabled &&
+    !window.confirm("Turn ON maintenance mode? Customers will not be able to log in.")
+  ) {
+    event.target.checked = false;
+    return;
+  }
+
+  const saved = await saveMaintenance(enabled);
+  if (!saved) event.target.checked = !enabled;
+});
+
+$("saveMaintenanceBtn").addEventListener("click", () => {
+  saveMaintenance($("maintenanceToggle").checked);
+});
+
+initNavigation();
+listenMaintenance();
+
+
+`;
+
+const fileInput = document.getElementById("file");
+const go = document.getElementById("go");
+const msg = document.getElementById("msg");
+
+fileInput.addEventListener("change", () => { go.disabled = !fileInput.files.length; });
+
+function replaceOnce(src, find, replacement, label) {
+  const i = src.indexOf(find);
+  if (i < 0) throw new Error(label + ": anchor not found.");
+  return src.slice(0, i) + replacement + src.slice(i + find.length);
+}
+
+go.addEventListener("click", async () => {
+  msg.textContent = "";
+  try {
+    const file = fileInput.files[0];
+    let s = await file.text();
+    if (s.includes("section-settings")) throw new Error("This file already has the settings page.");
+
+    s = replaceOnce(s, "runTransaction,", "runTransaction,\n  setDoc,\n  onSnapshot,", "Firestore import");
+    s = replaceOnce(s, "</main>", SETTINGS + "</main>", "Settings section");
+
+    const idx = s.indexOf("// AUTH STATE");
+    if (idx < 0) throw new Error("Logic: anchor not found.");
+    const at = s.lastIndexOf("// =====", idx);
+    if (at < 0) throw new Error("Logic: banner not found.");
+    s = s.slice(0, at) + LOGIC + s.slice(at);
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([s], { type: "text/html" }));
+    a.download = file.name;
+    a.click();
+    msg.className = "ok";
+    msg.textContent = "Done. " + file.name + " has been downloaded with the menu and maintenance mode added.";
+  } catch (err) {
+    msg.className = "err";
+    msg.textContent = err.message + " Your original file was not changed.";
+  }
+});
+</script>
+</body>
+</html>
