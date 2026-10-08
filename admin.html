@@ -162,6 +162,16 @@
     .hidden-section {
       display: none !important;
     }
+
+    @media (max-width: 1023px) {
+  #adminSidebar {
+    transform: translateX(-100%);
+  }
+
+  #adminSidebar.sidebar-open {
+    transform: translateX(0);
+  }
+    }
   </style>
 </head>
 
