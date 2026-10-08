@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+
+    <title>SyncCrypto - Register</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        @font-face {
+            font-family: "Optimistic";
+            font-style: normal;
+            font-weight: 400 600;
+            font-display: swap;
+            src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+        }
+
+        @font-face {
+            font-family: "Optimistic Mono";
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+        }
+
+        :root {
+            --primary: #FFD700;
+            --primary-dark: #E6C200;
+            --primary-light: #FFEA70;
+            --bg-dark: #0A0A0A;
+            --bg-card: #141414;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A3A3A3;
+            --border: #2A2A2A;
+            --error: #EF4444;
+            --success: #10B981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-family: "Optimistic", system-ui, sans-serif;
+        }
+
+        body {
+            font-family: "Optimistic", system-ui, -apple-system,
+                BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle,
+                rgba(255, 215, 0, 0.08) 0%,
+                transparent 70%
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+            transition: color 0.3s ease;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 2.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+
+        .form-input:focus + .input-icon {
+            color: var(--primary);
+        }
+
+        .form-input.error {
+            border-color: var(--error);
+        }
+
+        .form-input.success {
+            border-color: var(--success);
+        }
+
+        select.form-input {
+            color-scheme: dark;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #000;
+            font-weight: 600;
+            padding: 0.875rem 1.5rem;
+            border-radius: 0.75rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .error-text {
+            color: var(--error);
+            font-size: 0.8rem;
+            margin-top: 0.375rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .success-text {
+            color: var(--success);
+            font-size: 0.8rem;
+            margin-top: 0.375rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.3s ease;
+            background: transparent;
+            border: none;
+            padding: 0.25rem;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary);
+        }
+
+        .loader {
+            border: 3px solid rgba(0, 0, 0, 0.15);
+            border-top: 3px solid #000;
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            animation: spin 1s linear infinite;
+        }
+
+        .page-loader {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notice {
+            display: none;
+            padding: 0.9rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            align-items: flex-start;
+            gap: 0.65rem;
+            margin-bottom: 1.25rem;
+            overflow-wrap: anywhere;
+        }
+
+        .notice.show {
+            display: flex;
+            animation: noticeIn 0.25s ease;
+        }
+
+        .notice.error-notice {
+            background: rgba(239, 68, 68, 0.10);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #FCA5A5;
+        }
+
+        .notice.success-notice {
+            background: rgba(16, 185, 129, 0.10);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #6EE7B7;
+        }
+
+        .notice.info-notice {
+            background: rgba(255, 215, 0, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            color: var(--primary-light);
+        }
+
+        @keyframes noticeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @media (max-width: 640px) {
+            .card {
+                border-radius: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="min-h-screen flex items-center justify-center p-4 py-8 relative z-10">
+    <div class="w-full max-w-2xl">
+
+        <!-- Logo & Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FFD700] to-[#FFA500] flex items-center justify-center shadow-lg shadow-yellow-500/30">
+                    <i class="fas fa-sync-alt text-black text-xl"></i>
+                </div>
+
+                <h1 class="text-3xl sm:text-4xl font-bold gradient-text">
+                    SyncCrypto
+                </h1>
+            </div>
+
+            <p class="text-[var(--text-secondary)] text-sm sm:text-base">
+                Create your account and get started
+            </p>
+        </div>
+
+        <!-- Registration Card -->
+        <div class="card p-6 sm:p-8">
+
+            <h2 class="text-xl sm:text-2xl font-bold mb-6">
+                Create Your Account
+            </h2>
+
+            <!-- Registration feedback -->
+            <div
+                id="formNotice"
+                class="notice"
+                role="alert"
+                aria-live="polite"
+            >
+                <i id="noticeIcon" class="fas fa-circle-info mt-1"></i>
+                <div id="noticeMessage"></div>
+            </div>
+
+            <form id="registerForm" class="space-y-5" novalidate>
+
+                <!-- Full Name -->
+                <div class="input-group">
+                    <input
+                        type="text"
+                        id="fullName"
+                        name="fullName"
+                        class="form-input"
+                        placeholder="Full Name"
+                        autocomplete="name"
+                        maxlength="100"
+                        required
+                    >
+
+                    <i class="fas fa-user input-icon"></i>
+                    <div id="fullNameError" class="error-text hidden"></div>
+                </div>
+
+                <!-- Email -->
+                <div class="input-group">
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="form-input"
+                        placeholder="Email Address"
+                        autocomplete="email"
+                        maxlength="254"
+                        required
+                    >
+
+                    <i class="fas fa-envelope input-icon"></i>
+                    <div id="emailError" class="error-text hidden"></div>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="input-group">
+                    <input
+                        type="tel"
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        class="form-input"
+                        placeholder="Phone Number, e.g. +2348012345678"
+                        autocomplete="tel"
+                        maxlength="20"
+                        required
+                    >
+
+                    <i class="fas fa-phone input-icon"></i>
+                    <div id="phoneError" class="error-text hidden"></div>
+                </div>
+
+                <!-- Country -->
+                <div class="input-group">
+                    <select
+                        id="country"
+                        name="country"
+                        class="form-input cursor-pointer appearance-none"
+                        required
+                    >
+                        <option value="">Select Country</option>
+                    </select>
+
+                    <i class="fas fa-globe input-icon"></i>
+
+                    <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] pointer-events-none"></i>
+
+                    <div id="countryError" class="error-text hidden"></div>
+                </div>
+
+                <!-- Password -->
+                <div class="input-group">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-input"
+                        placeholder="Password"
+                        autocomplete="new-password"
+                        minlength="6"
+                        required
+                    >
+
+                    <i class="fas fa-lock input-icon"></i>
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="togglePassword"
+                        aria-label="Show password"
+                    >
+                        <i class="fas fa-eye"></i>
+                    </button>
+
+                    <div id="passwordError" class="error-text hidden"></div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="input-group">
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        class="form-input"
+                        placeholder="Confirm Password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <i class="fas fa-lock input-icon"></i>
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="toggleConfirmPassword"
+                        aria-label="Show confirm password"
+                    >
+                        <i class="fas fa-eye"></i>
+                    </button>
+
+                    <div id="confirmPasswordError" class="error-text hidden"></div>
+                </div>
+
+                <!-- Terms -->
+                <div class="flex items-start gap-3 pt-2">
+                    <input
+                        type="checkbox"
+                        id="terms"
+                        name="terms"
+                        class="mt-1 w-4 h-4 rounded border-[var(--border)] bg-[var(--bg-card)] accent-[#FFD700] cursor-pointer"
+                        required
+                    >
+
+                    <label
+                        for="terms"
+                        class="text-sm text-[var(--text-secondary)] cursor-pointer"
+                    >
+                        I agree to the
+                        <a href="#" id="termsLink" class="text-[#FFD700] hover:underline">
+                            Terms of Service
+                        </a>
+                        and
+                        <a href="#" id="privacyLink" class="text-[#FFD700] hover:underline">
+                            Privacy Policy
+                        </a>.
+                    </label>
+                </div>
+
+                <div id="termsError" class="error-text hidden"></div>
+
+                <!-- Register Button -->
+                <button
+                    type="submit"
+                    id="registerBtn"
+                    class="btn-primary w-full mt-6 flex items-center justify-center gap-3"
+                >
+                    <span id="registerBtnText">Create Account</span>
+                    <div id="registerLoader" class="loader hidden"></div>
+                </button>
+
+                <p class="text-center text-sm text-[var(--text-secondary)] mt-6">
+                    Already have an account?
+                    <a
+                        href="login.html"
+                        class="text-[#FFD700] hover:underline font-semibold"
+                    >
+                        Sign In
+                    </a>
+                </p>
+
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <p class="text-center text-xs text-[var(--text-secondary)] mt-6">
+            © 2026 SyncCrypto. All rights reserved.
+        </p>
+    </div>
+</div>
+
+<!-- Registration Success Modal -->
+<div id="successModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="successTitle">
+    <div class="card p-8 max-w-md w-full mx-4 text-center">
+
+        <div class="w-20 h-20 rounded-full bg-[rgba(16,185,129,0.1)] border-2 border-[#10B981] flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-check text-[#10B981] text-3xl"></i>
+        </div>
+
+        <h3 id="successTitle" class="text-2xl font-bold mb-2">
+            Registration Successful!
+        </h3>
+
+        <p class="text-[var(--text-secondary)] mb-4">
+            Your account has been created successfully.
+        </p>
+
+        <p class="text-sm text-[var(--text-secondary)] mb-6">
+            A verification link has been sent to
+            <span id="successEmail" class="text-[#FFD700] font-semibold break-all"></span>.
+            Please check your inbox.
+        </p>
+
+        <p class="text-sm text-[var(--text-secondary)] mb-4">
+            Redirecting you to the login page...
+        </p>
+
+        <div class="page-loader mx-auto"></div>
+
+    </div>
+</div>
+
+<script type="module">
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+    import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        sendEmailVerification,
+        signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    import {
+        getFirestore,
+        doc,
+        setDoc,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+    // ==========================================
+    // FIREBASE CONFIGURATION
+    // ==========================================
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAVYYdxtOnixpdGJOWqVKrFczTQrWV8jLo",
+        authDomain: "synccrypto-fa0ac.firebaseapp.com",
+        projectId: "synccrypto-fa0ac",
+        storageBucket: "synccrypto-fa0ac.firebasestorage.app",
+        messagingSenderId: "609980963372",
+        appId: "1:609980963372:web:f0f3addb7cdcb555230f89",
+        measurementId: "G-R3R5153SDR"
+    };
+
+
+    // ==========================================
+    // INITIALIZE FIREBASE
+    // ==========================================
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+
+    // ==========================================
+    // ELEMENTS
+    // ==========================================
+
+    const registerForm = document.getElementById("registerForm");
+
+    const fullName = document.getElementById("fullName");
+    const email = document.getElementById("email");
+    const phoneNumber = document.getElementById("phoneNumber");
+    const country = document.getElementById("country");
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirmPassword");
+    const terms = document.getElementById("terms");
+
+    const registerBtn = document.getElementById("registerBtn");
+    const registerBtnText = document.getElementById("registerBtnText");
+    const registerLoader = document.getElementById("registerLoader");
+
+    const formNotice = document.getElementById("formNotice");
+    const noticeIcon = document.getElementById("noticeIcon");
+    const noticeMessage = document.getElementById("noticeMessage");
+
+    const successModal = document.getElementById("successModal");
+    const successEmail = document.getElementById("successEmail");
+
+
+    // ==========================================
+    // COUNTRIES
+    // ==========================================
+
+    const countries = [
+        "Afghanistan",
+        "Albania",
+        "Algeria",
+        "Andorra",
+        "Angola",
+        "Antigua and Barbuda",
+        "Argentina",
+        "Armenia",
+        "Australia",
+        "Austria",
+        "Azerbaijan",
+        "Bahamas",
+        "Bahrain",
+        "Bangladesh",
+        "Barbados",
+        "Belarus",
+        "Belgium",
+        "Belize",
+        "Benin",
+        "Bhutan",
+        "Bolivia",
+        "Bosnia and Herzegovina",
+        "Botswana",
+        "Brazil",
+        "Brunei",
+        "Bulgaria",
+        "Burkina Faso",
+        "Burundi",
+        "Cabo Verde",
+        "Cambodia",
+        "Cameroon",
+        "Canada",
+        "Central African Republic",
+        "Chad",
+        "Chile",
+        "China",
+        "Colombia",
+        "Comoros",
+        "Congo",
+        "Costa Rica",
+        "Croatia",
+        "Cuba",
+        "Cyprus",
+        "Czech Republic",
+        "Democratic Republic of the Congo",
+        "Denmark",
+        "Djibouti",
+        "Dominica",
+        "Dominican Republic",
+        "Ecuador",
+        "Egypt",
+        "El Salvador",
+        "Equatorial Guinea",
+        "Eritrea",
+        "Estonia",
+        "Eswatini",
+        "Ethiopia",
+        "Fiji",
+        "Finland",
+        "France",
+        "Gabon",
+        "Gambia",
+        "Georgia",
+        "Germany",
+        "Ghana",
+        "Greece",
+        "Grenada",
+        "Guatemala",
+        "Guinea",
+        "Guinea-Bissau",
+        "Guyana",
+        "Haiti",
+        "Honduras",
+        "Hungary",
+        "Iceland",
+        "India",
+        "Indonesia",
+        "Iran",
+        "Iraq",
+        "Ireland",
+        "Israel",
+        "Italy",
+        "Ivory Coast",
+        "Jamaica",
+        "Japan",
+        "Jordan",
+        "Kazakhstan",
+        "Kenya",
+        "Kiribati",
+        "Kuwait",
+        "Kyrgyzstan",
+        "Laos",
+        "Latvia",
+        "Lebanon",
+        "Lesotho",
+        "Liberia",
+        "Libya",
+        "Liechtenstein",
+        "Lithuania",
+        "Luxembourg",
+        "Madagascar",
+        "Malawi",
+        "Malaysia",
+        "Maldives",
+        "Mali",
+        "Malta",
+        "Marshall Islands",
+        "Mauritania",
+        "Mauritius",
+        "Mexico",
+        "Micronesia",
+        "Moldova",
+        "Monaco",
+        "Mongolia",
+        "Montenegro",
+        "Morocco",
+        "Mozambique",
+        "Myanmar",
+        "Namibia",
+        "Nauru",
+        "Nepal",
+        "Netherlands",
+        "New Zealand",
+        "Nicaragua",
+        "Niger",
+        "Nigeria",
+        "North Korea",
+        "North Macedonia",
+        "Norway",
+        "Oman",
+        "Pakistan",
+        "Palau",
+        "Palestine",
+        "Panama",
+        "Papua New Guinea",
+        "Paraguay",
+        "Peru",
+        "Philippines",
+        "Poland",
+        "Portugal",
+        "Qatar",
+        "Romania",
+        "Russia",
+        "Rwanda",
+        "Saint Kitts and Nevis",
+        "Saint Lucia",
+        "Saint Vincent and the Grenadines",
+        "Samoa",
+        "San Marino",
+        "Sao Tome and Principe",
+        "Saudi Arabia",
+        "Senegal",
+        "Serbia",
+        "Seychelles",
+        "Sierra Leone",
+        "Singapore",
+        "Slovakia",
+        "Slovenia",
+        "Solomon Islands",
+        "Somalia",
+        "South Africa",
+        "South Korea",
+        "South Sudan",
+        "Spain",
+        "Sri Lanka",
+        "Sudan",
+        "Suriname",
+        "Sweden",
+        "Switzerland",
+        "Syria",
+        "Tajikistan",
+        "Tanzania",
+        "Thailand",
+        "Timor-Leste",
+        "Togo",
+        "Tonga",
+        "Trinidad and Tobago",
+        "Tunisia",
+        "Turkey",
+        "Turkmenistan",
+        "Tuvalu",
+        "Uganda",
+        "Ukraine",
+        "United Arab Emirates",
+        "United Kingdom",
+        "United States",
+        "Uruguay",
+        "Uzbekistan",
+        "Vanuatu",
+        "Vatican City",
+        "Venezuela",
+        "Vietnam",
+        "Yemen",
+        "Zambia",
+        "Zimbabwe"
+    ];
+
+    countries.forEach((countryName) => {
+        const option = document.createElement("option");
+        option.value = countryName;
+        option.textContent = countryName;
+        country.appendChild(option);
+    });
+
+
+    // ==========================================
+    // PASSWORD VISIBILITY
+    // ==========================================
+
+    function setupPasswordToggle(buttonId, input) {
+        const button = document.getElementById(buttonId);
+        const icon = button.querySelector("i");
+
+        button.addEventListener("click", () => {
+            const isHidden = input.type === "password";
+
+            input.type = isHidden ? "text" : "password";
+
+            icon.classList.toggle("fa-eye", !isHidden);
+            icon.classList.toggle("fa-eye-slash", isHidden);
+
+            button.setAttribute(
+                "aria-label",
+                isHidden ? "Hide password" : "Show password"
+            );
+        });
+    }
+
+    setupPasswordToggle("togglePassword", password);
+    setupPasswordToggle("toggleConfirmPassword", confirmPassword);
+
+
+    // ==========================================
+    // FORM NOTICES
+    // ==========================================
+
+    function showNotice(message, type = "error") {
+        formNotice.className = "notice show";
+
+        if (type === "success") {
+            formNotice.classList.add("success-notice");
+            noticeIcon.className = "fas fa-circle-check mt-1";
+        } else if (type === "info") {
+            formNotice.classList.add("info-notice");
+            noticeIcon.className = "fas fa-circle-info mt-1";
+        } else {
+            formNotice.classList.add("error-notice");
+            noticeIcon.className = "fas fa-circle-exclamation mt-1";
+        }
+
+        noticeMessage.textContent = message;
+
+        formNotice.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
+        });
+    }
+
+    function hideNotice() {
+        formNotice.className = "notice";
+        noticeMessage.textContent = "";
+    }
+
+
+    // ==========================================
+    // FIELD VALIDATION MESSAGES
+    // ==========================================
+
+    const errorFields = {
+        fullName: document.getElementById("fullNameError"),
+        email: document.getElementById("emailError"),
+        phone: document.getElementById("phoneError"),
+        country: document.getElementById("countryError"),
+        password: document.getElementById("passwordError"),
+        confirmPassword: document.getElementById("confirmPasswordError"),
+        terms: document.getElementById("termsError")
+    };
+
+    const inputFields = {
+        fullName,
+        email,
+        phone: phoneNumber,
+        country,
+        password,
+        confirmPassword
+    };
+
+    function clearFieldErrors() {
+        Object.values(errorFields).forEach((element) => {
+            element.textContent = "";
+            element.classList.add("hidden");
+        });
+
+        Object.values(inputFields).forEach((element) => {
+            element.classList.remove("error");
+            element.classList.remove("success");
+        });
+    }
+
+    function setFieldError(fieldName, message) {
+        const errorElement = errorFields[fieldName];
+        const inputElement = inputFields[fieldName];
+
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.classList.remove("hidden");
+        }
+
+        if (inputElement) {
+            inputElement.classList.add("error");
+        }
+    }
+
+
+    // ==========================================
+    // LOADING STATE
+    // ==========================================
+
+    function setLoading(isLoading) {
+        registerBtn.disabled = isLoading;
+        registerBtnText.classList.toggle("hidden", isLoading);
+        registerLoader.classList.toggle("hidden", !isLoading);
+
+        registerBtn.setAttribute(
+            "aria-busy",
+            isLoading ? "true" : "false"
+        );
+    }
+
+
+    // ==========================================
+    // VALIDATE REGISTRATION FORM
+    // ==========================================
+
+    function validateForm() {
+        clearFieldErrors();
+        hideNotice();
+
+        const name = fullName.value.trim();
+        const emailValue = email.value.trim();
+        const phone = phoneNumber.value.trim();
+        const selectedCountry = country.value;
+        const pass = password.value;
+        const confirm = confirmPassword.value;
+
+        let valid = true;
+
+        if (name.length < 2) {
+            setFieldError("fullName", "Enter your full name.");
+            valid = false;
+        }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailValue || !emailPattern.test(emailValue)) {
+            setFieldError("email", "Enter a valid email address.");
+            valid = false;
+        }
+
+        /*
+         * This field is stored as a phone number.
+         * It is not used for OTP verification.
+         */
+        const phonePattern = /^\+?[0-9\s()-]{7,20}$/;
+
+        if (!phone || !phonePattern.test(phone)) {
+            setFieldError(
+                "phone",
+                "Enter a valid phone number, including your country code."
+            );
+            valid = false;
+        }
+
+        if (!selectedCountry) {
+            setFieldError("country", "Please select your country.");
+            valid = false;
+        }
+
+        if (pass.length < 6) {
+            setFieldError(
+                "password",
+                "Your password must contain at least 6 characters."
+            );
+            valid = false;
+        }
+
+        if (pass !== confirm) {
+            setFieldError(
+                "confirmPassword",
+                "Your passwords do not match."
+            );
+            valid = false;
+        }
+
+        if (!terms.checked) {
+            errorFields.terms.textContent =
+                "You must agree to the Terms of Service and Privacy Policy.";
+
+            errorFields.terms.classList.remove("hidden");
+            valid = false;
+        }
+
+        if (!valid) {
+            showNotice(
+                "Please correct the highlighted fields and try again.",
+                "error"
+            );
+
+            const firstError = document.querySelector(".form-input.error");
+
+            if (firstError) {
+                firstError.focus({
+                    preventScroll: true
+                });
+
+                firstError.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+        }
+
+        return valid;
+    }
+
+
+    // ==========================================
+    // FIREBASE ERROR MESSAGES
+    // ==========================================
+
+    function getFirebaseErrorMessage(error) {
+        switch (error.code) {
+            case "auth/email-already-in-use":
+                return "An account with this email address already exists. Please sign in instead.";
+
+            case "auth/invalid-email":
+                return "The email address entered is invalid.";
+
+            case "auth/weak-password":
+                return "Your password is too weak. Please use a stronger password.";
+
+            case "auth/operation-not-allowed":
+                return "Email and password registration is not enabled in Firebase Authentication.";
+
+            case "auth/network-request-failed":
+                return "A network error occurred. Check your internet connection and try again.";
+
+            case "auth/too-many-requests":
+                return "Too many attempts have been made. Please wait a while and try again.";
+
+            case "auth/invalid-api-key":
+                return "Firebase configuration is invalid. Please contact the website administrator.";
+
+            case "permission-denied":
+            case "firestore/permission-denied":
+                return "Your account was created, but saving your profile was blocked by Firestore security rules. Please contact the website administrator.";
+
+            default:
+                return error.message || "Registration failed. Please try again.";
+        }
+    }
+
+
+    // ==========================================
+    // REGISTER ACCOUNT
+    // ==========================================
+
+    registerForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        if (registerBtn.disabled) {
+            return;
+        }
+
+        if (!validateForm()) {
+            return;
+        }
+
+        const name = fullName.value.trim();
+        const emailValue = email.value.trim();
+        const phone = phoneNumber.value.trim();
+        const selectedCountry = country.value;
+        const pass = password.value;
+
+        let createdUser = null;
+
+        setLoading(true);
+
+        try {
+            // Create Firebase Authentication account.
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                emailValue,
+                pass
+            );
+
+            const user = userCredential.user;
+            createdUser = user;
+
+            // Save the user's profile in Firestore.
+            await setDoc(
+                doc(db, "users", user.uid),
+                {
+                    name: name,
+                    email: emailValue,
+                    phone: phone,
+                    country: selectedCountry,
+                    balance: 0,
+                    createdAt: serverTimestamp()
+                }
+            );
+
+            // Send the email verification link.
+            await sendEmailVerification(user);
+
+            // Display success modal.
+            successEmail.textContent = emailValue;
+            successModal.classList.add("active");
+
+            // Sign out so the user can sign in through login.html.
+            try {
+                await signOut(auth);
+            } catch (signOutError) {
+                console.error("Sign-out notice:", signOutError);
+            }
+
+            // Redirect to login.html after successful registration.
+            setTimeout(() => {
+                window.location.replace("login.html");
+            }, 3000);
+
+        } catch (error) {
+            console.error("Registration error:", error);
+
+            /*
+             * If Authentication account creation succeeded but a later
+             * operation failed, do not pretend the entire registration
+             * process completed successfully.
+             *
+             * The created account may still exist in Firebase. The user
+             * should check whether they can sign in before retrying.
+             */
+            let message = getFirebaseErrorMessage(error);
+
+            if (createdUser) {
+                message =
+                    "Your Firebase Authentication account was created, " +
+                    "but a later registration step failed. " +
+                    "Please try signing in or contact the website administrator " +
+                    "before attempting to register again. Details: " +
+                    (error.message || "Unknown error");
+            }
+
+            showNotice(message, "error");
+
+        } finally {
+            setLoading(false);
+        }
+    });
+
+
+    // ==========================================
+    // CLEAR FIELD ERRORS AS THE USER TYPES
+    // ==========================================
+
+    Object.entries(inputFields).forEach(([fieldName, element]) => {
+        element.addEventListener("input", () => {
+            const errorElement = errorFields[fieldName];
+
+            if (errorElement) {
+                errorElement.textContent = "";
+                errorElement.classList.add("hidden");
+            }
+
+            element.classList.remove("error");
+        });
+
+        element.addEventListener("change", () => {
+            const errorElement = errorFields[fieldName];
+
+            if (errorElement) {
+                errorElement.textContent = "";
+                errorElement.classList.add("hidden");
+            }
+
+            element.classList.remove("error");
+        });
+    });
+
+    terms.addEventListener("change", () => {
+        errorFields.terms.textContent = "";
+        errorFields.terms.classList.add("hidden");
+    });
+
+
+    // ==========================================
+    // TERMS AND PRIVACY PLACEHOLDERS
+    // ==========================================
+
+    /*
+     * Replace these placeholder links with your real Terms of Service
+     * and Privacy Policy pages when they are available.
+     */
+
+    document.getElementById("termsLink").addEventListener("click", (event) => {
+        event.preventDefault();
+
+        showNotice(
+            "Please add the correct Terms of Service page link to this button.",
+            "info"
+        );
+    });
+
+    document.getElementById("privacyLink").addEventListener("click", (event) => {
+        event.preventDefault();
+
+        showNotice(
+            "Please add the correct Privacy Policy page link to this button.",
+            "info"
+        );
+    });
+
+</script>
+</body>
+                      </html>
