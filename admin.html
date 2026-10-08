@@ -245,6 +245,158 @@
     class="hidden-section min-h-screen"
   >
 
+    <!-- =========================
+     SIDEBAR NAVIGATION
+========================== -->
+
+<aside
+  id="adminSidebar"
+  class="fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-white/10 bg-[#0b1728] transition-transform duration-300"
+>
+
+  <!-- Logo -->
+  <div class="flex h-20 items-center gap-3 border-b border-white/10 px-6">
+
+    <div class="grid h-11 w-11 place-items-center rounded-xl bg-yellow-400/10 text-yellow-400">
+      <i class="fa-solid fa-shield-halved text-xl"></i>
+    </div>
+
+    <div>
+      <h2 class="font-bold text-white">
+        SyncCrypto
+      </h2>
+
+      <p class="text-xs text-slate-400">
+        Admin Panel
+      </p>
+    </div>
+
+  </div>
+
+
+  <!-- Navigation -->
+  <nav class="flex-1 space-y-2 overflow-y-auto p-4">
+
+    <p class="mb-3 px-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+      Main Menu
+    </p>
+
+    <a
+      href="#"
+      data-section="overview"
+      class="sidebar-link flex items-center gap-3 rounded-xl bg-yellow-400/10 px-4 py-3 text-sm font-semibold text-yellow-400"
+    >
+      <i class="fa-solid fa-chart-pie w-5"></i>
+      Dashboard
+    </a>
+
+
+    <a
+      href="#"
+      data-section="users"
+      class="sidebar-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-400 transition hover:bg-white/5 hover:text-white"
+    >
+      <i class="fa-solid fa-users w-5"></i>
+      Customers
+    </a>
+
+
+    <a
+      href="#"
+      data-section="funding"
+      class="sidebar-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-400 transition hover:bg-white/5 hover:text-white"
+    >
+      <i class="fa-solid fa-wallet w-5"></i>
+      Fund Accounts
+    </a>
+
+
+    <a
+      href="#"
+      data-section="withdrawals"
+      class="sidebar-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-400 transition hover:bg-white/5 hover:text-white"
+    >
+      <i class="fa-solid fa-money-bill-transfer w-5"></i>
+      Withdrawals
+
+      <span class="ml-auto rounded-full bg-yellow-400/10 px-2 py-1 text-xs text-yellow-400">
+        !
+      </span>
+    </a>
+
+
+    <a
+      href="#"
+      data-section="transactions"
+      class="sidebar-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-400 transition hover:bg-white/5 hover:text-white"
+    >
+      <i class="fa-solid fa-clock-rotate-left w-5"></i>
+      Transactions
+    </a>
+
+
+    <div class="mb-3 mt-7 px-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+      Management
+    </div>
+
+
+    <a
+      href="#"
+      data-section="notifications"
+      class="sidebar-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-400 transition hover:bg-white/5 hover:text-white"
+    >
+      <i class="fa-solid fa-bell w-5"></i>
+      Notifications
+    </a>
+
+
+    <a
+      href="#"
+      data-section="activity"
+      class="sidebar-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-400 transition hover:bg-white/5 hover:text-white"
+    >
+      <i class="fa-solid fa-shield-halved w-5"></i>
+      Activity Logs
+    </a>
+
+
+    <a
+      href="#"
+      data-section="settings"
+      class="sidebar-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-400 transition hover:bg-white/5 hover:text-white"
+    >
+      <i class="fa-solid fa-gear w-5"></i>
+      Settings
+    </a>
+
+  </nav>
+
+
+  <!-- Admin Profile -->
+  <div class="border-t border-white/10 p-4">
+
+    <div class="flex items-center gap-3 rounded-xl bg-white/5 p-3">
+
+      <div class="grid h-10 w-10 place-items-center rounded-full bg-yellow-400/10 text-yellow-400">
+        <i class="fa-solid fa-user-shield"></i>
+      </div>
+
+      <div class="min-w-0">
+        <p class="truncate text-sm font-bold text-white">
+          Administrator
+        </p>
+
+        <p class="truncate text-xs text-slate-400">
+          Secure Access
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+</aside>
+
     <!-- Header -->
     <header
       class="sticky top-0 z-40 border-b border-white/10 bg-[#07111f]/90 backdrop-blur-xl"
