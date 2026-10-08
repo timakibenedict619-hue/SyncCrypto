@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maintenance Mode Patcher</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#070b14;color:#e5e7eb;display:flex;justify-content:center;padding:30px 16px}
+.box{max-width:480px;width:100%;background:#0f172a;border:1px solid #1e293b;border-radius:16px;padding:24px}
+h1{font-size:18px;margin-bottom:8px}p{font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:16px}
+input{width:100%;margin-bottom:14px;color:#e5e7eb}
+button{background:#2563eb;color:#fff;border:0;border-radius:10px;padding:12px 16px;font-weight:700;width:100%;cursor:pointer}
+button:disabled{opacity:.5}
+#msg{margin-top:14px;font-size:13px;line-height:1.5}
+.ok{color:#6ee7b7}.err{color:#fca5a5}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>Maintenance Mode Patcher</h1>
+  <p>Choose your original <b>admin-dashboard.html</b>. This adds the maintenance mode feature and downloads the full updated file. Nothing is uploaded anywhere; it runs in your browser.</p>
+  <input type="file" id="file" accept=".html">
+  <button id="go" disabled>Add Maintenance Mode &amp; Download</button>
+  <div id="msg"></div>
+</div>
+
+<script>
+const CSS = `
+    /* ===== MAINTENANCE SWITCH ===== */
+    .switch{position:relative;width:52px;height:28px;display:inline-block;flex-shrink:0}
+    .switch input{opacity:0;width:0;height:0}
+    .slider{position:absolute;inset:0;background:#1e293b;border:1px solid var(--border);border-radius:28px;cursor:pointer;transition:.2s}
+    .slider::before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:#cbd5e1;border-radius:50%;transition:.2s}
+    .switch input:checked + .slider{background:rgba(245,158,11,.25);border-color:var(--yellow)}
+    .switch input:checked + .slider::before{transform:translateX(24px);background:var(--yellow)}
+  `;
+
+const NAV = `
+
+      <button class="nav-item" data-section="maintenance">
+        <i class="fa-solid fa-screwdriver-wrench"></i>
+        <span>Maintenance Mode</span>
+        <span class="nav-count hidden" id="maintenanceBadge" style="background:rgba(245,158,11,.15);color:#fcd34d">ON</span>
+      </button>`;
+
+const SECTION = `
+
+      <!-- MAINTENANCE MODE -->
+      <section class="section" id="section-maintenance">
+        <div class="section-header">
+          <h2>Maintenance Mode</h2>
+          <p>Block user logins while you work on the website.</p>
+        </div>
+        <div class="card"><div class="card-body">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px">
+            <div>
+              <strong id="maintenanceStatusText">Maintenance mode is OFF</strong>
+              <p style="color:var(--muted);font-size:10px;margin-top:4px">When ON, regular users cannot log in. Admin login is not affected.</p>
+            </div>
+            <label class="switch"><input type="checkbox" id="maintenanceToggle"><span class="slider"></span></label>
+          </div>
+          <div class="form-group">
+            <label>Message shown to users</label>
+            <textarea class="form-control" id="maintenanceMessage"></textarea>
+          </div>
+          <button class="btn btn-primary" id="saveMaintenanceBtn">
+            <i class="fa-solid fa-floppy-disk"></i> Save Message
+          </button>
+        </div></div>
+      </section>`;
+
+const LOGIC = `/* =====================================
+       MAINTENANCE MODE
+    ====================================== */
+
+    const maintenanceRef = doc(db, "settings", "maintenance");
+    const DEFAULT_MAINTENANCE_MESSAGE =
+      "We're currently under maintenance. Please try again later.";
+
+    function listenMaintenance() {
+      const unsubscribe = onSnapshot(maintenanceRef, snap => {
+        const data = snap.exists() ? snap.data() : {};
+        const enabled = data.enabled === true;
+        document.getElementById("maintenanceToggle").checked = enabled;
+        document.getElementById("maintenanceStatusText").textContent = enabled
+          ? "Maintenance mode is ON — user logins are blocked"
+          : "Maintenance mode is OFF";
+        document.getElementById("maintenanceBadge").classList.toggle("hidden", !enabled);
+        const msg = document.getElementById("maintenanceMessage");
+        if (document.activeElement !== msg) {
+          msg.value = data.message || DEFAULT_MAINTENANCE_MESSAGE;
+        }
+      }, error => {
+        console.error("Maintenance listener:", error);
+        showToast(getFirebaseErrorMessage(error), "error");
+      });
+      unsubscribeFunctions.push(unsubscribe);
+    }
+
+    async function saveMaintenance(enabled) {
+      const message =
+        document.getElementById("maintenanceMessage").value.trim() ||
+        DEFAULT_MAINTENANCE_MESSAGE;
+      try {
+        await setDoc(maintenanceRef, {
+          enabled,
+          message,
+          updatedAt: serverTimestamp(),
+          updatedBy: auth.currentUser.uid
+        }, { merge: true });
+
+        await addDoc(collection(db, "adminActions"), {
+          type: "maintenance",
+          action: enabled ? "maintenance_on" : "maintenance_off",
+          adminId: auth.currentUser.uid,
+          adminEmail: auth.currentUser.email || "",
+          reason: message,
+          status: "completed",
+          createdAt: serverTimestamp()
+        });
+
+        showToast(enabled ? "Maintenance mode is now ON." : "Maintenance mode is now OFF.", "success");
+      } catch (error) {
+        console.error(error);
+        showToast(getFirebaseErrorMessage(error), "error");
+      }
+    }
+
+    document.getElementById("maintenanceToggle").addEventListener("change", e => {
+      const enabled = e.target.checked;
+      if (enabled && !confirm("Turn ON maintenance mode? Users will not be able to log in.")) {
+        e.target.checked = false;
+        return;
+      }
+      saveMaintenance(enabled);
+    });
+
+    document.getElementById("saveMaintenanceBtn").addEventListener("click", () => {
+      saveMaintenance(document.getElementById("maintenanceToggle").checked);
+    });
+
+
+    `;
+
+const fileInput = document.getElementById("file");
+const go = document.getElementById("go");
+const msg = document.getElementById("msg");
+
+fileInput.addEventListener("change", () => { go.disabled = !fileInput.files.length; });
+
+function fail(text) { msg.className = "err"; msg.textContent = text; }
+
+function insertAfter(src, startMarker, endMarker, snippet, label) {
+  const s = src.indexOf(startMarker);
+  if (s < 0) throw new Error(label + ": anchor not found.");
+  const e = src.indexOf(endMarker, s);
+  if (e < 0) throw new Error(label + ": end anchor not found.");
+  const at = e + endMarker.length;
+  return src.slice(0, at) + snippet + src.slice(at);
+}
+
+function replaceOnce(src, find, replacement, label) {
+  const i = src.indexOf(find);
+  if (i < 0) throw new Error(label + ": anchor not found.");
+  return src.slice(0, i) + replacement + src.slice(i + find.length);
+}
+
+go.addEventListener("click", async () => {
+  msg.textContent = "";
+  try {
+    let s = await fileInput.files[0].text();
+    if (s.includes("section-maintenance")) throw new Error("This file already has maintenance mode.");
+
+    s = replaceOnce(s, "</style>", CSS + "</style>", "CSS");
+    s = insertAfter(s, "<span>Activity Logs</span>", "</button>", NAV, "Sidebar button");
+    s = insertAfter(s, 'id="section-activity"', "</section>", SECTION, "Section");
+    s = replaceOnce(s, "getDocs,", "getDocs,\n  setDoc,", "Firestore import");
+    s = replaceOnce(s, "activity: [",
+      'maintenance: ["Maintenance Mode", "Block user logins while you work on the site"],\n\n      activity: [', "Section titles");
+    s = replaceOnce(s, "listenActivity();", "listenActivity();\n\n      listenMaintenance();", "Listener");
+
+    const badge = s.indexOf("STATUS BADGE");
+    if (badge < 0) throw new Error("Logic: anchor not found.");
+    const at = s.lastIndexOf("/*", badge);
+    s = s.slice(0, at) + LOGIC + s.slice(at);
+
+    const blob = new Blob([s], { type: "text/html" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "admin-dashboard.html";
+    a.click();
+    msg.className = "ok";
+    msg.textContent = "Done. admin-dashboard.html has been downloaded with maintenance mode added.";
+  } catch (err) {
+    fail(err.message + " Your original file was not changed.");
+  }
+});
+</script>
+</body>
+</html>
