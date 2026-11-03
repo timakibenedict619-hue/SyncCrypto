@@ -40,8 +40,6 @@ let currentUser = null;
 let stopUserListener = null;
 let toastTimer = null;
 
-let maintenanceBlocked = false;
-let maintenanceCheckInProgress = false;
 let dashboardIntervalsStarted = false;
 
 let marketInterval = null;
@@ -117,23 +115,8 @@ function showToast(message) {
 
 /*
 |--------------------------------------------------------------------------
-| MAINTENANCE MODE
+| DASHBOARD ACTIVITY
 |--------------------------------------------------------------------------
-|
-| Firestore document:
-|
-| settings/maintenance
-|
-| Example document:
-|
-| {
-|   enabled: true,
-|   message: "We're currently undergoing scheduled maintenance."
-| }
-|
-| This check must succeed before account information and transaction
-| history are loaded.
-|
 */
 
 
@@ -155,236 +138,6 @@ function stopDashboardActivity() {
   }
 
   dashboardIntervalsStarted = false;
-}
-
-
-function showMaintenanceScreen(message) {
-
-  let maintenanceScreen =
-    document.getElementById("maintenanceScreen");
-
-  if (!maintenanceScreen) {
-
-    maintenanceScreen =
-      document.createElement("div");
-
-    maintenanceScreen.id =
-      "maintenanceScreen";
-
-    maintenanceScreen.style.cssText = `
-      position: fixed;
-      inset: 0;
-      z-index: 999999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: #080d19;
-      color: #f8fafc;
-      font-family: Arial, sans-serif;
-    `;
-
-    maintenanceScreen.innerHTML = `
-      <div style="
-        width: 100%;
-        max-width: 480px;
-        padding: 32px 24px;
-        border: 1px solid rgba(248, 113, 113, 0.35);
-        border-radius: 20px;
-        background: #111827;
-        text-align: center;
-        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
-      ">
-
-        <div style="
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 68px;
-          height: 68px;
-          margin: 0 auto 22px;
-          border-radius: 18px;
-          background: rgba(239, 68, 68, 0.12);
-          color: #f87171;
-          font-size: 28px;
-        ">
-          <i class="fa-solid fa-screwdriver-wrench"></i>
-        </div>
-
-        <p style="
-          margin: 0 0 10px;
-          color: #f87171;
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 2px;
-          text-transform: uppercase;
-        ">
-          Scheduled Maintenance
-        </p>
-
-        <h1 style="
-          margin: 0 0 14px;
-          color: #ffffff;
-          font-size: 27px;
-          line-height: 1.3;
-        ">
-          We'll be back soon
-        </h1>
-
-        <p id="maintenanceScreenMessage" style="
-          margin: 0 auto;
-          max-width: 360px;
-          color: #cbd5e1;
-          font-size: 15px;
-          line-height: 1.8;
-        "></p>
-
-        <div style="
-          margin-top: 26px;
-          padding-top: 20px;
-          border-top: 1px solid rgba(148, 163, 184, 0.15);
-          color: #94a3b8;
-          font-size: 12px;
-          line-height: 1.7;
-        ">
-          Your account data remains in the system.
-          Please try again later.
-        </div>
-
-      </div>
-    `;
-
-    document.body.appendChild(
-      maintenanceScreen
-    );
-  }
-
-  const messageElement =
-    document.getElementById(
-      "maintenanceScreenMessage"
-    );
-
-  if (messageElement) {
-    messageElement.textContent =
-      message ||
-      "We're currently undergoing scheduled maintenance. Please try again later.";
-  }
-
-  maintenanceScreen.style.display = "flex";
-}
-
-
-async function blockDashboardForMaintenance(message) {
-
-  if (maintenanceBlocked) return;
-
-  maintenanceBlocked = true;
-
-  stopDashboardActivity();
-
-  showMaintenanceScreen(message);
-
-  try {
-
-    if (auth.currentUser) {
-      await signOut(auth);
-    }
-
-  } catch (error) {
-
-    console.error(
-      "Unable to sign out during maintenance:",
-      error
-    );
-
-  }
-
-}
-
-
-async function blockDashboardForSettingsError() {
-
-  if (maintenanceBlocked) return;
-
-  maintenanceBlocked = true;
-
-  stopDashboardActivity();
-
-  showMaintenanceScreen(
-    "We couldn't verify the current service status. Access is temporarily unavailable. Please try again shortly."
-  );
-
-  try {
-
-    if (auth.currentUser) {
-      await signOut(auth);
-    }
-
-  } catch (error) {
-
-    console.error(
-      "Sign-out after maintenance check failure:",
-      error
-    );
-
-  }
-
-}
-
-
-async function checkMaintenanceMode() {
-
-  if (maintenanceCheckInProgress) {
-    return false;
-  }
-
-  maintenanceCheckInProgress = true;
-
-  try {
-
-    const maintenanceSnapshot =
-      await getDoc(
-        doc(db, "settings", "maintenance")
-      );
-
-
-    if (maintenanceSnapshot.exists()) {
-
-      const maintenanceData =
-        maintenanceSnapshot.data();
-
-
-      if (maintenanceData.enabled === true) {
-
-        await blockDashboardForMaintenance(
-          maintenanceData.message ||
-          "We're currently undergoing scheduled maintenance. Please try again later."
-        );
-
-        return false;
-      }
-    }
-
-
-    return true;
-
-  } catch (error) {
-
-    console.error(
-      "Maintenance mode check failed:",
-      error
-    );
-
-
-    await blockDashboardForSettingsError();
-
-    return false;
-
-  } finally {
-
-    maintenanceCheckInProgress = false;
-
-  }
 }
 
 
@@ -656,7 +409,7 @@ function renderHistory(transactions) {
 
 async function loadTransactionHistory() {
 
-  if (!currentUser || maintenanceBlocked) return;
+  if (!currentUser) return;
 
 
   const container =
@@ -715,7 +468,6 @@ async function loadTransactionHistory() {
     ]);
 
 
-    if (maintenanceBlocked) return;
 
 
     const sentTransactions =
@@ -766,7 +518,6 @@ async function loadTransactionHistory() {
 
   } catch (error) {
 
-    if (maintenanceBlocked) return;
 
 
     console.error(
@@ -868,7 +619,6 @@ function drawBtcChart(prices) {
 
 async function updateBitcoinMarket() {
 
-  if (maintenanceBlocked) return;
 
 
   const btcPriceElement =
@@ -912,7 +662,6 @@ async function updateBitcoinMarket() {
     ]);
 
 
-    if (maintenanceBlocked) return;
 
 
     if (!priceResponse.ok) {
@@ -995,7 +744,6 @@ async function updateBitcoinMarket() {
       const chartData =
         await chartResponse.json();
 
-      if (maintenanceBlocked) return;
 
       drawBtcChart(
         chartData.prices
@@ -1032,7 +780,6 @@ async function updateBitcoinMarket() {
 
   } catch (error) {
 
-    if (maintenanceBlocked) return;
 
 
     console.error(
@@ -1182,7 +929,6 @@ if (refreshHistoryBtn) {
     "click",
     () => {
 
-      if (maintenanceBlocked) return;
 
       loadTransactionHistory();
 
@@ -1201,41 +947,14 @@ if (refreshHistoryBtn) {
 | START DASHBOARD
 |--------------------------------------------------------------------------
 |
-| Authentication is checked first.
-| Maintenance status is checked second.
-| Only after both checks succeed are dashboard listeners started.
+| Dashboard listeners are started once the user is authenticated.
 |
 */
 
 
 async function startDashboard(user) {
 
-  if (maintenanceBlocked) return;
-
-
   currentUser = user;
-
-
-  const maintenanceIsOff =
-    await checkMaintenanceMode();
-
-
-  if (!maintenanceIsOff || maintenanceBlocked) {
-    return;
-  }
-
-
-  /*
-   * Do not continue if the authenticated user changed
-   * while the maintenance check was running.
-   */
-
-  if (
-    !auth.currentUser ||
-    auth.currentUser.uid !== user.uid
-  ) {
-    return;
-  }
 
 
   if (stopUserListener) {
@@ -1259,7 +978,6 @@ async function startDashboard(user) {
 
       (userSnapshot) => {
 
-        if (maintenanceBlocked) return;
 
 
         if (!userSnapshot.exists()) {
@@ -1289,7 +1007,6 @@ async function startDashboard(user) {
 
       (error) => {
 
-        if (maintenanceBlocked) return;
 
 
         console.error(
@@ -1310,13 +1027,11 @@ async function startDashboard(user) {
   await loadTransactionHistory();
 
 
-  if (maintenanceBlocked) return;
 
 
   await updateBitcoinMarket();
 
 
-  if (maintenanceBlocked) return;
 
 
   if (!dashboardIntervalsStarted) {
@@ -1359,7 +1074,6 @@ onAuthStateChanged(
 
   async (user) => {
 
-    if (maintenanceBlocked) return;
 
 
     if (!user) {

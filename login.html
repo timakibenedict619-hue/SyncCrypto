@@ -112,33 +112,6 @@ opacity: 1;
 color: var(--primary);
 }
 
-/* Maintenance mode notification */
-.maintenance-alert {
-background: rgba(127, 29, 29, 0.22);
-border: 1px solid rgba(248, 113, 113, 0.5);
-border-left: 4px solid #ef4444;
-color: #fecaca;
-animation: maintenanceSlideIn 0.35s ease-out;
-}
-
-.maintenance-alert .maintenance-icon {
-color: #f87171;
-}
-
-.maintenance-alert .maintenance-title {
-color: #fca5a5;
-}
-
-@keyframes maintenanceSlideIn {
-from {
-opacity: 0;
-transform: translateY(-8px);
-}
-to {
-opacity: 1;
-transform: translateY(0);
-}
-}
 </style>
 
 </head>
@@ -162,36 +135,6 @@ transform: translateY(0);
       <p class="text-slate-400 text-sm">Sign in to access your crypto dashboard</p>
     </div><!-- Login Card -->
 <div class="glass rounded-2xl p-6 sm:p-8 shadow-2xl">
-
-  <!-- Maintenance Mode Notification -->
-  <div
-    id="maintenanceAlert"
-    class="maintenance-alert hidden rounded-xl p-4 mb-5"
-    role="alert"
-    aria-live="assertive"
-  >
-    <div class="flex items-start gap-3">
-      <i class="fa-solid fa-triangle-exclamation maintenance-icon text-xl mt-1"></i>
-
-      <div class="flex-1">
-        <h3 class="maintenance-title font-semibold text-sm mb-1">
-          Service Temporarily Unavailable
-        </h3>
-
-        <p
-          id="maintenanceMessage"
-          class="text-sm leading-relaxed"
-        >
-          We're currently undergoing scheduled maintenance. Please try again later.
-        </p>
-
-        <div class="flex items-center gap-2 mt-3 text-xs text-red-300/80">
-          <i class="fa-solid fa-clock"></i>
-          <span>Thank you for your patience.</span>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <form id="loginForm" novalidate>
     <!-- Email Field -->
@@ -309,12 +252,6 @@ import {
     sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-import {
-    getFirestore,
-    doc,
-    getDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 // Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyAVYYdxtOnixpdGJOWqVKrFczTQrWV8jLo",
@@ -329,7 +266,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
 
 // Elements
 const loginForm = document.getElementById("loginForm");
@@ -348,13 +284,6 @@ document.getElementById("togglePassword");
 
 const toggleIcon =
 document.getElementById("toggleIcon");
-
-// Maintenance notification elements
-const maintenanceAlert =
-document.getElementById("maintenanceAlert");
-
-const maintenanceMessage =
-document.getElementById("maintenanceMessage");
 
 // Password visibility
 togglePassword.addEventListener("click",()=>{
@@ -382,9 +311,6 @@ loginForm.addEventListener("submit",async(e)=>{
 
 e.preventDefault();
 
-// Hide any previous maintenance notification
-maintenanceAlert.classList.add("hidden");
-
 const userEmail = email.value.trim();
 const userPassword = password.value.trim();
 
@@ -401,52 +327,6 @@ try{
 btnText.style.display="none";
 btnSpinner.classList.remove("hidden");
 signInBtn.disabled=true;
-// Maintenance mode check
-let maintenanceEnabled = false;
-
-try {
-    const maintenanceSnap = await getDoc(
-        doc(db, "settings", "maintenance")
-    );
-
-    if (!maintenanceSnap.exists()) {
-        throw new Error(
-            "Maintenance settings could not be found."
-        );
-    }
-
-    maintenanceEnabled =
-        maintenanceSnap.data().enabled === true;
-
-    if (maintenanceEnabled) {
-        maintenanceMessage.textContent =
-            maintenanceSnap.data().message ||
-            "We're currently undergoing scheduled maintenance. Please try again later.";
-
-        maintenanceAlert.classList.remove("hidden");
-
-        maintenanceAlert.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest"
-        });
-
-        return;
-    }
-
-} catch (checkError) {
-    console.error(
-        "Maintenance mode check failed:",
-        checkError
-    );
-
-    maintenanceMessage.textContent =
-        "We're currently under maintenance mode. Please try again later..";
-
-    maintenanceAlert.classList.remove("hidden");
-
-    return;
-}
-
 const userCredential =
 await signInWithEmailAndPassword(
 auth,
